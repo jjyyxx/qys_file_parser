@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const staffUnit_1 = require("./staffUnit");
+import { staffUnit } from './staffUnit';
 function play(file) {
     let reader = new FileReader();
     reader.onload = (event) => {
@@ -25,7 +23,7 @@ class qyParser {
     }
     parse() {
         for (let i = 0; i < this.length; i++) {
-            let staff = new staffUnit_1.staffUnit();
+            let staff = new staffUnit();
             staff.staff = this.getChar(i);
             this.result.push(staff);
         }
