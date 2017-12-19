@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class staffUnit {
     get staff() {
         return this._staff;
@@ -6,3 +8,4 @@ class staffUnit {
         this._staff = v;
     }
 }
+exports.staffUnit = staffUnit;

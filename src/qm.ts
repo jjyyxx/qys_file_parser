@@ -1,3 +1,5 @@
+import {staffUnit} from './staffUnit'
+
 function play(file : File){
     let reader : FileReader = new FileReader()
     reader.onload = (event : Event & { target: { result: string }} ) => {
