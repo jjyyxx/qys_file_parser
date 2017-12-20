@@ -1,4 +1,4 @@
-import { staffUnit } from './staffUnit';
+import { staffUnit } from './staffUnit.js';
 function play(file) {
     let reader = new FileReader();
     reader.onload = (event) => {
