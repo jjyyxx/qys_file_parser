@@ -13,6 +13,3 @@ function parseFile(content : string){
     let parser = new qysFileParser(content)
     parser.parse()
 }
-
-
-
