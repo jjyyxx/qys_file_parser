@@ -1,4 +1,6 @@
-import { qysFileParser } from './qysFileParser.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const qysFileParser_js_1 = require("./qysFileParser.js");
 function play(file) {
     let reader = new FileReader();
     reader.onload = (event) => {
@@ -8,6 +10,6 @@ function play(file) {
     reader.readAsText(file, 'UTF-8');
 }
 function parseFile(content) {
-    let parser = new qysFileParser(content);
+    let parser = new qysFileParser_js_1.qysFileParser(content);
     parser.parse();
 }

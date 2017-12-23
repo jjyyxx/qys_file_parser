@@ -1,4 +1,5 @@
-export { staffUnit };
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 let pitchDict = { "1": 0, "2": 2, "3": 4, "4": 5, "5": 7, "6": 9, "7": 11 };
 class staffUnit {
     constructor(oriPitch, beatCount = 1) {
@@ -27,3 +28,4 @@ class staffUnit {
         this._beatCount += staff.beatCount;
     }
 }
+exports.staffUnit = staffUnit;

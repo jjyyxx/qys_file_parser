@@ -1,11 +1,14 @@
-import { dispatcher } from "./dispatcher.js";
-export { qysFileParser };
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const qysParserContext_js_1 = require("./qysParserContext.js");
+const dispatcher_js_1 = require("./dispatcher.js");
 class qysFileParser {
     constructor(content) {
-        this.legalSymbols = ['b', '#', ',', "'"];
-        this.dispatcher = new dispatcher(this.context);
+        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_']);
         this._rawContent = content;
         this.length = this._rawContent.length;
+        this.context = new qysParserContext_js_1.qysParserContext();
+        this.dispatcher = new dispatcher_js_1.dispatcher(this.context);
     }
     dispatch(char /* , context : qysParserContext */) {
         if (char.length !== 1) {
@@ -17,11 +20,11 @@ class qysFileParser {
                 this.dispatcher.pitch(pitch);
             }
             else {
-                if (char in this.legalSymbols) {
+                if (this.legalSymbols.has(char)) {
                     this.dispatcher[char]();
                 }
                 else {
-                    throw "legal symbol";
+                    throw `illegal symbol ${char} is given`;
                 }
             }
         }
@@ -35,8 +38,10 @@ class qysFileParser {
         for (let i = 0; i < this.length; i++) {
             this.dispatch(this.getChar(i) /* , this.context */);
         }
+        return this.context;
     }
     getChar(index) {
         return this._rawContent.charAt(index);
     }
 }
+exports.qysFileParser = qysFileParser;

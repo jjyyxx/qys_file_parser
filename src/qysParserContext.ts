@@ -14,9 +14,9 @@ class qysParserContext {
         tonality: 'C'
     }
 
-    result: Array<staffUnit>
+    result: Array<staffUnit> = []
 
-    tie: boolean
+    tie: boolean = false
 
     constructor() {
 
@@ -32,8 +32,14 @@ class qysParserContext {
             this.activeStaff.merge(tempStaff)
             this.tie = false
         }
-        this.activeStaff.commit()
+        this.previousCommit()
         this.result.push(staff)
+    }
+
+    previousCommit () {
+        if (this.result.length !== 0) {
+            this.activeStaff.commit()
+        }
     }
 
     public get activeStaff(): staffUnit {

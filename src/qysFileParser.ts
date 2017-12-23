@@ -9,13 +9,15 @@ class qysFileParser {
     private length: number;
     private context : qysParserContext
     
-    readonly legalSymbols : Array <String> = ['b','#',',',"'"]
+    readonly legalSymbols : Set <String> = new Set(['b','#',',',"'",'%','|','.','-','_'])
 
-    private dispatcher = new dispatcher(this.context)
+    private dispatcher : dispatcher
 
     constructor(content) {
         this._rawContent = content
         this.length = this._rawContent.length
+        this.context = new qysParserContext()
+        this.dispatcher = new dispatcher(this.context)
     }
 
     private dispatch(char : string/* , context : qysParserContext */) {
@@ -26,10 +28,10 @@ class qysFileParser {
             if (pitch) {
                 this.dispatcher.pitch(pitch)
             } else {
-                if (char in this.legalSymbols) {
+                if (this.legalSymbols.has(char)) {
                     this.dispatcher[char](/* this.context */)
                 } else {
-                    throw "legal symbol";
+                    throw `illegal symbol ${char} is given`;
                 }
             }
         }
@@ -46,6 +48,7 @@ class qysFileParser {
         for (let i=0;i < this.length;i++) {
             this.dispatch(this.getChar(i)/* , this.context */)
         }
+        return this.context
     }
 
     getChar(index : number){

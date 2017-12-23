@@ -8,10 +8,6 @@ class dispatcher {
         this.context.addNewStaff(pitch)
     }
 
-    '/' () {
-        
-    }
-
     '#' () {
         this.context.activeStaff.pitch += 1
     }

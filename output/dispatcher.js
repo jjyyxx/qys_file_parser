@@ -1,11 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class dispatcher {
     constructor(context) {
         this.context = context;
     }
     pitch(pitch) {
         this.context.addNewStaff(pitch);
-    }
-    '/'() {
     }
     '#'() {
         this.context.activeStaff.pitch += 1;
@@ -37,4 +37,4 @@ class dispatcher {
         this.context.tie = true;
     }
 }
-export { dispatcher };
+exports.dispatcher = dispatcher;
