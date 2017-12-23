@@ -2,3 +2,5 @@ misc
 *.qym
 ref
 .vscode
+node_modules
+.idea

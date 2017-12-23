@@ -1,0 +1,36 @@
+{
+  "name": "qys_file_parser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjyyxx/qm_parser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjyyxx/qm_parser/issues"
+  },
+  "homepage": "https://github.com/jjyyxx/qm_parser#readme",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/.vscode/preprocessor.js"
+    },
+    "testMatch": [
+      "**/__tests__/*.(ts|tsx|js)"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^22.0.3",
+    "typescript": "^2.6.2"
+  }
+}

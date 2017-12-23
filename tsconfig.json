@@ -1,0 +1,13 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "es2015",
+        "sourceMap": false,
+        "outDir": "./output",
+        "watch":true
+    },
+    "include": [
+        "./src/*"
+    ]
+}
