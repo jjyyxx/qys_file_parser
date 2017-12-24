@@ -4,7 +4,7 @@ const qysParserContext_js_1 = require("./qysParserContext.js");
 const Dispatcher_js_1 = require("./Dispatcher.js");
 class qysFileParser {
     constructor(content) {
-        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^']);
+        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^', '[', '(', '<']);
         this.regionalSymbol = new Set(['[', '(', '<']);
         this.context = new qysParserContext_js_1.qysParserContext(content);
         this.dispatcher = new Dispatcher_js_1.Dispatcher(this.context);
@@ -31,9 +31,9 @@ class qysFileParser {
     parse() {
         while (!this.context.isEnded()) {
             let nextChar = this.context.nextChar();
-            if (this.regionalSymbol.has(nextChar)) {
-                throw "regional symbol is not supported yet";
-            }
+            /*             if (this.regionalSymbol.has(nextChar)) {
+                            throw "regional symbol is not supported yet"
+                        } */
             this.dispatch(nextChar);
         }
         this.context.finalCommit();

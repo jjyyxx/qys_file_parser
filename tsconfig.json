@@ -5,9 +5,9 @@
         "module": "commonjs",
         "sourceMap": false,
         "outDir": "./output",
-        "watch":true
+        "watch":true,
     },
     "include": [
-        "./src/*"
+        "**/*.ts",
     ]
 }

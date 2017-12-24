@@ -2,18 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const StaffUnit_js_1 = require("./StaffUnit.js");
 const tie_js_1 = require("./tie.js");
-let tonalityDict = {
-    "C": 0, "G": 7, "D": 2, "A": -3, "E": 4,
-    "B": -1, "#F": 6, "#C": 1, "F": 5, "bB": -2,
-    "bE": 3, "bA": -4, "bD": 1, "bG": 6, "bC": -1,
-    "F#": 6, "C#": 1, "Bb": -2, "Gb": 6,
-    "Eb": 3, "Ab": -4, "Db": 1, "Cb": -1
-};
+const Section_1 = require("./Section");
 class qysParserContext {
     constructor(content) {
-        this.globalSetting = {
-            tonality: 'C'
-        };
         this.result = [];
         this.sections = [];
         // tie mode
@@ -30,10 +21,38 @@ class qysParserContext {
         }
         return ret;
     }
+    fetchUntil(bound) {
+        let buffer;
+        let next;
+        while ((next = this.nextChar()) !== bound) {
+            buffer += next;
+        }
+        return buffer;
+    }
     isEnded() {
         return this.pointer === this.contentLength;
     }
+    addNewSection() {
+        this.addSection(new Section_1.Section());
+    }
+    addSection(section) {
+        this.sections.push(section);
+    }
+    addNewStaff_new(pitch) {
+        if (this.sections.length === 0) {
+            this.addNewSection();
+        }
+        this.addStaff_new(new StaffUnit_js_1.StaffUnit(pitch));
+    }
+    addStaff_new(staff) {
+        this.previousCommit();
+        this.activeSection.empty = false;
+        this.activeSection.sequence.push(staff);
+    }
     addNewStaff(pitch) {
+        if (this.sections.length === 0) {
+            this.addNewSection();
+        }
         this.addStaff(new StaffUnit_js_1.StaffUnit(pitch));
     }
     addStaff(staff) {
@@ -53,7 +72,13 @@ class qysParserContext {
         this.previousCommit();
     }
     get activeStaff() {
-        return this.result.slice(-1).pop();
+        return this.result.last();
+    }
+    get activeStaff_new() {
+        return this.activeSection.sequence.last();
+    }
+    get activeSection() {
+        return this.sections.last();
     }
 }
 exports.qysParserContext = qysParserContext;

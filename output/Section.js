@@ -5,6 +5,7 @@ class Section {
     constructor(setting = new GlobalSettings_js_1.GlobalSettings()) {
         this.sequence = [];
         this.setting = setting;
+        this.empty = true;
     }
 }
 exports.Section = Section;
