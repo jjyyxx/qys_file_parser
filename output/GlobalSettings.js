@@ -16,6 +16,13 @@ class GlobalSettings {
         this.FadeIn = FadeIn;
         this.FadeOut = FadeOut;
     }
+    extend(settingObj) {
+        let newSetting = new GlobalSettings();
+        return Object.assign(newSetting, this, settingObj);
+    }
+    update(settingObj) {
+        Object.assign(this, settingObj);
+    }
     static isLegalSetting(key) {
         return GlobalSettings.legalSettings.has(key);
     }

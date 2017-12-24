@@ -8,7 +8,7 @@ class GlobalSettings {
     };
     static legalTonality = new Set(Object.keys(GlobalSettings.tonalityDict))
     static legalSettings = new Set(["Key", "Bar", "Beat", "Speed", "Volume", "Instr", "Stac", "Port", "Appo", "Dur", "Oct", "FadeIn", "FadeOut"])
-    static SortedTonality = Object.keys(GlobalSettings.tonalityDict).sort((a,b)=>{
+    static SortedTonality = Object.keys(GlobalSettings.tonalityDict).sort((a, b) => {
         return a.length > b.length ? -1 : 1
     })
     Key: number
@@ -55,11 +55,20 @@ class GlobalSettings {
         this.FadeOut = FadeOut
     }
 
-    static isLegalSetting (key: string){
+    extend(settingObj): GlobalSettings {
+        let newSetting = new GlobalSettings()
+        return Object.assign(newSetting, this, settingObj)
+    }
+
+    update(settingObj){
+        Object.assign(this, settingObj)
+    }
+
+    static isLegalSetting(key: string) {
         return GlobalSettings.legalSettings.has(key)
     }
 
-    static isLegalTonality (key: string){
+    static isLegalTonality(key: string) {
         return GlobalSettings.legalTonality.has(key)
     }
 }

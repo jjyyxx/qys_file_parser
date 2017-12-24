@@ -103,17 +103,21 @@ class Dispatcher {
                 }
             }
         }
-        if (this.context.activeSection && this.context.activeSection.sequence.length === 0) {
-            this.context.activeSection.setting;
-        }
-        else {
-            this.context.addNewSection();
-        }
         let finalObj;
         finalSetting.forEach(KVPair => {
             finalObj[KVPair.key] = KVPair.value;
         });
-        Object.assign(this.context.activeSection.setting, finalObj);
+        if (this.context.activeSection) {
+            if (this.context.activeSection.sequence.length === 0) {
+                this.context.activeSection.setting.update(finalObj);
+            }
+            else {
+                this.context.addNewSection(this.context.activeSection.setting.extend(finalObj));
+            }
+        }
+        else {
+            this.context.addNewSection(new GlobalSettings_1.GlobalSettings(finalObj));
+        }
     }
 }
 exports.Dispatcher = Dispatcher;

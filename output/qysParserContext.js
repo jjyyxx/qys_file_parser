@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const StaffUnit_js_1 = require("./StaffUnit.js");
 const tie_js_1 = require("./tie.js");
 const Section_1 = require("./Section");
+const GlobalSettings_1 = require("./GlobalSettings");
 class qysParserContext {
     constructor(content) {
         this.result = [];
@@ -32,8 +33,8 @@ class qysParserContext {
     isEnded() {
         return this.pointer === this.contentLength;
     }
-    addNewSection() {
-        this.addSection(new Section_1.Section());
+    addNewSection(setting = new GlobalSettings_1.GlobalSettings()) {
+        this.addSection(new Section_1.Section(setting));
     }
     addSection(section) {
         this.sections.push(section);

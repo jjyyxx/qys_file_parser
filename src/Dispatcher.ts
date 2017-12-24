@@ -86,18 +86,18 @@ class Dispatcher {
                         for (const legalKey of GlobalSettings.SortedTonality) {
                             if (possibleKey.startsWith(legalKey)) {
                                 slice = legalKey.length
-                                finalSetting.push({ key: 'Key', value: possibleKey.slice(0,slice) })
+                                finalSetting.push({ key: 'Key', value: possibleKey.slice(0, slice) })
                                 break
                             }
                         }
                         if (slice === -1) {
                             throw "illegal tonality"
                         } else {
-                            let possibleOct = possibleKey.slice(0,slice).calcOct()
-                            if (Number.isNaN(possibleOct)){
+                            let possibleOct = possibleKey.slice(0, slice).calcOct()
+                            if (Number.isNaN(possibleOct)) {
                                 throw "illegal tonality"
                             } else {
-                                finalSetting.push({ key: 'Oct', value: possibleOct})
+                                finalSetting.push({ key: 'Oct', value: possibleOct })
                             }
                         }
                     } else {
@@ -111,21 +111,24 @@ class Dispatcher {
                 }
             }
         }
-        if (this.context.activeSection && this.context.activeSection.sequence.length === 0) {
-            this.context.activeSection.setting
-        } else {
-            this.context.addNewSection()
-        }
         let finalObj
-        finalSetting.forEach(KVPair=>{
+        finalSetting.forEach(KVPair => {
             finalObj[KVPair.key] = KVPair.value
         })
-        Object.assign(this.context.activeSection.setting, finalObj)
+        if (this.context.activeSection) {
+            if (this.context.activeSection.sequence.length === 0) {
+                this.context.activeSection.setting.update(finalObj)
+            } else {
+                this.context.addNewSection(this.context.activeSection.setting.extend(finalObj))
+            }
+        } else {
+            this.context.addNewSection(new GlobalSettings(finalObj))
+        }
     }
 }
 
 import { qysParserContext } from "./qysParserContext.js";
 import { StaffUnit } from "./StaffUnit.js";
-import { posix } from "path";
 import { GlobalSettings } from "./GlobalSettings";
+import { Section } from "./Section";
 export { Dispatcher }

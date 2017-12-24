@@ -1,6 +1,7 @@
 import { StaffUnit } from './StaffUnit.js'
 import { Tie } from './tie.js'
 import { Section } from './Section';
+import { GlobalSettings } from './GlobalSettings';
 export { qysParserContext }
 
 class qysParserContext {
@@ -39,8 +40,8 @@ class qysParserContext {
     // tie: boolean = false
     ties: Array<Tie> = []
 
-    addNewSection(){
-        this.addSection(new Section())
+    addNewSection(setting: GlobalSettings = new GlobalSettings()){
+        this.addSection(new Section(setting))
     }
 
     addSection(section : Section){
