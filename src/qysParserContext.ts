@@ -1,4 +1,6 @@
-import { staffUnit } from './staffUnit.js'
+import { StaffUnit } from './StaffUnit.js'
+import { Tie } from './tie.js'
+import { Section } from './Section';
 export { qysParserContext }
 
 let tonalityDict = {
@@ -14,35 +16,61 @@ class qysParserContext {
         tonality: 'C'
     }
 
-    result: Array<staffUnit> = []
+    readonly content: String
+    readonly contentLength: number
+    private pointer: number
 
-    tie: boolean = false
-
-    constructor() {
-
+    constructor(content: String) {
+        this.content = content
+        this.contentLength = this.content.length
+        this.pointer = 0
     }
+
+    nextChar(incPointer = true) : string{
+        let ret = this.content.charAt(this.pointer)
+        if (incPointer){
+            this.pointer += 1
+        }
+        return ret
+    }
+
+    isEnded(): boolean {
+        return this.pointer === this.contentLength
+    }
+
+    result: Array<StaffUnit> = []
+
+    sections: Array<Section> = []
+
+    // tie mode
+    // tie: boolean = false
+    ties: Array<Tie> = []
 
     addNewStaff(pitch: number) {
-        this.addStaff(new staffUnit(pitch))
+        this.addStaff(new StaffUnit(pitch))
     }
 
-    addStaff(staff: staffUnit){
-        if (this.tie) {
-            let tempStaff = this.result.pop()
-            this.activeStaff.merge(tempStaff)
-            this.tie = false
-        }
+    addStaff(staff: StaffUnit) {
         this.previousCommit()
         this.result.push(staff)
     }
 
-    previousCommit () {
+    addTie() {
+        let length = this.result.length
+        this.ties.push(new Tie(length, length + 1))
+    }
+
+    previousCommit() {
         if (this.result.length !== 0) {
             this.activeStaff.commit()
         }
     }
 
-    public get activeStaff(): staffUnit {
+    finalCommit() {
+        this.previousCommit()
+    }
+
+    public get activeStaff(): StaffUnit {
         return this.result.slice(-1).pop()
     }
 }

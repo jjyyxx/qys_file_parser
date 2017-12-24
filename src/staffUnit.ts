@@ -1,8 +1,8 @@
-export { staffUnit }
+export { StaffUnit }
 
 let pitchDict = { "1": 0, "2": 2, "3": 4, "4": 5, "5": 7, "6": 9, "7": 11 };
 
-class staffUnit {
+class StaffUnit {
     readonly oriPitch: number
     pitch: number
     
@@ -32,7 +32,7 @@ class staffUnit {
         this.dotCount = 0
     }
 
-    merge (staff: staffUnit){
+    merge (staff: StaffUnit){
         this.commit()
         staff.commit()
         this._beatCount += staff.beatCount

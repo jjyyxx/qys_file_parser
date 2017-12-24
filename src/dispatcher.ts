@@ -1,4 +1,4 @@
-class dispatcher {
+class Dispatcher {
     context : qysParserContext
     constructor (context) {
         this.context = context
@@ -25,7 +25,9 @@ class dispatcher {
     }
 
     '%' () {
-        this.context.addStaff(this.context.activeStaff)
+        let tempStaff : StaffUnit = new StaffUnit(0);
+        Object.assign(tempStaff, this.context.activeStaff)
+        this.context.addStaff(tempStaff)
     }
 
     '-' () {
@@ -45,9 +47,11 @@ class dispatcher {
     }
 
     '^' () {
-        this.context.tie = true
+        this.context.addTie()
+        // TODO: deal with illegal input
     }
 }
 
 import { qysParserContext } from "./qysParserContext.js";
-export {dispatcher}
+import { StaffUnit } from "./StaffUnit.js";
+export { Dispatcher }

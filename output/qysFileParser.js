@@ -1,14 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const qysParserContext_js_1 = require("./qysParserContext.js");
-const dispatcher_js_1 = require("./dispatcher.js");
+const Dispatcher_js_1 = require("./Dispatcher.js");
 class qysFileParser {
     constructor(content) {
-        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_']);
-        this._rawContent = content;
-        this.length = this._rawContent.length;
-        this.context = new qysParserContext_js_1.qysParserContext();
-        this.dispatcher = new dispatcher_js_1.dispatcher(this.context);
+        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^']);
+        this.regionalSymbol = new Set(['[', '(', '<']);
+        this.context = new qysParserContext_js_1.qysParserContext(content);
+        this.dispatcher = new Dispatcher_js_1.Dispatcher(this.context);
     }
     dispatch(char /* , context : qysParserContext */) {
         if (char.length !== 1) {
@@ -16,7 +15,7 @@ class qysFileParser {
         }
         else {
             let pitch = parseInt(char);
-            if (pitch) {
+            if (!isNaN(pitch)) {
                 this.dispatcher.pitch(pitch);
             }
             else {
@@ -29,19 +28,16 @@ class qysFileParser {
             }
         }
     }
-    get rawContent() {
-        return this._rawContent;
-    }
-    set rawContent(content) {
-    }
     parse() {
-        for (let i = 0; i < this.length; i++) {
-            this.dispatch(this.getChar(i) /* , this.context */);
+        while (!this.context.isEnded()) {
+            let nextChar = this.context.nextChar();
+            if (this.regionalSymbol.has(nextChar)) {
+                throw "regional symbol is not supported yet";
+            }
+            this.dispatch(nextChar);
         }
+        this.context.finalCommit();
         return this.context;
-    }
-    getChar(index) {
-        return this._rawContent.charAt(index);
     }
 }
 exports.qysFileParser = qysFileParser;

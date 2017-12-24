@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class dispatcher {
+class Dispatcher {
     constructor(context) {
         this.context = context;
     }
@@ -20,7 +20,9 @@ class dispatcher {
         this.context.activeStaff.pitch -= 12;
     }
     '%'() {
-        this.context.addStaff(this.context.activeStaff);
+        let tempStaff = new StaffUnit_js_1.StaffUnit(0);
+        Object.assign(tempStaff, this.context.activeStaff);
+        this.context.addStaff(tempStaff);
     }
     '-'() {
         this.context.activeStaff.beatCount += 1;
@@ -34,7 +36,9 @@ class dispatcher {
     '|'() {
     }
     '^'() {
-        this.context.tie = true;
+        this.context.addTie();
+        // TODO: deal with illegal input
     }
 }
-exports.dispatcher = dispatcher;
+exports.Dispatcher = Dispatcher;
+const StaffUnit_js_1 = require("./StaffUnit.js");

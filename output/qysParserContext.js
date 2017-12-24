@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const staffUnit_js_1 = require("./staffUnit.js");
+const StaffUnit_js_1 = require("./StaffUnit.js");
+const tie_js_1 = require("./tie.js");
 let tonalityDict = {
     "C": 0, "G": 7, "D": 2, "A": -3, "E": 4,
     "B": -1, "#F": 6, "#C": 1, "F": 5, "bB": -2,
@@ -9,29 +10,47 @@ let tonalityDict = {
     "Eb": 3, "Ab": -4, "Db": 1, "Cb": -1
 };
 class qysParserContext {
-    constructor() {
+    constructor(content) {
         this.globalSetting = {
             tonality: 'C'
         };
         this.result = [];
-        this.tie = false;
+        this.sections = [];
+        // tie mode
+        // tie: boolean = false
+        this.ties = [];
+        this.content = content;
+        this.contentLength = this.content.length;
+        this.pointer = 0;
+    }
+    nextChar(incPointer = true) {
+        let ret = this.content.charAt(this.pointer);
+        if (incPointer) {
+            this.pointer += 1;
+        }
+        return ret;
+    }
+    isEnded() {
+        return this.pointer === this.contentLength;
     }
     addNewStaff(pitch) {
-        this.addStaff(new staffUnit_js_1.staffUnit(pitch));
+        this.addStaff(new StaffUnit_js_1.StaffUnit(pitch));
     }
     addStaff(staff) {
-        if (this.tie) {
-            let tempStaff = this.result.pop();
-            this.activeStaff.merge(tempStaff);
-            this.tie = false;
-        }
         this.previousCommit();
         this.result.push(staff);
+    }
+    addTie() {
+        let length = this.result.length;
+        this.ties.push(new tie_js_1.Tie(length, length + 1));
     }
     previousCommit() {
         if (this.result.length !== 0) {
             this.activeStaff.commit();
         }
+    }
+    finalCommit() {
+        this.previousCommit();
     }
     get activeStaff() {
         return this.result.slice(-1).pop();

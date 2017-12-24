@@ -4,3 +4,4 @@ ref
 .vscode
 node_modules
 .idea
+__tests__/o.json

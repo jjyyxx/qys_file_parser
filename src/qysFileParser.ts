@@ -1,23 +1,20 @@
-import {staffUnit} from './staffUnit.js'
 import { qysParserContext } from "./qysParserContext.js";
-import { dispatcher } from "./dispatcher.js";
+import { Dispatcher } from "./Dispatcher.js";
 
 export {qysFileParser}
 
 class qysFileParser {
-    private _rawContent: string;
-    private length: number;
     private context : qysParserContext
     
-    readonly legalSymbols : Set <String> = new Set(['b','#',',',"'",'%','|','.','-','_'])
+    readonly legalSymbols : Set <String> = new Set(['b','#',',',"'",'%','|','.','-','_','^'])
 
-    private dispatcher : dispatcher
+    readonly regionalSymbol : Set <String> = new Set(['[','(','<'])
+
+    private dispatcher : Dispatcher
 
     constructor(content) {
-        this._rawContent = content
-        this.length = this._rawContent.length
-        this.context = new qysParserContext()
-        this.dispatcher = new dispatcher(this.context)
+        this.context = new qysParserContext(content)
+        this.dispatcher = new Dispatcher(this.context)
     }
 
     private dispatch(char : string/* , context : qysParserContext */) {
@@ -25,7 +22,7 @@ class qysFileParser {
             throw "length incompatible";
         } else {
             let pitch = parseInt(char)
-            if (pitch) {
+            if (!isNaN(pitch)) {
                 this.dispatcher.pitch(pitch)
             } else {
                 if (this.legalSymbols.has(char)) {
@@ -37,21 +34,15 @@ class qysFileParser {
         }
     }
 
-    get rawContent(): string {
-        return this._rawContent;
-    }
-
-    set rawContent(content: string) {
-    }
-
     parse(){
-        for (let i=0;i < this.length;i++) {
-            this.dispatch(this.getChar(i)/* , this.context */)
+        while (!this.context.isEnded()){
+            let nextChar = this.context.nextChar()
+            if (this.regionalSymbol.has(nextChar)) {
+                throw "regional symbol is not supported yet"
+            }
+            this.dispatch(nextChar)
         }
+        this.context.finalCommit()
         return this.context
-    }
-
-    getChar(index : number){
-        return this._rawContent.charAt(index)
     }
 }
