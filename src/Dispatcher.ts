@@ -5,7 +5,7 @@ class Dispatcher {
     }
 
     pitch(pitch: number) {
-        this.context.addNewStaff(pitch)
+        this.context.addNewStaff_new(pitch)
     }
 
     '#'() {
@@ -27,7 +27,7 @@ class Dispatcher {
     '%'() {
         let tempStaff: StaffUnit = new StaffUnit(0);
         Object.assign(tempStaff, this.context.activeStaff)
-        this.context.addStaff(tempStaff)
+        this.context.addStaff_new(tempStaff)
     }
 
     '-'() {
@@ -47,7 +47,7 @@ class Dispatcher {
     }
 
     '^'() {
-        this.context.addTie()
+        this.context.addTie_new()
         // TODO: deal with illegal input
     }
 
@@ -111,10 +111,7 @@ class Dispatcher {
                 }
             }
         }
-        let finalObj
-        finalSetting.forEach(KVPair => {
-            finalObj[KVPair.key] = KVPair.value
-        })
+        let finalObj = Object.reverseFrom(finalSetting)
         if (this.context.activeSection) {
             if (this.context.activeSection.sequence.length === 0) {
                 this.context.activeSection.setting.update(finalObj)

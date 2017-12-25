@@ -78,9 +78,15 @@ class qysParserContext {
         this.ties.push(new Tie(length, length + 1))
     }
 
+    addTie_new() {
+        let sectionLength = this.sections.length
+        let seqLength = this.activeSection.sequence.length
+        this.ties.push(new Tie(seqLength, seqLength + 1, sectionLength))
+    }
+
     previousCommit() {
-        if (this.result.length !== 0) {
-            this.activeStaff.commit()
+        if (this.sections[0].sequence.length !== 0) {
+            this.activeStaff_new.commit()
         }
     }
 
@@ -93,7 +99,7 @@ class qysParserContext {
     }
 
     get activeStaff_new(): StaffUnit {
-        return this.activeSection.sequence.last()
+        return this.activeSection.sequence.length === 0? this.sections.last(2).sequence.last(): this.activeSection.sequence.last()
     }
 
     get activeSection(): Section {

@@ -64,9 +64,14 @@ class qysParserContext {
         let length = this.result.length;
         this.ties.push(new tie_js_1.Tie(length, length + 1));
     }
+    addTie_new() {
+        let sectionLength = this.sections.length;
+        let seqLength = this.activeSection.sequence.length;
+        this.ties.push(new tie_js_1.Tie(seqLength, seqLength + 1, sectionLength));
+    }
     previousCommit() {
-        if (this.result.length !== 0) {
-            this.activeStaff.commit();
+        if (this.sections[0].sequence.length !== 0) {
+            this.activeStaff_new.commit();
         }
     }
     finalCommit() {
@@ -76,7 +81,7 @@ class qysParserContext {
         return this.result.last();
     }
     get activeStaff_new() {
-        return this.activeSection.sequence.last();
+        return this.activeSection.sequence.length === 0 ? this.sections.last(2).sequence.last() : this.activeSection.sequence.last();
     }
     get activeSection() {
         return this.sections.last();

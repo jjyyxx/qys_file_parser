@@ -1,9 +1,9 @@
 interface Array<T> {
-    last(): T
+    last(index?: number): T
 }
 
-Array.prototype.last = function () {
-    return this.slice(-1).pop()
+Array.prototype.last = function (index = 1) {
+    return this[this.length - index]
 }
 
 interface String {
@@ -30,4 +30,16 @@ String.prototype.calcOct = function () {
     } else {
         return NaN
     }
+}
+
+interface ObjectConstructor {
+    reverseFrom(KVArray: Array<{ key: string, value: any }>): object
+}
+
+Object.reverseFrom = function (KVArray: Array<{ key: string, value: any }>): object {
+    let obj: object
+    KVArray.forEach(KVPair => {
+        obj[KVPair.key] = KVPair.value
+    })
+    return obj
 }

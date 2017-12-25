@@ -1,5 +1,5 @@
-Array.prototype.last = function () {
-    return this.slice(-1).pop();
+Array.prototype.last = function (index = 1) {
+    return this[this.length - index];
 };
 String.prototype.calcOct = function () {
     let legal = true;
@@ -24,4 +24,11 @@ String.prototype.calcOct = function () {
     else {
         return NaN;
     }
+};
+Object.reverseFrom = function (KVArray) {
+    let obj;
+    KVArray.forEach(KVPair => {
+        obj[KVPair.key] = KVPair.value;
+    });
+    return obj;
 };
