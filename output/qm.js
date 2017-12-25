@@ -13,3 +13,4 @@ function parseFile(content) {
     let parser = new qysFileParser_js_1.qysFileParser(content);
     parser.parse();
 }
+//# sourceMappingURL=qm.js.map

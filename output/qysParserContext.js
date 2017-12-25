@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const StaffUnit_js_1 = require("./StaffUnit.js");
-const tie_js_1 = require("./tie.js");
+const StaffUnit_1 = require("./StaffUnit");
+const Tie_1 = require("./Tie");
 const Section_1 = require("./Section");
 const GlobalSettings_1 = require("./GlobalSettings");
 class qysParserContext {
@@ -23,7 +23,7 @@ class qysParserContext {
         return ret;
     }
     fetchUntil(bound) {
-        let buffer;
+        let buffer = '';
         let next;
         while ((next = this.nextChar()) !== bound) {
             buffer += next;
@@ -43,7 +43,7 @@ class qysParserContext {
         if (this.sections.length === 0) {
             this.addNewSection();
         }
-        this.addStaff(new StaffUnit_js_1.StaffUnit(pitch));
+        this.addStaff(new StaffUnit_1.StaffUnit(pitch));
     }
     addStaff(staff) {
         this.previousCommit();
@@ -53,7 +53,7 @@ class qysParserContext {
     addTie() {
         let sectionLength = this.sections.length;
         let seqLength = this.activeSection.sequence.length;
-        this.ties.push(new tie_js_1.Tie(seqLength, seqLength + 1, sectionLength));
+        this.ties.push(new Tie_1.Tie(seqLength, seqLength + 1, sectionLength));
     }
     previousCommit() {
         if (this.sections[0].sequence.length !== 0) {
@@ -71,3 +71,4 @@ class qysParserContext {
     }
 }
 exports.qysParserContext = qysParserContext;
+//# sourceMappingURL=qysParserContext.js.map

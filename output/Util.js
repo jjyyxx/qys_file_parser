@@ -26,9 +26,10 @@ String.prototype.calcOct = function () {
     }
 };
 Object.reverseFrom = function (KVArray) {
-    let obj;
+    let obj = {};
     KVArray.forEach(KVPair => {
         obj[KVPair.key] = KVPair.value;
     });
     return obj;
 };
+//# sourceMappingURL=Util.js.map

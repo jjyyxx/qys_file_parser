@@ -43,3 +43,4 @@ GlobalSettings.SortedTonality = Object.keys(GlobalSettings.tonalityDict).sort((a
     return a.length > b.length ? -1 : 1;
 });
 exports.GlobalSettings = GlobalSettings;
+//# sourceMappingURL=GlobalSettings.js.map

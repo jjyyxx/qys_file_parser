@@ -37,7 +37,7 @@ interface ObjectConstructor {
 }
 
 Object.reverseFrom = function (KVArray: Array<{ key: string, value: any }>): object {
-    let obj: object
+    let obj: { [key: string]: any } = {}
     KVArray.forEach(KVPair => {
         obj[KVPair.key] = KVPair.value
     })

@@ -1,6 +1,6 @@
 export { StaffUnit }
 
-let pitchDict = { "1": 0, "2": 2, "3": 4, "4": 5, "5": 7, "6": 9, "7": 11 };
+let pitchDict : {[key: number]: number}= { "1": 0, "2": 2, "3": 4, "4": 5, "5": 7, "6": 9, "7": 11 };
 
 class StaffUnit {
     readonly oriPitch: number

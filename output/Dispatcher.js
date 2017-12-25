@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const StaffUnit_1 = require("./StaffUnit");
+const GlobalSettings_1 = require("./GlobalSettings");
 class Dispatcher {
     constructor(context) {
         this.context = context;
@@ -20,7 +22,7 @@ class Dispatcher {
         this.context.activeStaff.pitch -= 12;
     }
     '%'() {
-        let tempStaff = new StaffUnit_js_1.StaffUnit(0);
+        let tempStaff = new StaffUnit_1.StaffUnit(0);
         Object.assign(tempStaff, this.context.activeStaff);
         this.context.addStaff(tempStaff);
     }
@@ -118,5 +120,4 @@ class Dispatcher {
     }
 }
 exports.Dispatcher = Dispatcher;
-const StaffUnit_js_1 = require("./StaffUnit.js");
-const GlobalSettings_1 = require("./GlobalSettings");
+//# sourceMappingURL=Dispatcher.js.map

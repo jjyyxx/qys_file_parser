@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "clean": "rm ./output/*"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     ]
   },
   "devDependencies": {
+    "@types/jest": "^21.1.9",
     "jest": "^22.0.3",
     "typescript": "^2.6.2"
   }

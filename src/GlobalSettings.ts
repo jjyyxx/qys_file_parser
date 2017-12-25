@@ -55,12 +55,12 @@ class GlobalSettings {
         this.FadeOut = FadeOut
     }
 
-    extend(settingObj): GlobalSettings {
+    extend(settingObj: object): GlobalSettings {
         let newSetting = new GlobalSettings()
         return Object.assign(newSetting, this, settingObj)
     }
 
-    update(settingObj){
+    update(settingObj: object){
         Object.assign(this, settingObj)
     }
 

@@ -8,3 +8,4 @@ class Tie {
     }
 }
 exports.Tie = Tie;
+//# sourceMappingURL=Tie.js.map

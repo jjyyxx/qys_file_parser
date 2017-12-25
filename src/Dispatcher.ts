@@ -1,6 +1,13 @@
+import { qysParserContext } from "./qysParserContext";
+import { StaffUnit } from "./StaffUnit";
+import { GlobalSettings } from "./GlobalSettings";
+import { Section } from "./Section";
+export { Dispatcher }
+
 class Dispatcher {
+    [key: string]: any
     context: qysParserContext
-    constructor(context) {
+    constructor(context: qysParserContext) {
         this.context = context
     }
 
@@ -124,8 +131,3 @@ class Dispatcher {
     }
 }
 
-import { qysParserContext } from "./qysParserContext.js";
-import { StaffUnit } from "./StaffUnit.js";
-import { GlobalSettings } from "./GlobalSettings";
-import { Section } from "./Section";
-export { Dispatcher }

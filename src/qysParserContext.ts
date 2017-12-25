@@ -1,7 +1,7 @@
-import { StaffUnit } from './StaffUnit.js'
-import { Tie } from './tie.js'
-import { Section } from './Section';
-import { GlobalSettings } from './GlobalSettings';
+import { StaffUnit } from './StaffUnit'
+import { Tie } from './Tie'
+import { Section } from './Section'
+import { GlobalSettings } from './GlobalSettings'
 export { qysParserContext }
 
 class qysParserContext {
@@ -21,7 +21,7 @@ class qysParserContext {
         return ret
     }
     fetchUntil(bound: string) {
-        let buffer : string
+        let buffer : string = ''
         let next : string
         while ((next = this.nextChar()) !== bound) {
             buffer += next

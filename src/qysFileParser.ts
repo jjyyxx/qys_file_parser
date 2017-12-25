@@ -1,23 +1,23 @@
-import { qysParserContext } from "./qysParserContext.js";
-import { Dispatcher } from "./Dispatcher.js";
-
-export {qysFileParser}
+import { qysParserContext } from "./qysParserContext";
+import { Dispatcher } from "./Dispatcher";
+ 
+export { qysFileParser }
 
 class qysFileParser {
-    private context : qysParserContext
-    
-    readonly legalSymbols : Set <String> = new Set(['b','#',',',"'",'%','|','.','-','_','^','[','(','<'])
+    private context: qysParserContext
 
-    readonly regionalSymbol : Set <String> = new Set(['[','(','<'])
+    readonly legalSymbols: Set<String> = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^', '[', '(', '<'])
 
-    private dispatcher : Dispatcher
+    readonly regionalSymbol: Set<String> = new Set(['[', '(', '<'])
 
-    constructor(content) {
+    private dispatcher: Dispatcher
+
+    constructor(content: string) {
         this.context = new qysParserContext(content)
         this.dispatcher = new Dispatcher(this.context)
     }
 
-    private dispatch(char : string/* , context : qysParserContext */) {
+    private dispatch(char: string/* , context : qysParserContext */) {
         if (char.length !== 1) {
             throw "length incompatible";
         } else {
@@ -34,12 +34,12 @@ class qysFileParser {
         }
     }
 
-    parse(){
-        while (!this.context.isEnded()){
+    parse() {
+        while (!this.context.isEnded()) {
             let nextChar = this.context.nextChar()
-/*             if (this.regionalSymbol.has(nextChar)) {
-                throw "regional symbol is not supported yet"
-            } */
+            /*             if (this.regionalSymbol.has(nextChar)) {
+                            throw "regional symbol is not supported yet"
+                        } */
             this.dispatch(nextChar)
         }
         this.context.finalCommit()

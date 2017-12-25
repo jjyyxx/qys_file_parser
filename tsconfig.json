@@ -3,11 +3,12 @@
     "compilerOptions": {
         "target": "es6",
         "module": "commonjs",
-        "sourceMap": false,
+        "sourceMap": true,
+        "noImplicitAny": true,
         "outDir": "./output",
-        "watch":true,
+        "watch":true
     },
     "include": [
-        "**/*.ts",
+        "**/*.ts"
     ]
 }
