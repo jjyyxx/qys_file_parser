@@ -118,6 +118,15 @@ class Dispatcher {
             this.context.addNewSection(new GlobalSettings_1.GlobalSettings(finalObj));
         }
     }
+    '/'() {
+        let next = this.context.nextChar();
+        if (next === '/') {
+            this.context.fetchLine();
+        }
+        else {
+            throw "Unrecognizable notation. Do you mean // ?";
+        }
+    }
 }
 exports.Dispatcher = Dispatcher;
 //# sourceMappingURL=Dispatcher.js.map

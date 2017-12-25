@@ -4,7 +4,8 @@ const qysParserContext_1 = require("./qysParserContext");
 const Dispatcher_1 = require("./Dispatcher");
 class qysFileParser {
     constructor(content) {
-        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^', '[', '(', '<']);
+        // TODO: improve pattern
+        this.legalSymbols = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^', '[', '(', '<', '/']);
         this.regionalSymbol = new Set(['[', '(', '<']);
         this.context = new qysParserContext_1.qysParserContext(content);
         this.dispatcher = new Dispatcher_1.Dispatcher(this.context);

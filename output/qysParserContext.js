@@ -16,6 +16,9 @@ class qysParserContext {
         this.pointer = 0;
     }
     nextChar(incPointer = true) {
+        if (this.pointer >= this.content.length) {
+            return undefined;
+        }
         let ret = this.content.charAt(this.pointer);
         if (incPointer) {
             this.pointer += 1;
@@ -25,10 +28,13 @@ class qysParserContext {
     fetchUntil(bound) {
         let buffer = '';
         let next;
-        while ((next = this.nextChar()) !== bound) {
+        while ((((next = this.nextChar()) !== bound)) && (next !== undefined)) {
             buffer += next;
         }
         return buffer;
+    }
+    fetchLine() {
+        this.fetchUntil('\n');
     }
     isEnded() {
         return this.pointer === this.contentLength;
@@ -56,7 +62,7 @@ class qysParserContext {
         this.ties.push(new Tie_1.Tie(seqLength, seqLength + 1, sectionLength));
     }
     previousCommit() {
-        if (this.sections[0].sequence.length !== 0) {
+        if (this.sections[0] && this.sections[0].sequence.length !== 0) {
             this.activeStaff.commit();
         }
     }

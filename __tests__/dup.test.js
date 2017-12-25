@@ -30,23 +30,4 @@ describe('Test the % symbol', ()=>{
         expect(ret.sections[0].sequence[3]._beatCount).toBe(2.5)
         expect(ret.sections[0].sequence[4]._beatCount).toBe(1.25)
       })
-      
-      it('deals with ties correctly', ()=> {
-        a = require('../output/index.js')
-      
-        // simple
-        var s = new a.qysFileParser('11')
-        var ret = s.parse()
-        expect(ret.sections[0].sequence[0]).toEqual(ret.sections[0].sequence[1])
-        
-        var s = new a.qysFileParser('1^1')
-        var ret = s.parse()
-        expect(ret.ties[0].first).toBe(1)
-        expect(ret.ties[0].last).toBe(2)
-      
-        var s = new a.qysFileParser('1-^1,.^1')
-        var ret = s.parse()
-        expect(ret.ties[1].first).toBe(2)
-        expect(ret.ties[1].last).toBe(3)
-      })
 })

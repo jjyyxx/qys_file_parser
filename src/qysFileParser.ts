@@ -6,7 +6,8 @@ export { qysFileParser }
 class qysFileParser {
     private context: qysParserContext
 
-    readonly legalSymbols: Set<String> = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^', '[', '(', '<'])
+    // TODO: improve pattern
+    readonly legalSymbols: Set<String> = new Set(['b', '#', ',', "'", '%', '|', '.', '-', '_', '^', '[', '(', '<','/'])
 
     readonly regionalSymbol: Set<String> = new Set(['[', '(', '<'])
 

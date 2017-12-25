@@ -14,19 +14,25 @@ class qysParserContext {
         this.pointer = 0
     }
     nextChar(incPointer = true): string {
+        if (this.pointer >= this.content.length){
+            return undefined
+        }
         let ret = this.content.charAt(this.pointer)
         if (incPointer) {
             this.pointer += 1
         }
         return ret
     }
-    fetchUntil(bound: string) {
+    fetchUntil(bound: string) {       // TODO: improve performance
         let buffer : string = ''
         let next : string
-        while ((next = this.nextChar()) !== bound) {
+        while ((((next = this.nextChar()) !== bound)) && (next !== undefined)) {
             buffer += next
         }
         return buffer
+    }
+    fetchLine() {
+        this.fetchUntil('\n')
     }
     isEnded(): boolean {
         return this.pointer === this.contentLength
@@ -68,7 +74,7 @@ class qysParserContext {
     }
 
     previousCommit() {
-        if (this.sections[0].sequence.length !== 0) {
+        if (this.sections[0] && this.sections[0].sequence.length !== 0) {
             this.activeStaff.commit()
         }
     }
