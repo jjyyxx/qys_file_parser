@@ -48,19 +48,6 @@ class qysParserContext {
         this.sections.push(section)
     }
 
-    addNewStaff_new(pitch: number) {
-        if (this.sections.length === 0) {
-            this.addNewSection()
-        }
-        this.addStaff_new(new StaffUnit(pitch))
-    }
-
-    addStaff_new(staff: StaffUnit) {
-        this.previousCommit()
-        this.activeSection.empty = false
-        this.activeSection.sequence.push(staff)
-    }
-
     addNewStaff(pitch: number) {
         if (this.sections.length === 0) {
             this.addNewSection()
@@ -70,15 +57,11 @@ class qysParserContext {
 
     addStaff(staff: StaffUnit) {
         this.previousCommit()
-        this.result.push(staff)
+        this.activeSection.empty = false
+        this.activeSection.sequence.push(staff)
     }
 
     addTie() {
-        let length = this.result.length
-        this.ties.push(new Tie(length, length + 1))
-    }
-
-    addTie_new() {
         let sectionLength = this.sections.length
         let seqLength = this.activeSection.sequence.length
         this.ties.push(new Tie(seqLength, seqLength + 1, sectionLength))
@@ -86,7 +69,7 @@ class qysParserContext {
 
     previousCommit() {
         if (this.sections[0].sequence.length !== 0) {
-            this.activeStaff_new.commit()
+            this.activeStaff.commit()
         }
     }
 
@@ -95,10 +78,6 @@ class qysParserContext {
     }
 
     get activeStaff(): StaffUnit {
-        return this.result.last()
-    }
-
-    get activeStaff_new(): StaffUnit {
         return this.activeSection.sequence.length === 0? this.sections.last(2).sequence.last(): this.activeSection.sequence.last()
     }
 

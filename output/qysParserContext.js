@@ -39,17 +39,6 @@ class qysParserContext {
     addSection(section) {
         this.sections.push(section);
     }
-    addNewStaff_new(pitch) {
-        if (this.sections.length === 0) {
-            this.addNewSection();
-        }
-        this.addStaff_new(new StaffUnit_js_1.StaffUnit(pitch));
-    }
-    addStaff_new(staff) {
-        this.previousCommit();
-        this.activeSection.empty = false;
-        this.activeSection.sequence.push(staff);
-    }
     addNewStaff(pitch) {
         if (this.sections.length === 0) {
             this.addNewSection();
@@ -58,29 +47,23 @@ class qysParserContext {
     }
     addStaff(staff) {
         this.previousCommit();
-        this.result.push(staff);
+        this.activeSection.empty = false;
+        this.activeSection.sequence.push(staff);
     }
     addTie() {
-        let length = this.result.length;
-        this.ties.push(new tie_js_1.Tie(length, length + 1));
-    }
-    addTie_new() {
         let sectionLength = this.sections.length;
         let seqLength = this.activeSection.sequence.length;
         this.ties.push(new tie_js_1.Tie(seqLength, seqLength + 1, sectionLength));
     }
     previousCommit() {
         if (this.sections[0].sequence.length !== 0) {
-            this.activeStaff_new.commit();
+            this.activeStaff.commit();
         }
     }
     finalCommit() {
         this.previousCommit();
     }
     get activeStaff() {
-        return this.result.last();
-    }
-    get activeStaff_new() {
         return this.activeSection.sequence.length === 0 ? this.sections.last(2).sequence.last() : this.activeSection.sequence.last();
     }
     get activeSection() {

@@ -5,7 +5,7 @@ class Dispatcher {
         this.context = context;
     }
     pitch(pitch) {
-        this.context.addNewStaff_new(pitch);
+        this.context.addNewStaff(pitch);
     }
     '#'() {
         this.context.activeStaff.pitch += 1;
@@ -22,7 +22,7 @@ class Dispatcher {
     '%'() {
         let tempStaff = new StaffUnit_js_1.StaffUnit(0);
         Object.assign(tempStaff, this.context.activeStaff);
-        this.context.addStaff_new(tempStaff);
+        this.context.addStaff(tempStaff);
     }
     '-'() {
         this.context.activeStaff.beatCount += 1;
@@ -37,7 +37,7 @@ class Dispatcher {
         // measure bound
     }
     '^'() {
-        this.context.addTie_new();
+        this.context.addTie();
         // TODO: deal with illegal input
     }
     '['() {

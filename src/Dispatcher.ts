@@ -5,7 +5,7 @@ class Dispatcher {
     }
 
     pitch(pitch: number) {
-        this.context.addNewStaff_new(pitch)
+        this.context.addNewStaff(pitch)
     }
 
     '#'() {
@@ -27,7 +27,7 @@ class Dispatcher {
     '%'() {
         let tempStaff: StaffUnit = new StaffUnit(0);
         Object.assign(tempStaff, this.context.activeStaff)
-        this.context.addStaff_new(tempStaff)
+        this.context.addStaff(tempStaff)
     }
 
     '-'() {
@@ -47,7 +47,7 @@ class Dispatcher {
     }
 
     '^'() {
-        this.context.addTie_new()
+        this.context.addTie()
         // TODO: deal with illegal input
     }
 
