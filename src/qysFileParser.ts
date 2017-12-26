@@ -22,7 +22,7 @@ class qysFileParser {
         if (char.length !== 1) {
             throw "length incompatible";
         } else {
-            let pitch = parseInt(char)
+            let pitch = Number(char)
             if (!isNaN(pitch)) {
                 this.dispatcher.pitch(pitch)
             } else {

@@ -25,6 +25,29 @@ String.prototype.calcOct = function () {
         return NaN;
     }
 };
+String.prototype.toFraction = function () {
+    let possibleFraction = this.split("/");
+    if (possibleFraction.length === 2) {
+        let processedNum = possibleFraction.map(possibleNum => Number(possibleNum)).filter(possibleNum => possibleNum);
+        if (processedNum.length === 2) {
+            return { Numerator: processedNum[0], Denominator: processedNum[1] };
+        }
+    }
+    return undefined;
+};
+String.prototype.toNumIfPossible = function () {
+    let possibleNum = Number(this);
+    if (Number.isNaN(possibleNum)) {
+        let possibleFraction = this.toFraction();
+        if (possibleFraction) {
+            return possibleFraction.Numerator / possibleFraction.Denominator;
+        }
+        return this.valueOf();
+    }
+    else {
+        return possibleNum;
+    }
+};
 Object.reverseFrom = function (KVArray) {
     let obj = {};
     KVArray.forEach(KVPair => {

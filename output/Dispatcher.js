@@ -49,59 +49,50 @@ class Dispatcher {
     '<'() {
         let variable = this.context.fetchUntil('>');
         let finalSetting = [];
-        let possibleSpeed = parseInt(variable);
-        if (possibleSpeed) {
-            finalSetting.push({ key: 'Speed', value: possibleSpeed });
-        }
-        else {
-            let possibleVolume = parseFloat(variable);
-            if (possibleVolume) {
-                finalSetting.push({ key: 'Volume', value: possibleVolume });
+        let possibleNum = Number(variable);
+        if (possibleNum) {
+            if (variable.includes('.')) {
+                finalSetting.push({ key: 'Volume', value: possibleNum }); // volume
             }
             else {
-                let possibleBeatTuple = variable.split("/");
-                if (possibleBeatTuple.length === 2) {
-                    let processedNum = possibleBeatTuple.map(possibleNum => parseInt(possibleNum)).filter(possibleNum => possibleNum);
-                    if (processedNum.length === 2) {
-                        finalSetting.push({ key: 'Bar', value: processedNum[0] }, { key: 'Beat', value: processedNum[1] });
-                    }
-                    else {
-                        throw "illegal variable";
+                finalSetting.push({ key: 'Speed', value: possibleNum }); // parse speed
+            }
+        }
+        else {
+            let possibleBeatTuple = variable.toFraction();
+            if (possibleBeatTuple) {
+                finalSetting.push({ key: 'Bar', value: possibleBeatTuple.Numerator }, { key: 'Beat', value: possibleBeatTuple.Denominator });
+            }
+            else if (variable.startsWith('1=')) {
+                let possibleKey = variable.slice(2);
+                let slice = -1;
+                for (const legalKey of GlobalSettings_1.GlobalSettings.SortedTonality) {
+                    if (possibleKey.startsWith(legalKey)) {
+                        slice = legalKey.length;
+                        finalSetting.push({ key: 'Key', value: GlobalSettings_1.GlobalSettings.tonalityDict[possibleKey.slice(0, slice)] });
+                        break;
                     }
                 }
-                else {
-                    if (variable.startsWith('1=')) {
-                        let possibleKey = variable.slice(2);
-                        let slice = -1;
-                        for (const legalKey of GlobalSettings_1.GlobalSettings.SortedTonality) {
-                            if (possibleKey.startsWith(legalKey)) {
-                                slice = legalKey.length;
-                                finalSetting.push({ key: 'Key', value: possibleKey.slice(0, slice) });
-                                break;
-                            }
-                        }
-                        if (slice === -1) {
-                            throw "illegal tonality";
-                        }
-                        else {
-                            let possibleOct = possibleKey.slice(0, slice).calcOct();
-                            if (Number.isNaN(possibleOct)) {
-                                throw "illegal tonality";
-                            }
-                            else {
-                                finalSetting.push({ key: 'Oct', value: possibleOct });
-                            }
-                        }
+                if (slice === -1) {
+                    throw "illegal tonality";
+                }
+                else if (slice !== possibleKey.length) {
+                    let possibleOct = possibleKey.slice(slice).calcOct();
+                    if (Number.isNaN(possibleOct)) {
+                        throw "illegal tonality";
                     }
                     else {
-                        let possibleKVPair = variable.split(':').map(item => item.trim());
-                        if (possibleKVPair.length === 2 && GlobalSettings_1.GlobalSettings.isLegalSetting(possibleKVPair[0])) {
-                            finalSetting.push({ key: possibleKVPair[0], value: possibleKVPair[1] });
-                        }
-                        else {
-                            throw "illegal variable";
-                        }
+                        finalSetting.push({ key: 'Oct', value: possibleOct });
                     }
+                }
+            }
+            else {
+                let possibleKVPair = variable.split(':').map(item => item.trim());
+                if (possibleKVPair.length === 2 && GlobalSettings_1.GlobalSettings.isLegalSetting(possibleKVPair[0])) {
+                    finalSetting.push({ key: possibleKVPair[0], value: possibleKVPair[1].toNumIfPossible() });
+                }
+                else {
+                    throw "illegal variable";
                 }
             }
         }

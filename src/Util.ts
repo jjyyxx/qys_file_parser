@@ -6,8 +6,15 @@ Array.prototype.last = function (index = 1) {
     return this[this.length - index]
 }
 
+interface Fraction {
+    Numerator: number
+    Denominator: number
+}
+
 interface String {
     calcOct(): number
+    toNumIfPossible(): (number | string)
+    toFraction(): Fraction
 }
 
 String.prototype.calcOct = function () {
@@ -31,6 +38,32 @@ String.prototype.calcOct = function () {
         return NaN
     }
 }
+
+String.prototype.toFraction = function () {
+    let possibleFraction: Array<String> = this.split("/")
+    if (possibleFraction.length === 2) {
+        let processedNum = possibleFraction.map(possibleNum => Number(possibleNum)).filter(possibleNum => possibleNum)
+        if (processedNum.length === 2) {
+            return { Numerator: processedNum[0], Denominator: processedNum[1] }
+        }
+    }
+    return undefined
+}
+
+String.prototype.toNumIfPossible = function () {
+    let possibleNum = Number(this)
+    if (Number.isNaN(possibleNum)) {
+        let possibleFraction: Fraction = this.toFraction()
+        if (possibleFraction) {
+            return possibleFraction.Numerator / possibleFraction.Denominator
+        }
+        return this.valueOf()
+    } else {
+        return possibleNum
+    }
+}
+
+
 
 interface ObjectConstructor {
     reverseFrom(KVArray: Array<{ key: string, value: any }>): object

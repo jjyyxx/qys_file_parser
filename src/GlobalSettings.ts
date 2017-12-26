@@ -1,5 +1,5 @@
 class GlobalSettings {
-    static tonalityDict = {
+    static tonalityDict: { [key: string]: number } = {
         "C": 0, "G": 7, "D": 2, "A": -3, "E": 4,
         "B": -1, "#F": 6, "#C": 1, "F": 5, "bB": -2,
         "bE": 3, "bA": -4, "bD": 1, "bG": 6, "bC": -1,
@@ -8,7 +8,7 @@ class GlobalSettings {
     };
     static legalTonality = new Set(Object.keys(GlobalSettings.tonalityDict))
     static legalSettings = new Set(["Key", "Bar", "Beat", "Speed", "Volume", "Instr", "Stac", "Port", "Appo", "Dur", "Oct", "FadeIn", "FadeOut"])
-    static SortedTonality = Object.keys(GlobalSettings.tonalityDict).sort((a, b) => {
+    static SortedTonality : Array<string> = Object.keys(GlobalSettings.tonalityDict).sort((a, b) => {
         return a.length > b.length ? -1 : 1
     })
     Key: number
@@ -60,7 +60,7 @@ class GlobalSettings {
         return Object.assign(newSetting, this, settingObj)
     }
 
-    update(settingObj: object){
+    update(settingObj: object) {
         Object.assign(this, settingObj)
     }
 
