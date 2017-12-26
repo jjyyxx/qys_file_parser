@@ -5,8 +5,8 @@ String.prototype.calcOct = function () {
     let legal = true;
     let result = 0;
     for (let i = 0, len = this.length; i < len && legal; i++) {
-        let element = this.charAt(i);
-        if (element === ',') {
+        const element = this.charAt(i);
+        if (element === ",") {
             result -= 1;
         }
         else {
@@ -26,9 +26,11 @@ String.prototype.calcOct = function () {
     }
 };
 String.prototype.toFraction = function () {
-    let possibleFraction = this.split("/");
+    const possibleFraction = this.split("/");
     if (possibleFraction.length === 2) {
-        let processedNum = possibleFraction.map(possibleNum => Number(possibleNum)).filter(possibleNum => possibleNum);
+        const processedNum = possibleFraction
+            .map((possibleNum) => Number(possibleNum))
+            .filter((possibleNum) => possibleNum);
         if (processedNum.length === 2) {
             return { Numerator: processedNum[0], Denominator: processedNum[1] };
         }
@@ -36,9 +38,9 @@ String.prototype.toFraction = function () {
     return undefined;
 };
 String.prototype.toNumIfPossible = function () {
-    let possibleNum = Number(this);
+    const possibleNum = Number(this);
     if (Number.isNaN(possibleNum)) {
-        let possibleFraction = this.toFraction();
+        const possibleFraction = this.toFraction();
         if (possibleFraction) {
             return possibleFraction.Numerator / possibleFraction.Denominator;
         }
@@ -48,9 +50,9 @@ String.prototype.toNumIfPossible = function () {
         return possibleNum;
     }
 };
-Object.reverseFrom = function (KVArray) {
-    let obj = {};
-    KVArray.forEach(KVPair => {
+Object.reverseFrom = (KVArray) => {
+    const obj = {};
+    KVArray.forEach((KVPair) => {
         obj[KVPair.key] = KVPair.value;
     });
     return obj;

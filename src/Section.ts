@@ -4,11 +4,11 @@ import { StaffUnit } from "./StaffUnit";
 export { Section }
 
 class Section {
-    empty : boolean
-    setting : GlobalSettings
-    sequence : Array <StaffUnit> = []
+    public empty: boolean
+    public setting: GlobalSettings
+    public sequence: StaffUnit[] = []
 
-    constructor(setting : GlobalSettings = new GlobalSettings()) {
+    constructor(setting: GlobalSettings = new GlobalSettings()) {
         this.setting = setting
         this.empty = true
     }

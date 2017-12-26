@@ -1,4 +1,6 @@
 import { qysFileParser } from "./qysFileParser";
-require('./Util')
+// tslint:disable-next-line:no-var-requires
+// FIXME: find better way
+require("./Util")
 
 export { qysFileParser }

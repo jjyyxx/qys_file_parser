@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const GlobalSettings_1 = require("./GlobalSettings");
+const Section_1 = require("./Section");
 const StaffUnit_1 = require("./StaffUnit");
 const Tie_1 = require("./Tie");
-const Section_1 = require("./Section");
-const GlobalSettings_1 = require("./GlobalSettings");
+// tslint:disable-next-line:class-name
 class qysParserContext {
     constructor(content) {
-        this.result = [];
         this.sections = [];
         // tie mode
         // tie: boolean = false
@@ -19,22 +19,23 @@ class qysParserContext {
         if (this.pointer >= this.content.length) {
             return undefined;
         }
-        let ret = this.content.charAt(this.pointer);
+        const ret = this.content.charAt(this.pointer);
         if (incPointer) {
             this.pointer += 1;
         }
         return ret;
     }
     fetchUntil(bound) {
-        let buffer = '';
+        let buffer = "";
         let next;
+        // tslint:disable-next-line:no-conditional-assignment
         while ((((next = this.nextChar()) !== bound)) && (next !== undefined)) {
             buffer += next;
         }
         return buffer;
     }
     fetchLine() {
-        this.fetchUntil('\n');
+        this.fetchUntil("\n");
     }
     isEnded() {
         return this.pointer === this.contentLength;
@@ -57,8 +58,8 @@ class qysParserContext {
         this.activeSection.sequence.push(staff);
     }
     addTie() {
-        let sectionLength = this.sections.length;
-        let seqLength = this.activeSection.sequence.length;
+        const sectionLength = this.sections.length;
+        const seqLength = this.activeSection.sequence.length;
         this.ties.push(new Tie_1.Tie(seqLength, seqLength + 1, sectionLength));
     }
     previousCommit() {
@@ -70,7 +71,9 @@ class qysParserContext {
         this.previousCommit();
     }
     get activeStaff() {
-        return this.activeSection.sequence.length === 0 ? this.sections.last(2).sequence.last() : this.activeSection.sequence.last();
+        return this.activeSection.sequence.length === 0
+            ? this.sections.last(2).sequence.last()
+            : this.activeSection.sequence.last();
     }
     get activeSection() {
         return this.sections.last();

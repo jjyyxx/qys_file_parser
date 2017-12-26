@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-let pitchDict = { "1": 0, "2": 2, "3": 4, "4": 5, "5": 7, "6": 9, "7": 11 };
 class StaffUnit {
     constructor(oriPitch, beatCount = 1) {
         this.dotCount = 0;
         this.oriPitch = oriPitch;
-        this.pitch = pitchDict[oriPitch];
+        this.pitch = StaffUnit.pitchDict[oriPitch];
         this.beatCount = beatCount;
     }
     get beatCount() {
@@ -14,9 +13,6 @@ class StaffUnit {
     set beatCount(v) {
         this.dotCount = 0;
         this._beatCount = v;
-    }
-    dotToTimes() {
-        return 2 - Math.pow(2, -this.dotCount);
     }
     commit() {
         this._beatCount = this.beatCount;
@@ -27,6 +23,10 @@ class StaffUnit {
         staff.commit();
         this._beatCount += staff.beatCount;
     }
+    dotToTimes() {
+        return 2 - Math.pow(2, -this.dotCount);
+    }
 }
+StaffUnit.pitchDict = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 };
 exports.StaffUnit = StaffUnit;
 //# sourceMappingURL=StaffUnit.js.map

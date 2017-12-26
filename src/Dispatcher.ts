@@ -1,116 +1,124 @@
-import { qysParserContext } from "./qysParserContext";
-import { StaffUnit } from "./StaffUnit";
-import { GlobalSettings } from "./GlobalSettings";
-import { Section } from "./Section";
+import { GlobalSettings } from "./GlobalSettings"
+import { qysParserContext } from "./qysParserContext"
+import { Section } from "./Section"
+import { StaffUnit } from "./StaffUnit"
 export { Dispatcher }
 
 class Dispatcher {
     [key: string]: any
-    context: qysParserContext
+    private context: qysParserContext
     constructor(context: qysParserContext) {
         this.context = context
     }
 
-    pitch(pitch: number) {
+    public pitch(pitch: number) {
         this.context.addNewStaff(pitch)
     }
 
-    '#'() {
+    public "#"() {
         this.context.activeStaff.pitch += 1
     }
 
-    'b'() {
+    public "b"() {
         this.context.activeStaff.pitch -= 1
     }
 
-    "'"() {
+    public "'"() {
         this.context.activeStaff.pitch += 12
     }
 
-    ','() {
+    public ","() {
         this.context.activeStaff.pitch -= 12
     }
 
-    '%'() {
-        let tempStaff: StaffUnit = new StaffUnit(0);
+    public "%"() {
+        const tempStaff: StaffUnit = new StaffUnit(0)
         Object.assign(tempStaff, this.context.activeStaff)
         this.context.addStaff(tempStaff)
     }
 
-    '-'() {
+    public "-"() {
         this.context.activeStaff.beatCount += 1
     }
 
-    '_'() {
+    public "_"() {
         this.context.activeStaff.beatCount /= 2
     }
 
-    '.'() {
+    public "."() {
         this.context.activeStaff.dotCount += 1
     }
 
-    '|'() {
+    public "|"() {
         // measure bound
     }
 
-    '^'() {
+    public "^"() {
         this.context.addTie()
         // TODO: deal with illegal input
     }
 
-    '['() {
+    // tslint:disable-next-line:no-empty
+    public "["() {
 
     }
 
-    '('() {
+    // tslint:disable-next-line:no-empty
+    public "("() {
 
     }
 
-    '<'() {
-        let variable = this.context.fetchUntil('>')
-        let finalSetting = []
-        let possibleNum = Number(variable)
+    public "<"() {
+        const variable = this.context.fetchUntil(">")
+        const finalSetting = []
+        const possibleNum = Number(variable)
         if (possibleNum) {
-            if (variable.includes('.')) {
-                finalSetting.push({ key: 'Volume', value: possibleNum }) // volume
+            if (variable.includes(".")) {
+                finalSetting.push({ key: "Volume", value: possibleNum }) // volume
             } else {
-                finalSetting.push({ key: 'Speed', value: possibleNum }) // parse speed
+                finalSetting.push({ key: "Speed", value: possibleNum }) // parse speed
             }
         } else {
-            let possibleBeatTuple = variable.toFraction()
+            const possibleBeatTuple = variable.toFraction()
             if (possibleBeatTuple) {
-                    finalSetting.push({ key: 'Bar', value: possibleBeatTuple.Numerator }, { key: 'Beat', value: possibleBeatTuple.Denominator })
-            } else if (variable.startsWith('1=')) {
-                let possibleKey = variable.slice(2)
+                finalSetting.push(
+                    { key: "Bar", value: possibleBeatTuple.Numerator },
+                    { key: "Beat", value: possibleBeatTuple.Denominator},
+                )
+            } else if (variable.startsWith("1=")) {
+                const possibleKey = variable.slice(2)
                 let slice = -1
                 for (const legalKey of GlobalSettings.SortedTonality) {
                     if (possibleKey.startsWith(legalKey)) {
                         slice = legalKey.length
-                        finalSetting.push({ key: 'Key', value: GlobalSettings.tonalityDict[possibleKey.slice(0, slice)] })
+                        finalSetting.push({
+                            key: "Key",
+                            value: GlobalSettings.tonalityDict[possibleKey.slice(0, slice)],
+                        })
                         break
                     }
                 }
                 if (slice === -1) {
-                    throw "illegal tonality"
+                    throw new Error("illegal tonality")
                 } else if (slice !== possibleKey.length) {
-                    let possibleOct = possibleKey.slice(slice).calcOct()
+                    const possibleOct = possibleKey.slice(slice).calcOct()
                     if (Number.isNaN(possibleOct)) {
-                        throw "illegal tonality"
+                        throw new Error("illegal tonality")
                     } else {
-                        finalSetting.push({ key: 'Oct', value: possibleOct })
+                        finalSetting.push({ key: "Oct", value: possibleOct })
                     }
                 }
             } else {
-                let possibleKVPair = variable.split(':').map(item => item.trim())
+                const possibleKVPair = variable.split(":").map((item) => item.trim())
                 if (possibleKVPair.length === 2 && GlobalSettings.isLegalSetting(possibleKVPair[0])) {
                     finalSetting.push({ key: possibleKVPair[0], value: possibleKVPair[1].toNumIfPossible() })
                 } else {
-                    throw "illegal variable"
+                    throw new Error("illegal variable")
                 }
             }
         }
 
-        let finalObj = Object.reverseFrom(finalSetting)
+        const finalObj = Object.reverseFrom(finalSetting)
         if (this.context.activeSection) {
             if (this.context.activeSection.sequence.length === 0) {
                 this.context.activeSection.setting.update(finalObj)
@@ -122,13 +130,12 @@ class Dispatcher {
         }
     }
 
-    '/'() {
-        let next = this.context.nextChar()
-        if (next === '/') {
+    public "/"() {
+        const next = this.context.nextChar()
+        if (next === "/") {
             this.context.fetchLine()
         } else {
-            throw "Unrecognizable notation. Do you mean // ?"
+            throw new Error("Unrecognizable notation. Do you mean // ?")
         }
     }
 }
-

@@ -1,90 +1,91 @@
-import { StaffUnit } from './StaffUnit'
-import { Tie } from './Tie'
-import { Section } from './Section'
-import { GlobalSettings } from './GlobalSettings'
+import { GlobalSettings } from "./GlobalSettings"
+import { Section } from "./Section"
+import { StaffUnit } from "./StaffUnit"
+import { Tie } from "./Tie"
 export { qysParserContext }
 
+// tslint:disable-next-line:class-name
 class qysParserContext {
-    readonly content: String
-    readonly contentLength: number
+    public readonly content: string
+    public readonly contentLength: number
+    public sections: Section[] = []
+    // tie mode
+    // tie: boolean = false
+    public ties: Tie[] = []
+
     private pointer: number
-    constructor(content: String) {
+    constructor(content: string) {
         this.content = content
         this.contentLength = this.content.length
         this.pointer = 0
     }
-    nextChar(incPointer = true): string {
-        if (this.pointer >= this.content.length){
+    public nextChar(incPointer = true): string {
+        if (this.pointer >= this.content.length) {
             return undefined
         }
-        let ret = this.content.charAt(this.pointer)
+        const ret = this.content.charAt(this.pointer)
         if (incPointer) {
             this.pointer += 1
         }
         return ret
     }
-    fetchUntil(bound: string) {       // TODO: improve performance
-        let buffer : string = ''
-        let next : string
+    public fetchUntil(bound: string) {       // TODO: improve performance
+        let buffer: string = ""
+        let next: string
+        // tslint:disable-next-line:no-conditional-assignment
         while ((((next = this.nextChar()) !== bound)) && (next !== undefined)) {
             buffer += next
         }
         return buffer
     }
-    fetchLine() {
-        this.fetchUntil('\n')
+    public fetchLine() {
+        this.fetchUntil("\n")
     }
-    isEnded(): boolean {
+    public isEnded(): boolean {
         return this.pointer === this.contentLength
     }
 
-    result: Array<StaffUnit> = []
-
-    sections: Array<Section> = []
-
-    // tie mode
-    // tie: boolean = false
-    ties: Array<Tie> = []
-
-    addNewSection(setting: GlobalSettings = new GlobalSettings()){
+    public addNewSection(setting: GlobalSettings = new GlobalSettings()) {
         this.addSection(new Section(setting))
     }
 
-    addSection(section : Section){
+    public addSection(section: Section) {
         this.sections.push(section)
     }
 
-    addNewStaff(pitch: number) {
+    public addNewStaff(pitch: number) {
         if (this.sections.length === 0) {
             this.addNewSection()
         }
         this.addStaff(new StaffUnit(pitch))
     }
 
-    addStaff(staff: StaffUnit) {
+    public addStaff(staff: StaffUnit) {
         this.previousCommit()
         this.activeSection.empty = false
         this.activeSection.sequence.push(staff)
     }
 
-    addTie() {
-        let sectionLength = this.sections.length
-        let seqLength = this.activeSection.sequence.length
+    public addTie() {
+        const sectionLength = this.sections.length
+        const seqLength = this.activeSection.sequence.length
         this.ties.push(new Tie(seqLength, seqLength + 1, sectionLength))
     }
 
-    previousCommit() {
+    public previousCommit() {
         if (this.sections[0] && this.sections[0].sequence.length !== 0) {
             this.activeStaff.commit()
         }
     }
 
-    finalCommit() {
+    public finalCommit() {
         this.previousCommit()
     }
 
     get activeStaff(): StaffUnit {
-        return this.activeSection.sequence.length === 0? this.sections.last(2).sequence.last(): this.activeSection.sequence.last()
+        return this.activeSection.sequence.length === 0
+            ? this.sections.last(2).sequence.last()
+            : this.activeSection.sequence.last()
     }
 
     get activeSection(): Section {
