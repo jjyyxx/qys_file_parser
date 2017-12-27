@@ -7,9 +7,9 @@ class qysFileParser {
     constructor(content) {
         // TODO: improve pattern
         this.legalSymbols = new Set([
-            "b", "#", ",", "'", "%", "|", ".", "-", "_", "^", "[", "(", "<", "/",
+            'b', '#', ',', '\'', '%', '|', '.', '-', '_', '^', '[', '(', '<', '/', ' ',
         ]);
-        this.regionalSymbol = new Set(["[", "(", "<"]);
+        this.regionalSymbol = new Set(['[', '(', '<']);
         this.context = new qysParserContext_1.qysParserContext(content);
         this.dispatcher = new Dispatcher_1.Dispatcher(this.context);
     }
@@ -26,7 +26,7 @@ class qysFileParser {
     }
     dispatch(char /* , context : qysParserContext */) {
         if (char.length !== 1) {
-            throw new Error("length incompatible");
+            throw new Error('length incompatible');
         }
         else {
             const pitch = Number(char);

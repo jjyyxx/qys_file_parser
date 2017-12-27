@@ -1,7 +1,7 @@
-import { GlobalSettings } from "./GlobalSettings"
-import { Section } from "./Section"
-import { StaffUnit } from "./StaffUnit"
-import { Tie } from "./Tie"
+import { GlobalSettings } from './GlobalSettings'
+import { Section } from './Section'
+import { StaffUnit } from './StaffUnit'
+import { Tie } from './Tie'
 export { qysParserContext }
 
 // tslint:disable-next-line:class-name
@@ -30,7 +30,7 @@ class qysParserContext {
         return ret
     }
     public fetchUntil(bound: string) {       // TODO: improve performance
-        let buffer: string = ""
+        let buffer: string = ''
         let next: string
         // tslint:disable-next-line:no-conditional-assignment
         while ((((next = this.nextChar()) !== bound)) && (next !== undefined)) {
@@ -39,7 +39,7 @@ class qysParserContext {
         return buffer
     }
     public fetchLine() {
-        this.fetchUntil("\n")
+        this.fetchUntil('\n')
     }
     public isEnded(): boolean {
         return this.pointer === this.contentLength

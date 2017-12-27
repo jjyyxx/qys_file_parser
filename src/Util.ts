@@ -22,10 +22,10 @@ String.prototype.calcOct = function() {
     let result = 0
     for (let i = 0, len = this.length; i < len && legal; i++) {
         const element = this.charAt(i)
-        if (element === ",") {
+        if (element === ',') {
             result -= 1
         } else {
-            if (element === "'") {
+            if (element === '\'') {
                 result += 1
             } else {
                 legal = false
@@ -40,7 +40,7 @@ String.prototype.calcOct = function() {
 }
 
 String.prototype.toFraction = function() {
-    const possibleFraction: string[] = this.split("/")
+    const possibleFraction: string[] = this.split('/')
     if (possibleFraction.length === 2) {
         const processedNum = possibleFraction
             .map((possibleNum) => Number(possibleNum))

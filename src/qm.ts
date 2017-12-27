@@ -1,4 +1,4 @@
-import { qysFileParser } from "./qysFileParser.js"
+import { qysFileParser } from './qysFileParser.js'
 
 function play(file: File) {
     const reader: FileReader = new FileReader()
@@ -6,7 +6,7 @@ function play(file: File) {
         const qyContent = event.target.result
         parseFile(qyContent)
     }
-    reader.readAsText(file, "UTF-8")
+    reader.readAsText(file, 'UTF-8')
 }
 
 function parseFile(content: string) {

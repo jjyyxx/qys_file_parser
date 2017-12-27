@@ -1,5 +1,5 @@
-import { GlobalSettings } from "./GlobalSettings";
-import { StaffUnit } from "./StaffUnit";
+import { GlobalSettings } from './GlobalSettings'
+import { StaffUnit } from './StaffUnit'
 
 export { Section }
 

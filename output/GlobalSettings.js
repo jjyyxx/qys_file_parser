@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class GlobalSettings {
-    constructor({ Key = 0, Bar = 4, Beat = 4, Speed = 90, Volume = 1.0, Instr = "Piano", Stac = 1 / 2, Port = 6, Appo = 1 / 4, Dur = 0, Oct = 0, FadeIn = 2, FadeOut = 2, } = {}) {
+    constructor({ Key = 0, Bar = 4, Beat = 4, Speed = 90, Volume = 1.0, Instr = 'Piano', Stac = 1 / 2, Port = 6, Appo = 1 / 4, Dur = 0, Oct = 0, FadeIn = 2, FadeOut = 2, } = {}) {
         this.Key = Key;
         this.Bar = Bar;
         this.Beat = Beat;
@@ -32,16 +32,16 @@ class GlobalSettings {
 }
 GlobalSettings.tonalityDict = {
     // tslint:disable-next-line:object-literal-sort-keys
-    "C": 0, "G": 7, "D": 2, "A": -3, "E": 4,
-    "B": -1, "#F": 6, "#C": 1, "F": 5, "bB": -2,
-    "bE": 3, "bA": -4, "bD": 1, "bG": 6, "bC": -1,
-    "F#": 6, "C#": 1, "Bb": -2, "Gb": 6,
-    "Eb": 3, "Ab": -4, "Db": 1, "Cb": -1,
+    'C': 0, 'G': 7, 'D': 2, 'A': -3, 'E': 4,
+    'B': -1, '#F': 6, '#C': 1, 'F': 5, 'bB': -2,
+    'bE': 3, 'bA': -4, 'bD': 1, 'bG': 6, 'bC': -1,
+    'F#': 6, 'C#': 1, 'Bb': -2, 'Gb': 6,
+    'Eb': 3, 'Ab': -4, 'Db': 1, 'Cb': -1,
 };
 GlobalSettings.legalTonality = new Set(Object.keys(GlobalSettings.tonalityDict));
 GlobalSettings.legalSettings = new Set([
-    "Key", "Bar", "Beat", "Speed", "Volume", "Instr", "Stac",
-    "Port", "Appo", "Dur", "Oct", "FadeIn", "FadeOut",
+    'Key', 'Bar', 'Beat', 'Speed', 'Volume', 'Instr', 'Stac',
+    'Port', 'Appo', 'Dur', 'Oct', 'FadeIn', 'FadeOut',
 ]);
 GlobalSettings.SortedTonality = Object.keys(GlobalSettings.tonalityDict).sort((a, b) => {
     return a.length > b.length ? -1 : 1;

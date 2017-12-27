@@ -1,5 +1,5 @@
-import { Dispatcher } from "./Dispatcher"
-import { qysParserContext } from "./qysParserContext"
+import { Dispatcher } from './Dispatcher'
+import { qysParserContext } from './qysParserContext'
 
 export { qysFileParser }
 
@@ -7,14 +7,11 @@ export { qysFileParser }
 class qysFileParser {
     // TODO: improve pattern
     public readonly legalSymbols: Set<string> = new Set([
-        "b", "#", ",", "'", "%", "|", ".", "-", "_", "^", "[", "(", "<", "/",
+        'b', '#', ',', '\'', '%', '|', '.', '-', '_', '^', '[', '(', '<', '/', ' ',
     ])
-
-    public readonly regionalSymbol: Set<string> = new Set(["[", "(", "<"])
+    public readonly regionalSymbol: Set<string> = new Set(['[', '(', '<'])
 
     private context: qysParserContext
-
-
     private dispatcher: Dispatcher
 
     constructor(content: string) {
@@ -36,7 +33,7 @@ class qysFileParser {
 
     private dispatch(char: string/* , context : qysParserContext */) {
         if (char.length !== 1) {
-            throw new Error("length incompatible")
+            throw new Error('length incompatible')
         } else {
             const pitch = Number(char)
             if (!isNaN(pitch)) {

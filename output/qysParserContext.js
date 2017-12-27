@@ -26,7 +26,7 @@ class qysParserContext {
         return ret;
     }
     fetchUntil(bound) {
-        let buffer = "";
+        let buffer = '';
         let next;
         // tslint:disable-next-line:no-conditional-assignment
         while ((((next = this.nextChar()) !== bound)) && (next !== undefined)) {
@@ -35,7 +35,7 @@ class qysParserContext {
         return buffer;
     }
     fetchLine() {
-        this.fetchUntil("\n");
+        this.fetchUntil('\n');
     }
     isEnded() {
         return this.pointer === this.contentLength;

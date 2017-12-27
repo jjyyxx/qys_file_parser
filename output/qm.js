@@ -7,7 +7,7 @@ function play(file) {
         const qyContent = event.target.result;
         parseFile(qyContent);
     };
-    reader.readAsText(file, "UTF-8");
+    reader.readAsText(file, 'UTF-8');
 }
 function parseFile(content) {
     const parser = new qysFileParser_js_1.qysFileParser(content);

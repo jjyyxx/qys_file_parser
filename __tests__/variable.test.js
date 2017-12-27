@@ -1,150 +1,193 @@
-describe('Test variable declaration', () => {
-    a = require('../output/index.js')
-    b = require('../output/GlobalSettings')
+describe('Test iable declaration', () => {
+    const Parser = require('../output/index.js')
+    const Setting = require('../output/GlobalSettings')
     it('parse speed correctly', () => {
-        var s = new a.qysFileParser('<180>')
-        var ret = s.parse()
+        const s = new Parser.qysFileParser('<180>')
+        const ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Speed: 180 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Speed: 180 }))
     })
 
     it('parse volume shorthand correctly', () => {
-        var s = new a.qysFileParser('<180.0>')
-        var ret = s.parse()
+        let s = new Parser.qysFileParser('<180.0>')
+        let ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Volume: 180.0 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Volume: 180.0 }))
 
-        var s = new a.qysFileParser('<3.14159>')
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<3.14159>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Volume: 3.14159 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Volume: 3.14159 }))
     })
 
     it('parse bar/beat shorthand correctly', () => {
-        var s = new a.qysFileParser('<4/4>')
-        var ret = s.parse()
+        let s = new Parser.qysFileParser('<4/4>')
+        let ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings())
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings())
 
-        var s = new a.qysFileParser('<3/8>')
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<3/8>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Bar: 3, Beat: 8 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Bar: 3, Beat: 8 }))
     })
 
     it('parse key shorthand correctly', () => {
-        var s = new a.qysFileParser('<1=C>')
-        var ret = s.parse()
+        let s = new Parser.qysFileParser('<1=C>')
+        let ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Key: 0 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Key: 0 }))
 
-        var s = new a.qysFileParser('<1=bB>')
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<1=bB>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Key: -2 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Key: -2 }))
 
-        var s = new a.qysFileParser("<1=bB,',,>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser("<1=bB,',,>")
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Key: -2, Oct: -2 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Key: -2, Oct: -2 }))
     })
 
     it('parse general KV pair correctly', () => {
-        var s = new a.qysFileParser("<Key:2>")
-        var ret = s.parse()
+        let s = new Parser.qysFileParser('<Key:2>')
+        let ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Key: 2 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Key: 2 }))
 
-        var s = new a.qysFileParser("<Bar:3>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Bar:3>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Bar: 3 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Bar: 3 }))
 
-        var s = new a.qysFileParser("<Beat:6>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Beat:6>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Beat: 6 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Beat: 6 }))
 
-        var s = new a.qysFileParser("<Speed:80>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Speed:80>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Speed: 80 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Speed: 80 }))
 
-        var s = new a.qysFileParser("<Volume:1.5>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Volume:1.5>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Volume: 1.5 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Volume: 1.5 }))
 
-        var s = new a.qysFileParser("<Instr:Violin>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Instr:Violin>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Instr: 'Violin' }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Instr: 'Violin' }))
 
-        var s = new a.qysFileParser("<Stac:1/4>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Stac:1/4>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Stac: 1 / 4 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Stac: 1 / 4 }))
 
-        var s = new a.qysFileParser("<Port:4>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Port:4>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Port: 4 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Port: 4 }))
 
-        var s = new a.qysFileParser("<Appo:1/3>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Appo:1/3>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Appo: 1 / 3 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Appo: 1 / 3 }))
 
-        var s = new a.qysFileParser("<Dur:1.5>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Dur:1.5>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Dur: 1.5 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Dur: 1.5 }))
 
-        var s = new a.qysFileParser("<Oct:-1>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<Oct:-1>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ Oct: -1 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ Oct: -1 }))
 
-        var s = new a.qysFileParser("<FadeIn:1/8>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<FadeIn:1/8>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ FadeIn: 0.125 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ FadeIn: 0.125 }))
 
-        var s = new a.qysFileParser("<FadeOut:1/2>")
-        var ret = s.parse()
+        s = new Parser.qysFileParser('<FadeOut:1/2>')
+        ret = s.parse()
         expect(ret.sections).toHaveLength(1)
         expect(ret.sections[0].sequence).toHaveLength(0)
-        expect(ret.sections[0].setting).toEqual(new b.GlobalSettings({ FadeOut: 0.5 }))
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({ FadeOut: 0.5 }))
     })
 
     it('throws incorrect input', () => {
-        var s = new a.qysFileParser("<1..>")
-        expect(() => { s.parse() }).toThrow("illegal variable")
-    
-        var s = new a.qysFileParser("<1=C,.>")
-        expect(() => { s.parse() }).toThrow("illegal tonality")
-        
-        var s = new a.qysFileParser("<1=J>")
-        expect(() => { s.parse() }).toThrow("illegal tonality")
+        let s = new Parser.qysFileParser('<1..>')
+        expect(() => { s.parse() }).toThrow('illegal variable')
+
+        s = new Parser.qysFileParser('<1=C,.>')
+        expect(() => { s.parse() }).toThrow('illegal tonality')
+
+        s = new Parser.qysFileParser('<1=J>')
+        expect(() => { s.parse() }).toThrow('illegal tonality')
+    })
+
+    it('parses multiple iables correctly', () => {
+        let s = new Parser.qysFileParser('<Instr:Violin><Dur:1.5><FadeIn:1/8>')
+        let ret = s.parse()
+        expect(ret.sections).toHaveLength(1)
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({
+            Instr: 'Violin',
+            Dur: 1.5,
+            FadeIn: 0.125
+        }))
+
+        // possible overwrite
+        s = new Parser.qysFileParser('<Instr:Violin><Dur:1.5><FadeIn:1/8><Instr:Piano>')
+        ret = s.parse()
+        expect(ret.sections).toHaveLength(1)
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({
+            Instr: 'Piano',
+            Dur: 1.5,
+            FadeIn: 0.125
+        }))
+    })
+
+    it('integrates with staffs', () => {
+        let s = new Parser.qysFileParser('<Instr:Violin><Dur:1.5><FadeIn:1/8>1231..23<Instr:Piano>5342<Dur:2><FadeOut:3>342')
+        let ret = s.parse()
+        expect(ret.sections).toHaveLength(3)
+        expect(ret.sections[0].setting).toEqual(new Setting.GlobalSettings({
+            Instr: 'Violin',
+            Dur: 1.5,
+            FadeIn: 0.125
+        }))
+        expect(ret.sections[1].setting).toEqual(new Setting.GlobalSettings({
+            Instr: 'Piano',
+            Dur: 1.5,
+            FadeIn: 0.125
+        }))
+        expect(ret.sections[2].setting).toEqual(new Setting.GlobalSettings({
+            Instr: 'Piano',
+            Dur: 2,
+            FadeIn: 0.125,
+            FadeOut: 3
+        }))
     })
 })
