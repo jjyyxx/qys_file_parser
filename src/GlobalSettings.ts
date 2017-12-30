@@ -10,7 +10,7 @@ class GlobalSettings {
     public static legalTonality = new Set(Object.keys(GlobalSettings.tonalityDict))
     public static legalSettings = new Set([
         'Key', 'Bar', 'Beat', 'Speed', 'Volume', 'Instr', 'Stac',
-         'Port', 'Appo', 'Dur', 'Oct', 'FadeIn', 'FadeOut',
+        'Port', 'Appo', 'Dur', 'Oct', 'FadeIn', 'FadeOut',
     ])
     public static SortedTonality: string[] = Object.keys(GlobalSettings.tonalityDict).sort((a, b) => {
         return a.length > b.length ? -1 : 1
