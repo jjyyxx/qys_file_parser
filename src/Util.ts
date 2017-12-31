@@ -15,6 +15,7 @@ interface String {
     calcOct(): number
     toNumIfPossible(): (number | string)
     toFraction(): Fraction
+    isNumeric(): boolean
 }
 
 String.prototype.calcOct = function() {
@@ -63,6 +64,10 @@ String.prototype.toNumIfPossible = function() {
     } else {
         return possibleNum
     }
+}
+
+String.prototype.isNumeric = function() {
+        return !isNaN(this - parseFloat(this))
 }
 
 interface ObjectConstructor {

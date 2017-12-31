@@ -143,4 +143,9 @@ class Dispatcher {
     public ' '() {
 
     }
+
+    // tslint:disable-next-line:no-empty
+    public '\n'() {
+
+    }
 }

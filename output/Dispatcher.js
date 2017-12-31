@@ -126,6 +126,9 @@ class Dispatcher {
     // tslint:disable-next-line:no-empty
     ' '() {
     }
+    // tslint:disable-next-line:no-empty
+    '\n'() {
+    }
 }
 exports.Dispatcher = Dispatcher;
 //# sourceMappingURL=Dispatcher.js.map

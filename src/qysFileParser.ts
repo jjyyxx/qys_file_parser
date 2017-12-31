@@ -7,7 +7,7 @@ export { qysFileParser }
 class qysFileParser {
     // TODO: improve pattern
     public readonly legalSymbols: Set<string> = new Set([
-        'b', '#', ',', '\'', '%', '|', '.', '-', '_', '^', '[', '(', '<', '/', ' ',
+        'b', '#', ',', '\'', '%', '|', '.', '-', '_', '^', '[', '(', '<', '/', ' ', '\n',
     ])
     public readonly regionalSymbol: Set<string> = new Set(['[', '(', '<'])
 
@@ -34,17 +34,13 @@ class qysFileParser {
     private dispatch(char: string/* , context : qysParserContext */) {
         if (char.length !== 1) {
             throw new Error('length incompatible')
-        } else {
+        } else if (char.isNumeric()) {
             const pitch = Number(char)
-            if (!isNaN(pitch)) {
-                this.dispatcher.pitch(pitch)
-            } else {
-                if (this.legalSymbols.has(char)) {
-                    this.dispatcher[char]()
-                } else {
-                    throw new Error(`illegal symbol ${char} is given`)
-                }
-            }
+            this.dispatcher.pitch(pitch)
+        } else if (this.legalSymbols.has(char)) {
+            this.dispatcher[char]()
+        } else {
+            throw new Error(`illegal symbol ${char} is given`)
         }
     }
 }

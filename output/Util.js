@@ -50,6 +50,9 @@ String.prototype.toNumIfPossible = function () {
         return possibleNum;
     }
 };
+String.prototype.isNumeric = function () {
+    return !isNaN(this - parseFloat(this));
+};
 Object.reverseFrom = (KVArray) => {
     const obj = {};
     KVArray.forEach((KVPair) => {

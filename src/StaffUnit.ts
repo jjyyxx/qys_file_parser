@@ -5,6 +5,7 @@ class StaffUnit {
     public readonly oriPitch: number
     public pitch: number
     public dotCount: number = 0
+    public isMute: boolean = false
     // tslint:disable-next-line:variable-name
     private _beatCount: number
     public get beatCount(): number {
@@ -17,7 +18,11 @@ class StaffUnit {
 
     constructor(oriPitch: number, beatCount = 1) {
         this.oriPitch = oriPitch
-        this.pitch = StaffUnit.pitchDict[oriPitch]
+        if (oriPitch === 0) {       // TODO: improve pattern
+            this.isMute = true
+        } else {
+            this.pitch = StaffUnit.pitchDict[oriPitch]
+        }
         this.beatCount = beatCount
     }
 

@@ -3,8 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class StaffUnit {
     constructor(oriPitch, beatCount = 1) {
         this.dotCount = 0;
+        this.isMute = false;
         this.oriPitch = oriPitch;
-        this.pitch = StaffUnit.pitchDict[oriPitch];
+        if (oriPitch === 0) {
+            this.isMute = true;
+        }
+        else {
+            this.pitch = StaffUnit.pitchDict[oriPitch];
+        }
         this.beatCount = beatCount;
     }
     get beatCount() {
