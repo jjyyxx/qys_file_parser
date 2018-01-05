@@ -1,3 +1,4 @@
+import { Detokenizer } from './Detokenizer'
 import { qysFileParser } from './qysFileParser'
 import { Tokenizer } from './Tokenizer'
 import { PairType, SuffixType, TokenType } from './tokens/TokenType'
@@ -5,4 +6,4 @@ import { PairType, SuffixType, TokenType } from './tokens/TokenType'
 // tslint:disable-next-line:no-var-requires
 require('./Util')
 
-export { qysFileParser, Tokenizer, PairType, SuffixType, TokenType }
+export { qysFileParser, Tokenizer, PairType, SuffixType, TokenType,  Detokenizer }

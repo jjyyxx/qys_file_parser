@@ -7,6 +7,19 @@ class Suffix extends BaseToken_js_1.BaseToken {
         super(TokenType_1.TokenType.Suffix);
         this.suffixType = suffix;
     }
+    toString() {
+        return Object.getKeyByValue(Suffix.SuffixDict, this.suffixType);
+    }
 }
+Suffix.SuffixDict = {
+    '\'': TokenType_1.SuffixType.DotAbove,
+    ',': TokenType_1.SuffixType.DotBelow,
+    'b': TokenType_1.SuffixType.Flat,
+    '#': TokenType_1.SuffixType.Sharp,
+    '-': TokenType_1.SuffixType.Dash,
+    '_': TokenType_1.SuffixType.Underline,
+    '.': TokenType_1.SuffixType.DotAfter,
+};
+Suffix.Suffix = new Set(Object.keys(Suffix.SuffixDict));
 exports.Suffix = Suffix;
 //# sourceMappingURL=Suffix.js.map

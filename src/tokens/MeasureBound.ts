@@ -1,14 +1,14 @@
 import { BaseToken } from './BaseToken'
 import { TokenType } from './TokenType'
 
-class Chord extends BaseToken {
+class MeasureBound extends BaseToken {
     constructor() {
-        super(TokenType.Chord)
+        super(TokenType.MeasureBound)
     }
 
     public toString(): string {
-        return '&'
+        return '|'
     }
 }
 
-export { Chord }
+export { MeasureBound }

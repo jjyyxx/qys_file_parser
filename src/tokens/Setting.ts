@@ -3,8 +3,8 @@ import { BaseToken } from './BaseToken'
 import { TokenType } from './TokenType'
 
 class Setting extends BaseToken {
-    private static parseSetting(setting: string): Array<{}> {
-        const finalSetting: Array<{}> = []
+    private static parseSetting(setting: string): Array<{ key: string, value: any }> {
+        const finalSetting: Array<{ key: string, value: any }> = []
         const possibleNum = Number(setting)
         if (possibleNum) {
             if (setting.includes('.')) {
@@ -54,11 +54,31 @@ class Setting extends BaseToken {
         return finalSetting
     }
 
-    public readonly setting: Array<{[Key: string]: any}>
+    public readonly settings: Array<{ key: string, value: any }>
 
-    constructor(setting: string) {
+    constructor(settings: string) {
         super(TokenType.Setting)
-        this.setting = Setting.parseSetting(setting)
+        this.settings = Setting.parseSetting(settings)
+    }
+
+    public toString(): string {
+        return this.settings.map((value) => {
+            switch (value.key) {
+                case 'Volume':
+                    return Number.isInteger(value.value) ? value.value.toString() + '.0' : value.value.toString()
+                case 'Speed':
+                case 'Bar':
+                    return value.value.toString()
+                case 'Beat':
+                    return '/' + value.value.toString()
+                case 'Key':
+                    return `1=${Object.getKeyByValue(GlobalSettings.tonalityDict, value.value)}`
+                case 'Oct':
+                    return ''   // FIXME: currently fail to support it
+                default:
+                    return `${value.key}:${value.value}`
+            }
+        }).reduce((pre, cur) => pre + cur)
     }
 }
 

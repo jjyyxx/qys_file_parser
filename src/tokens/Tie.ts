@@ -5,6 +5,10 @@ class Tie extends BaseToken {
     constructor() {
         super(TokenType.Tie)
     }
+
+    public toString(): string {
+        return '^'
+    }
 }
 
 export { Tie }

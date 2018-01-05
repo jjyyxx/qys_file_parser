@@ -6,6 +6,9 @@ class Chord extends BaseToken_1.BaseToken {
     constructor() {
         super(TokenType_1.TokenType.Chord);
     }
+    toString() {
+        return '&';
+    }
 }
 exports.Chord = Chord;
 //# sourceMappingURL=Chord.js.map

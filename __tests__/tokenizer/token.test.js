@@ -7,6 +7,6 @@ describe('Tokenizer', () => {
 55_^6_|2-|11_^6,_|2-|55|6_^1'_6_5_|11_^6,_|2-|52|17,_^6,_|5,5|23_2_|11_^6,_|2_3_2_1_|2_^1_7,_^6,_|5,-^|5,0||`
         const t = new Tokenizer(str)
         const result = t.tokenize()
-        console.log(JSON.stringify(result))
+        // console.log(JSON.stringify(result))
     })
 })

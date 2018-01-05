@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Appoggiatura_1 = require("./tokens/Appoggiatura");
+const AppoggiaturaBound_1 = require("./tokens/AppoggiaturaBound");
 const Chord_1 = require("./tokens/Chord");
 const Comment_1 = require("./tokens/Comment");
-const Measure_1 = require("./tokens/Measure");
-const Repeat_1 = require("./tokens/Repeat");
+const DotAfter_1 = require("./tokens/DotAfter");
+const MeasureBound_1 = require("./tokens/MeasureBound");
+const RepeatBound_1 = require("./tokens/RepeatBound");
 const RepeatSkip_1 = require("./tokens/RepeatSkip");
 const Setting_1 = require("./tokens/Setting");
 const Staff_js_1 = require("./tokens/Staff.js");
@@ -48,8 +49,11 @@ class Tokenizer {
             if (pitch === 0) {
                 return new Staff_js_1.Staff({ isRest: true });
             }
-            else {
+            else if (pitch >= 1 && pitch <= 7) {
                 return new Staff_js_1.Staff({ pitch });
+            }
+            else {
+                return new UnrecognizedToken_1.UnrecognizedToken(char);
             }
         }
         if (char === '%') {
@@ -58,8 +62,8 @@ class Tokenizer {
             });
         }
         // Suffix
-        if (Tokenizer.Suffix.has(char)) {
-            return new Suffix_1.Suffix(Tokenizer.SuffixDict[char]);
+        if (Suffix_1.Suffix.Suffix.has(char)) {
+            return char === '.' ? new DotAfter_1.DotAfter() : new Suffix_1.Suffix(Suffix_1.Suffix.SuffixDict[char]);
         }
         // Tie/Slur/Appoggiatura Right
         if (char === '^') {
@@ -69,7 +73,7 @@ class Tokenizer {
             }
             else {
                 this.incPointer();
-                return new Appoggiatura_1.Appoggiatura(TokenType_1.PairType.Right);
+                return new AppoggiaturaBound_1.AppoggiaturaBound(TokenType_1.PairType.Right);
             }
         }
         // Chord
@@ -82,15 +86,21 @@ class Tokenizer {
             if (tup) {
                 if (tup.endsWith('^')) {
                     this.incPointer(-tup.length - 1); // reset
-                    return new Appoggiatura_1.Appoggiatura(TokenType_1.PairType.Left);
+                    return new AppoggiaturaBound_1.AppoggiaturaBound(TokenType_1.PairType.Left);
                 }
                 else {
                     if (tup.isNumeric()) {
                         return new Tuplet_1.Tuplet(Number(tup));
                     }
+                    else {
+                        return new UnrecognizedToken_1.UnrecognizedToken(`(${tup})`);
+                    }
                 }
             }
             else {
+                if (tup === '') {
+                    return new UnrecognizedToken_1.UnrecognizedToken('()');
+                }
                 return new UnrecognizedToken_1.UnrecognizedToken('(');
             }
         }
@@ -98,7 +108,7 @@ class Tokenizer {
         if (char === '|') {
             const next1 = this.nextChar(false);
             if (next1 !== '|') {
-                return new Measure_1.Measure();
+                return new MeasureBound_1.MeasureBound();
             }
             else {
                 this.incPointer();
@@ -108,7 +118,7 @@ class Tokenizer {
                 }
                 else {
                     this.incPointer();
-                    return new Repeat_1.Repeat(TokenType_1.PairType.Left);
+                    return new RepeatBound_1.RepeatBound(TokenType_1.PairType.Left);
                 }
             }
         }
@@ -125,7 +135,7 @@ class Tokenizer {
                 }
                 else {
                     this.incPointer();
-                    return new Repeat_1.Repeat(TokenType_1.PairType.Right);
+                    return new RepeatBound_1.RepeatBound(TokenType_1.PairType.Right);
                 }
             }
         }
@@ -146,6 +156,9 @@ class Tokenizer {
                 }
             }
             else {
+                if (skip === '') {
+                    return new UnrecognizedToken_1.UnrecognizedToken('[]');
+                }
                 return new UnrecognizedToken_1.UnrecognizedToken('[');
             }
         }
@@ -153,9 +166,19 @@ class Tokenizer {
         if (char === '<') {
             const setting = this.fetchUntil('>');
             if (setting) {
-                return new Setting_1.Setting(setting);
+                let settingToken;
+                try {
+                    settingToken = new Setting_1.Setting(setting);
+                }
+                catch (error) {
+                    return new UnrecognizedToken_1.UnrecognizedToken(`<${setting}>`);
+                }
+                return settingToken;
             }
             else {
+                if (setting === '') {
+                    return new UnrecognizedToken_1.UnrecognizedToken('<>'); // TODO: improve pattern
+                }
                 return new UnrecognizedToken_1.UnrecognizedToken('<');
             }
         }
@@ -166,7 +189,7 @@ class Tokenizer {
                 return new UnrecognizedToken_1.UnrecognizedToken('/');
             }
             this.incPointer();
-            return new Comment_1.Comment(this.fetchUntil('\n'));
+            return new Comment_1.Comment(this.fetchUntil('\n', true));
         }
         if (char === '\n' || char === ' ') {
             return undefined;
@@ -189,25 +212,20 @@ class Tokenizer {
     isEnded() {
         return this.pointer >= this.length;
     }
-    fetchUntil(bound) {
-        const boundIndex = this.content.indexOf(bound, this.pointer);
+    fetchUntil(bound, toLastIfNotFound = false) {
+        let boundIndex = this.content.indexOf(bound, this.pointer);
         if (boundIndex === -1) {
-            return undefined;
+            if (toLastIfNotFound) {
+                boundIndex = this.content.length;
+            }
+            else {
+                return undefined;
+            }
         }
         const res = this.content.slice(this.pointer, boundIndex);
         this.pointer = boundIndex + 1;
         return res;
     }
 }
-Tokenizer.SuffixDict = {
-    '\'': TokenType_1.SuffixType.DotAbove,
-    ',': TokenType_1.SuffixType.DotBelow,
-    'b': TokenType_1.SuffixType.Flat,
-    '#': TokenType_1.SuffixType.Sharp,
-    '-': TokenType_1.SuffixType.Dash,
-    '_': TokenType_1.SuffixType.Underline,
-    '.': TokenType_1.SuffixType.DotAfter,
-};
-Tokenizer.Suffix = new Set(Object.keys(Tokenizer.SuffixDict));
 exports.Tokenizer = Tokenizer;
 //# sourceMappingURL=Tokenizer.js.map

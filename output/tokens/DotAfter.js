@@ -10,6 +10,9 @@ class DotAfter extends Suffix_1.Suffix {
     increase() {
         this.count += 1;
     }
+    toString() {
+        return '.'.repeat(this.count);
+    }
 }
 exports.DotAfter = DotAfter;
 //# sourceMappingURL=DotAfter.js.map

@@ -7,6 +7,9 @@ class RepeatSkip extends BaseToken_1.BaseToken {
         super(TokenType_1.TokenType.RepeatSkip);
         this.parts = parts;
     }
+    toString() {
+        return `[${this.parts.map((value) => value.toString() + '.').reduce((pre, cur) => pre + cur)}]`;
+    }
 }
 exports.RepeatSkip = RepeatSkip;
 //# sourceMappingURL=RepeatSkip.js.map

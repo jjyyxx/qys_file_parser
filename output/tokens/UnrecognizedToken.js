@@ -7,6 +7,9 @@ class UnrecognizedToken extends BaseToken_1.BaseToken {
         super(TokenType_1.TokenType.Unrecognized);
         this.token = token;
     }
+    toString() {
+        return this.token;
+    }
 }
 exports.UnrecognizedToken = UnrecognizedToken;
 //# sourceMappingURL=UnrecognizedToken.js.map

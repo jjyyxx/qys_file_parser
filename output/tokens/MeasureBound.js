@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseToken_1 = require("./BaseToken");
 const TokenType_1 = require("./TokenType");
-class Terminal extends BaseToken_1.BaseToken {
+class MeasureBound extends BaseToken_1.BaseToken {
     constructor() {
-        super(TokenType_1.TokenType.Terminal);
+        super(TokenType_1.TokenType.MeasureBound);
     }
     toString() {
-        return '||';
+        return '|';
     }
 }
-exports.Terminal = Terminal;
-//# sourceMappingURL=Terminal.js.map
+exports.MeasureBound = MeasureBound;
+//# sourceMappingURL=MeasureBound.js.map

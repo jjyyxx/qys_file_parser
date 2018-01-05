@@ -60,4 +60,7 @@ Object.reverseFrom = (KVArray) => {
     });
     return obj;
 };
+Object.getKeyByValue = (object, value) => {
+    return Object.keys(object).find((key) => object[key] === value);
+};
 //# sourceMappingURL=Util.js.map

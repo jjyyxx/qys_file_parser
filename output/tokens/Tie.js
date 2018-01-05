@@ -6,6 +6,9 @@ class Tie extends BaseToken_1.BaseToken {
     constructor() {
         super(TokenType_1.TokenType.Tie);
     }
+    toString() {
+        return '^';
+    }
 }
 exports.Tie = Tie;
 //# sourceMappingURL=Tie.js.map

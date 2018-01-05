@@ -8,6 +8,10 @@ class Tuplet extends BaseToken {
         super(TokenType.Tuplet)
         this.count = count
     }
+
+    public toString(): string {
+        return `(${this.count})`
+    }
 }
 
 export { Tuplet }

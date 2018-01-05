@@ -8,6 +8,10 @@ class RepeatSkip extends BaseToken {
         super(TokenType.RepeatSkip)
         this.parts = parts
     }
+
+    public toString(): string {
+        return `[${this.parts.map((value) => value.toString() + '.').reduce((pre, cur) => pre + cur)}]`
+    }
 }
 
 export { RepeatSkip }

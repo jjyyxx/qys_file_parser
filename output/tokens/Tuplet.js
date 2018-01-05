@@ -7,6 +7,9 @@ class Tuplet extends BaseToken_1.BaseToken {
         super(TokenType_1.TokenType.Tuplet);
         this.count = count;
     }
+    toString() {
+        return `(${this.count})`;
+    }
 }
 exports.Tuplet = Tuplet;
 //# sourceMappingURL=Tuplet.js.map

@@ -67,11 +67,12 @@ String.prototype.toNumIfPossible = function() {
 }
 
 String.prototype.isNumeric = function() {
-        return !isNaN(this - parseFloat(this))
+    return !isNaN(this - parseFloat(this))
 }
 
 interface ObjectConstructor {
     reverseFrom(KVArray: Array<{ key: string, value: any }>): object
+    getKeyByValue(object: object, value: any): any
 }
 
 Object.reverseFrom = (KVArray: Array<{ key: string, value: any }>): object => {
@@ -80,4 +81,8 @@ Object.reverseFrom = (KVArray: Array<{ key: string, value: any }>): object => {
         obj[KVPair.key] = KVPair.value
     })
     return obj
+}
+
+Object.getKeyByValue = (object: any, value: any): any => {
+    return Object.keys(object).find((key) => object[key] === value)
 }

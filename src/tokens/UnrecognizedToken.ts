@@ -8,6 +8,10 @@ class UnrecognizedToken extends BaseToken {
         super(TokenType.Unrecognized)
         this.token = token
     }
+
+    public toString(): string {
+        return this.token
+    }
 }
 
 export { UnrecognizedToken }

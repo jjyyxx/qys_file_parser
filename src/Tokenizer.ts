@@ -1,9 +1,10 @@
-import { Appoggiatura } from './tokens/Appoggiatura'
+import { AppoggiaturaBound } from './tokens/AppoggiaturaBound'
 import { BaseToken } from './tokens/BaseToken'
 import { Chord } from './tokens/Chord'
 import { Comment } from './tokens/Comment'
-import { Measure } from './tokens/Measure'
-import { Repeat } from './tokens/Repeat'
+import { DotAfter } from './tokens/DotAfter'
+import { MeasureBound } from './tokens/MeasureBound'
+import { RepeatBound } from './tokens/RepeatBound'
 import { RepeatSkip } from './tokens/RepeatSkip'
 import { Setting } from './tokens/Setting'
 import { Staff } from './tokens/Staff.js'
@@ -15,16 +16,6 @@ import { Tuplet } from './tokens/Tuplet'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
 
 class Tokenizer {
-    public static readonly SuffixDict: { [Key: string]: SuffixType } = {
-        '\'': SuffixType.DotAbove,
-        ',': SuffixType.DotBelow,
-        'b': SuffixType.Flat,
-        '#': SuffixType.Sharp,
-        '-': SuffixType.Dash,
-        '_': SuffixType.Underline,
-        '.': SuffixType.DotAfter,
-    }
-    public static readonly Suffix = new Set(Object.keys(Tokenizer.SuffixDict))
     private content: string
     private pointer: number
     private length: number
@@ -63,8 +54,10 @@ class Tokenizer {
             const pitch = Number(char)
             if (pitch === 0) {
                 return new Staff({ isRest: true })
-            } else {
+            } else if (pitch >= 1 && pitch <= 7) {
                 return new Staff({ pitch })
+            } else {
+                return new UnrecognizedToken(char)
             }
         }
 
@@ -75,8 +68,8 @@ class Tokenizer {
         }
 
         // Suffix
-        if (Tokenizer.Suffix.has(char)) {
-            return new Suffix(Tokenizer.SuffixDict[char])
+        if (Suffix.Suffix.has(char)) {
+            return char === '.' ? new DotAfter() : new Suffix(Suffix.SuffixDict[char])
         }
 
         // Tie/Slur/Appoggiatura Right
@@ -86,7 +79,7 @@ class Tokenizer {
                 return new Tie()
             } else {
                 this.incPointer()
-                return new Appoggiatura(PairType.Right)
+                return new AppoggiaturaBound(PairType.Right)
             }
         }
 
@@ -101,13 +94,18 @@ class Tokenizer {
             if (tup) {
                 if (tup.endsWith('^')) {    // Appoggiatura
                     this.incPointer(-tup.length - 1) // reset
-                    return new Appoggiatura(PairType.Left)
+                    return new AppoggiaturaBound(PairType.Left)
                 } else {                    // Tuplet
                     if (tup.isNumeric()) {
                         return new Tuplet(Number(tup))
+                    } else {
+                        return new UnrecognizedToken(`(${tup})`)
                     }
                 }
             } else {
+                if (tup === '') {
+                    return new UnrecognizedToken('()')
+                }
                 return new UnrecognizedToken('(')
             }
         }
@@ -116,7 +114,7 @@ class Tokenizer {
         if (char === '|') {
             const next1 = this.nextChar(false)
             if (next1 !== '|') {
-                return new Measure()
+                return new MeasureBound()
             } else {
                 this.incPointer()
                 const next2 = this.nextChar(false)
@@ -124,7 +122,7 @@ class Tokenizer {
                     return new Terminal()
                 } else {
                     this.incPointer()
-                    return new Repeat(PairType.Left)
+                    return new RepeatBound(PairType.Left)
                 }
             }
         }
@@ -140,7 +138,7 @@ class Tokenizer {
                     return new UnrecognizedToken(':|')
                 } else {
                     this.incPointer()
-                    return new Repeat(PairType.Right)
+                    return new RepeatBound(PairType.Right)
                 }
             }
         }
@@ -160,6 +158,9 @@ class Tokenizer {
                     return new UnrecognizedToken(`[${skip}]`)
                 }
             } else {
+                if (skip === '') {
+                    return new UnrecognizedToken('[]')
+                }
                 return new UnrecognizedToken('[')
             }
         }
@@ -168,8 +169,17 @@ class Tokenizer {
         if (char === '<') {
             const setting = this.fetchUntil('>')
             if (setting) {
-                return new Setting(setting)
+                let settingToken: Setting
+                try {
+                    settingToken = new Setting(setting)
+                } catch (error) {
+                    return new UnrecognizedToken(`<${setting}>`)
+                }
+                return settingToken
             } else {
+                if (setting === '') {
+                    return new UnrecognizedToken('<>')  // TODO: improve pattern
+                }
                 return new UnrecognizedToken('<')
             }
         }
@@ -181,7 +191,7 @@ class Tokenizer {
                 return new UnrecognizedToken('/')
             }
             this.incPointer()
-            return new Comment(this.fetchUntil('\n'))
+            return new Comment(this.fetchUntil('\n', true))
         }
 
         if (char === '\n' || char === ' ') {    // FIXME: need more info about \n
@@ -210,10 +220,14 @@ class Tokenizer {
         return this.pointer >= this.length
     }
 
-    private fetchUntil(bound: string) {
-        const boundIndex = this.content.indexOf(bound, this.pointer)
+    private fetchUntil(bound: string, toLastIfNotFound = false) {
+        let boundIndex = this.content.indexOf(bound, this.pointer)
         if (boundIndex === -1) {
-            return undefined
+            if (toLastIfNotFound) {
+                boundIndex = this.content.length
+            } else {
+                return undefined
+            }
         }
         const res = this.content.slice(this.pointer, boundIndex)
         this.pointer = boundIndex + 1

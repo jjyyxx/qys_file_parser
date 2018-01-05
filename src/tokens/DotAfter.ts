@@ -11,6 +11,10 @@ class DotAfter extends Suffix {
     public increase() {
         this.count += 1
     }
+
+    public toString(): string {
+        return '.'.repeat(this.count)
+    }
 }
 
 export { DotAfter }

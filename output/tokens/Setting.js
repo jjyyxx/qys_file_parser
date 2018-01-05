@@ -58,9 +58,28 @@ class Setting extends BaseToken_1.BaseToken {
         }
         return finalSetting;
     }
-    constructor(setting) {
+    constructor(settings) {
         super(TokenType_1.TokenType.Setting);
-        this.setting = Setting.parseSetting(setting);
+        this.settings = Setting.parseSetting(settings);
+    }
+    toString() {
+        return this.settings.map((value) => {
+            switch (value.key) {
+                case 'Volume':
+                    return Number.isInteger(value.value) ? value.value.toString() + '.0' : value.value.toString();
+                case 'Speed':
+                case 'Bar':
+                    return value.value.toString();
+                case 'Beat':
+                    return '/' + value.value.toString();
+                case 'Key':
+                    return `1=${Object.getKeyByValue(GlobalSettings_1.GlobalSettings.tonalityDict, value.value)}`;
+                case 'Oct':
+                    return ''; // FIXME: currently fail to support it
+                default:
+                    return `${value.key}:${value.value}`;
+            }
+        }).reduce((pre, cur) => pre + cur);
     }
 }
 exports.Setting = Setting;

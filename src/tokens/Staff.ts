@@ -31,6 +31,10 @@ class Staff extends BaseToken {
         }
     }
 
+    public toString(): string {
+        return `${this.oriPitch}${this.suffixes.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')}`
+    }
+
     public get pitch(): number {
         return this.calcPitch()
     }
@@ -52,7 +56,7 @@ class Staff extends BaseToken {
                 case SuffixType.Flat:
                     pitch -= 1
                     break
-                case SuffixType.DotAbove:
+                case SuffixType.Sharp:
                     pitch += 1
                     break
                 default:

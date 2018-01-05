@@ -7,6 +7,9 @@ class Comment extends BaseToken_1.BaseToken {
         super(TokenType_1.TokenType.Comment);
         this.comment = comment;
     }
+    toString() {
+        return `//${this.comment}\n`;
+    }
 }
 exports.Comment = Comment;
 //# sourceMappingURL=Comment.js.map

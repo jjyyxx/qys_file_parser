@@ -8,6 +8,10 @@ class Comment extends BaseToken {
         super(TokenType.Comment)
         this.comment = comment
     }
+
+    public toString(): string {
+        return `//${this.comment}\n`
+    }
 }
 
 export { Comment }

@@ -19,6 +19,9 @@ class Staff extends BaseToken_js_1.BaseToken {
             this.suffixes.push(suffix);
         }
     }
+    toString() {
+        return `${this.oriPitch}${this.suffixes.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')}`;
+    }
     get pitch() {
         return this.calcPitch();
     }
@@ -38,7 +41,7 @@ class Staff extends BaseToken_js_1.BaseToken {
                 case TokenType_1.SuffixType.Flat:
                     pitch -= 1;
                     break;
-                case TokenType_1.SuffixType.DotAbove:
+                case TokenType_1.SuffixType.Sharp:
                     pitch += 1;
                     break;
                 default:
