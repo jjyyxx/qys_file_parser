@@ -5,10 +5,12 @@ import { SuffixType, TokenType } from './TokenType'
 
 class Staff extends BaseToken {
     public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
-    public readonly isDuplicate: boolean
+    public isDuplicate: boolean
     public readonly isRest: boolean
     public readonly suffixes: Suffix[]
-    public readonly oriPitch: number
+    public readonly oriPitchLiteral: number
+    public oriPitch: number
+    public oriBeatCount: number
 
     constructor({
         pitch = 0,
@@ -16,10 +18,18 @@ class Staff extends BaseToken {
         isDuplicate = false,
     }) {
         super(TokenType.Staff)
-        this.oriPitch = pitch
+        this.oriPitchLiteral = pitch
+        this.oriPitch = Staff.pitchDict[this.oriPitchLiteral]
+        this.oriBeatCount = 1
         this.isRest = isRest
         this.isDuplicate = isDuplicate
         this.suffixes = []
+    }
+
+    public alterDup(pitch: number, beatCount: number) {
+        this.oriPitch = pitch
+        this.oriBeatCount = beatCount
+        this.isDuplicate = false
     }
 
     public appendSuffix(suffix: Suffix) {
@@ -32,7 +42,12 @@ class Staff extends BaseToken {
     }
 
     public toString(): string {
-        return `${this.oriPitch}${this.suffixes.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')}`
+        const suffixString = this.suffixes.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
+        if (this.isDuplicate) {
+            return '%' + suffixString
+        } else {
+            return this.oriPitchLiteral.toString() + suffixString
+        }
     }
 
     public get pitch(): number {
@@ -44,7 +59,7 @@ class Staff extends BaseToken {
     }
 
     private calcPitch(): number { // TODO: improve pattern
-        let pitch = Staff.pitchDict[this.oriPitch]
+        let pitch = this.oriPitch
         this.suffixes.forEach((suffix) => {
             switch (suffix.suffixType) {
                 case SuffixType.DotAbove:
@@ -67,7 +82,7 @@ class Staff extends BaseToken {
     }
 
     private calcBeat(): number { // TODO: improve pattern
-        let beatCount = 1
+        let beatCount = this.oriBeatCount
         this.suffixes.forEach((suffix) => {
             switch (suffix.suffixType) {
                 case SuffixType.Dash:
