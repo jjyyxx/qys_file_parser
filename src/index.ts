@@ -1,6 +1,8 @@
 import { qysFileParser } from './qysFileParser'
+import { Tokenizer } from './Tokenizer'
+import { PairType, SuffixType, TokenType } from './tokens/TokenType'
 // FIXME: find better way
 // tslint:disable-next-line:no-var-requires
 require('./Util')
 
-export { qysFileParser }
+export { qysFileParser, Tokenizer, PairType, SuffixType, TokenType }

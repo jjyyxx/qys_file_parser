@@ -18,14 +18,14 @@
   },
   "homepage": "https://github.com/jjyyxx/qm_parser#readme",
   "jest": {
-    "moduleFileExtensions": [
-      "js"
-    ],
     "testMatch": [
-      "**/__tests__/*.(js)"
+      "**/__tests__/*.(js)",
+      "**/__tests__/tokenizer/*.(js)"
     ]
   },
   "devDependencies": {
+    "eslint": "^4.14.0",
+    "eslint-plugin-jest": "^21.5.0",
     "@types/jest": "^21.1.9",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
@@ -35,8 +35,5 @@
     "jest": "^22.0.3",
     "typescript": "^2.6.2"
   },
-  "dependencies": {
-    "eslint": "^4.14.0",
-    "eslint-plugin-jest": "^21.5.0"
-  }
+  "dependencies": {}
 }
