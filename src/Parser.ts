@@ -10,7 +10,7 @@ import { Staff } from './tokens/Staff'
 import { TokenType } from './tokens/TokenType'
 
 class Parser {
-    public tokens: BaseToken[]
+    public tokens: any[]
     // public parsed: any[]
 
     constructor(tokens: BaseToken[]) {

@@ -1,7 +1,10 @@
 import { BaseToken } from './BaseToken.js'
+import { Token } from './TokenDecorator'
 import { SuffixType, TokenType } from './TokenType'
 
+@Token
 class Suffix extends BaseToken {
+    public static pattern = /./
     public static readonly SuffixDict: { [Key: string]: SuffixType } = {
         '\'': SuffixType.DotAbove,
         ',': SuffixType.DotBelow,

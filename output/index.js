@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Detokenizer_1 = require("./Detokenizer");
 exports.Detokenizer = Detokenizer_1.Detokenizer;
-const qysFileParser_1 = require("./qysFileParser");
+const qysFileParser_1 = require("./Old/qysFileParser");
 exports.qysFileParser = qysFileParser_1.qysFileParser;
 const Tokenizer_1 = require("./Tokenizer");
 exports.Tokenizer = Tokenizer_1.Tokenizer;

@@ -1,8 +1,11 @@
 import { GlobalSettings } from '../GlobalSettings'
 import { BaseToken } from './BaseToken'
+import { Token } from './TokenDecorator'
 import { TokenType } from './TokenType'
 
+@Token
 class Setting extends BaseToken {
+    public static pattern = /./
     private static parseSetting(setting: string): Array<{ key: string, value: any }> {
         const finalSetting: Array<{ key: string, value: any }> = []
         const possibleNum = Number(setting)

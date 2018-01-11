@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const GlobalSettings_1 = require("./GlobalSettings");
+const GlobalSettings_1 = require("../GlobalSettings");
 const Section_1 = require("./Section");
 const StaffUnit_1 = require("./StaffUnit");
 const Tie_1 = require("./Tie");

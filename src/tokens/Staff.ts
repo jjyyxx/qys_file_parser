@@ -1,9 +1,12 @@
 import { BaseToken } from './BaseToken.js'
 import { DotAfter } from './DotAfter'
 import { Suffix } from './Suffix'
+import { Token } from './TokenDecorator'
 import { SuffixType, TokenType } from './TokenType'
 
+@Token
 class Staff extends BaseToken {
+    public static pattern = /./
     public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
     public isDuplicate: boolean
     public readonly isRest: boolean

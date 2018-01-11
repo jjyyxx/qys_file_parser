@@ -1,7 +1,10 @@
 import { BaseToken } from './BaseToken'
+import { Token } from './TokenDecorator'
 import { PairType, TokenType } from './TokenType'
 
+@Token
 class RepeatSkip extends BaseToken {
+    public static pattern = /./
     public readonly parts: number[]
 
     constructor(parts: number[]) {

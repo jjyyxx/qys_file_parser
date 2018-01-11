@@ -1,7 +1,10 @@
 import { Suffix } from './Suffix'
+import { Token } from './TokenDecorator'
 import { SuffixType } from './TokenType'
 
+@Token
 class DotAfter extends Suffix {
+    public static pattern = /./
     public count: number
     constructor() {
         super(SuffixType.DotAfter)

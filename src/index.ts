@@ -1,5 +1,5 @@
 import { Detokenizer } from './Detokenizer'
-import { qysFileParser } from './qysFileParser'
+import { qysFileParser } from './Old/qysFileParser'
 import { Tokenizer } from './Tokenizer'
 import { PairType, SuffixType, TokenType } from './tokens/TokenType'
 // FIXME: find better way

@@ -1,4 +1,4 @@
-import { GlobalSettings } from './GlobalSettings'
+import { GlobalSettings } from '../GlobalSettings'
 import { Section } from './Section'
 import { StaffUnit } from './StaffUnit'
 import { Tie } from './Tie'

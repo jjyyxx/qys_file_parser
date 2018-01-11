@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const GlobalSettings_1 = require("./GlobalSettings");
+const GlobalSettings_1 = require("../GlobalSettings");
 const StaffUnit_1 = require("./StaffUnit");
 class Dispatcher {
     constructor(context) {

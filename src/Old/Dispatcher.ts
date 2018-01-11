@@ -1,4 +1,4 @@
-import { GlobalSettings } from './GlobalSettings'
+import { GlobalSettings } from '../GlobalSettings'
 import { qysParserContext } from './qysParserContext'
 import { Section } from './Section'
 import { StaffUnit } from './StaffUnit'
