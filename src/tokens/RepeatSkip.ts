@@ -1,12 +1,15 @@
 import { BaseToken } from './BaseToken'
+import { Token } from './TokenDecorator'
 import { PairType, TokenType } from './TokenType'
 
+@Token
 class RepeatSkip extends BaseToken {
+    public static pattern = /^\[(\d+.)+\]/
     public readonly parts: number[]
 
-    constructor(parts: number[]) {
+    constructor(matched: RegExpMatchArray) {
         super(TokenType.RepeatSkip)
-        this.parts = parts
+        this.parts = matched[0].slice(1, -2).split('.').map((x) => Number(x))
     }
 
     public toString(): string {

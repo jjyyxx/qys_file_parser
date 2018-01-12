@@ -1,4 +1,5 @@
 import { BaseToken } from './BaseToken'
+import { Token } from './TokenDecorator'
 import { TokenType } from './TokenType'
 
 class UnrecognizedToken extends BaseToken {

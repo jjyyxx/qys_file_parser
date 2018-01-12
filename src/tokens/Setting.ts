@@ -1,8 +1,11 @@
 import { GlobalSettings } from '../GlobalSettings'
 import { BaseToken } from './BaseToken'
+import { Token } from './TokenDecorator'
 import { TokenType } from './TokenType'
 
+@Token
 class Setting extends BaseToken {
+    public static pattern = /^<[^>]*>/     // TODO: 1. consider merge 2. more strict regex
     private static parseSetting(setting: string): Array<{ key: string, value: any }> {
         const finalSetting: Array<{ key: string, value: any }> = []
         const possibleNum = Number(setting)
@@ -56,9 +59,9 @@ class Setting extends BaseToken {
 
     public readonly settings: Array<{ key: string, value: any }>
 
-    constructor(settings: string) {
+    constructor(matched: RegExpMatchArray) {
         super(TokenType.Setting)
-        this.settings = Setting.parseSetting(settings)
+        this.settings = Setting.parseSetting(matched[0].slice(1, -1))
     }
 
     public toString(): string {

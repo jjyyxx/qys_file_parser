@@ -5,12 +5,12 @@ import { ParsedTie } from './components/ParsedTie'
 import { ParsedTuplet } from './components/ParsedTuplet'
 import { PairType } from './index'
 import { BaseToken } from './tokens/BaseToken'
+import { Note } from './tokens/Note'
 import { Setting } from './tokens/Setting'
-import { Staff } from './tokens/Staff'
 import { TokenType } from './tokens/TokenType'
 
 class Parser {
-    public tokens: BaseToken[]
+    public tokens: any[]
     // public parsed: any[]
 
     constructor(tokens: BaseToken[]) {
@@ -32,8 +32,8 @@ class Parser {
         const parsed = []
         while (pointer < length) {
             const element = cleaned[pointer]
-            if (element.type === TokenType.AppoggiaturaBound && element.leftOrRight === PairType.Left) {
-                const index = cleaned.slice(pointer + 1).findIndex((value) => value.type === TokenType.AppoggiaturaBound
+            if (element.type === TokenType.Appoggiatura && element.leftOrRight === PairType.Left) {
+                const index = cleaned.slice(pointer + 1).findIndex((value) => value.type === TokenType.Appoggiatura
                     && value.leftOrRight === PairType.Right)
                 parsed.push(new Appoggiatura(cleaned.slice(pointer + 1, index)))
                 pointer = index
@@ -101,11 +101,11 @@ class Parser {
     private removeDup() {
         let pointer = 0
         const length = this.tokens.length
-        let lastStaff: Staff
+        let lastStaff: Note
         while (pointer < length) {
             const element = this.tokens[pointer]
-            if (element.type === TokenType.Staff) {
-                const curStaff = element as Staff
+            if (element.type === TokenType.Note) {
+                const curStaff = element as Note
                 if (curStaff.isDuplicate) {
                     curStaff.alterDup(lastStaff.pitch, lastStaff.beatCount)
                 } else {
@@ -123,8 +123,8 @@ class Parser {
         let settingContext = {}
         while (pointer < length) {
             const element = this.tokens[pointer]
-            if (element.type === TokenType.Staff) {
-                const curStaff = element as Staff
+            if (element.type === TokenType.Note) {
+                const curStaff = element as Note
                 cleaned.push(new ParsedStaff(curStaff, settingContext))
             } else if (element.type === TokenType.Setting) {
                 const curSetting = element as Setting
