@@ -10,15 +10,23 @@ const BaseToken_js_1 = require("./BaseToken.js");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let Suffix = Suffix_1 = class Suffix extends BaseToken_js_1.BaseToken {
-    constructor(suffix) {
+    constructor(matched) {
         super(TokenType_1.TokenType.Suffix);
-        this.suffixType = suffix;
+        const suffix = matched[0];
+        if (suffix.charAt(0) === '.') {
+            this.dotCount = suffix.length;
+            this.suffixType = TokenType_1.SuffixType.DotAfter;
+        }
+        else {
+            this.dotCount = 0;
+            this.suffixType = Suffix_1.SuffixDict[suffix];
+        }
     }
     toString() {
         return Object.getKeyByValue(Suffix_1.SuffixDict, this.suffixType);
     }
 };
-Suffix.pattern = /./;
+Suffix.pattern = /^('|,|b|#|\-|_|\.+)/;
 Suffix.SuffixDict = {
     '\'': TokenType_1.SuffixType.DotAbove,
     ',': TokenType_1.SuffixType.DotBelow,
@@ -28,7 +36,6 @@ Suffix.SuffixDict = {
     '_': TokenType_1.SuffixType.Underline,
     '.': TokenType_1.SuffixType.DotAfter,
 };
-Suffix.Suffix = new Set(Object.keys(Suffix_1.SuffixDict));
 Suffix = Suffix_1 = __decorate([
     TokenDecorator_1.Token
 ], Suffix);

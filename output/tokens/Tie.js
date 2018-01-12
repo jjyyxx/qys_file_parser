@@ -17,7 +17,7 @@ let Tie = class Tie extends BaseToken_1.BaseToken {
         return '^';
     }
 };
-Tie.pattern = /./;
+Tie.pattern = /^\^/;
 Tie = __decorate([
     TokenDecorator_1.Token
 ], Tie);

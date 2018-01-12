@@ -6,21 +6,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Tokenizer_1 = require("../Tokenizer");
 const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
-let AppoggiaturaBound = class AppoggiaturaBound extends BaseToken_1.BaseToken {
-    constructor(leftOrRight) {
-        super(TokenType_1.TokenType.AppoggiaturaBound);
-        this.leftOrRight = leftOrRight;
+let Appoggiatura = class Appoggiatura extends BaseToken_1.BaseToken {
+    constructor(matched) {
+        super(TokenType_1.TokenType.Appoggiatura);
+        this.notes = Tokenizer_1.Tokenizer.tokenize(matched[0].slice(1, -2));
     }
     toString() {
-        return this.leftOrRight === TokenType_1.PairType.Left ? '(' : '^)';
+        return `(${this.notes.map((note) => note.toString()).reduce((pre, cur) => pre + cur)}^)`;
     }
 };
-AppoggiaturaBound.pattern = /./;
-AppoggiaturaBound = __decorate([
+Appoggiatura.pattern = /^\([^)]+\^\)/;
+Appoggiatura = __decorate([
     TokenDecorator_1.Token
-], AppoggiaturaBound);
-exports.AppoggiaturaBound = AppoggiaturaBound;
-//# sourceMappingURL=AppoggiaturaBound.js.map
+], Appoggiatura);
+exports.Appoggiatura = Appoggiatura;
+//# sourceMappingURL=Appoggiatura.js.map

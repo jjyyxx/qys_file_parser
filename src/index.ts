@@ -1,9 +1,10 @@
-import { Detokenizer } from './Detokenizer'
-import { qysFileParser } from './Old/qysFileParser'
-import { Tokenizer } from './Tokenizer'
-import { PairType, SuffixType, TokenType } from './tokens/TokenType'
 // FIXME: find better way
 // tslint:disable-next-line:no-var-requires
 require('./Util')
+// tslint:disable-next-line:no-var-requires
+require('./Global')
 
-export { qysFileParser, Tokenizer, PairType, SuffixType, TokenType,  Detokenizer }
+export { Detokenizer } from './Detokenizer'
+export { qysFileParser } from './Old/qysFileParser'
+export { Tokenizer } from './Tokenizer'
+export * from './tokens'

@@ -4,7 +4,7 @@ import { SuffixType, TokenType } from './TokenType'
 
 @Token
 class Suffix extends BaseToken {
-    public static pattern = /./
+    public static pattern = /^('|,|b|#|\-|_|\.+)/
     public static readonly SuffixDict: { [Key: string]: SuffixType } = {
         '\'': SuffixType.DotAbove,
         ',': SuffixType.DotBelow,
@@ -14,11 +14,18 @@ class Suffix extends BaseToken {
         '_': SuffixType.Underline,
         '.': SuffixType.DotAfter,
     }
-    public static readonly Suffix = new Set(Object.keys(Suffix.SuffixDict))
     public readonly suffixType: SuffixType
-    constructor(suffix: SuffixType) {
+    public readonly dotCount: number
+    constructor(matched: RegExpMatchArray) {
         super(TokenType.Suffix)
-        this.suffixType = suffix
+        const suffix = matched[0]
+        if (suffix.charAt(0) === '.') {
+            this.dotCount = suffix.length
+            this.suffixType = SuffixType.DotAfter
+        } else {
+            this.dotCount = 0
+            this.suffixType = Suffix.SuffixDict[suffix]
+        }
     }
 
     public toString(): string {

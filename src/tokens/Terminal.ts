@@ -4,7 +4,7 @@ import { TokenType } from './TokenType'
 
 @Token
 class Terminal extends BaseToken {
-    public static pattern = /./
+    public static pattern = /^\|\|(?!\:)/
     constructor() {
         super(TokenType.Terminal)
     }

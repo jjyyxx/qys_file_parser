@@ -6,32 +6,37 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Tokenizer_1 = require("../Tokenizer");
 const BaseToken_js_1 = require("./BaseToken.js");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
-let Staff = Staff_1 = class Staff extends BaseToken_js_1.BaseToken {
-    constructor({ pitch = 0, isRest = false, isDuplicate = false, }) {
-        super(TokenType_1.TokenType.Staff);
-        this.oriPitchLiteral = pitch;
-        this.oriPitch = Staff_1.pitchDict[this.oriPitchLiteral];
+let Note = Note_1 = class Note extends BaseToken_js_1.BaseToken {
+    constructor(matched) {
+        super(TokenType_1.TokenType.Note);
+        this.oriPitchLiteral = 0;
         this.oriBeatCount = 1;
-        this.isRest = isRest;
-        this.isDuplicate = isDuplicate;
-        this.suffixes = [];
+        this.isRest = false;
+        this.isDuplicate = false;
+        const note = matched[0];
+        const pitch = note.charAt(0);
+        switch (pitch) {
+            case '0':
+                this.isRest = true;
+                break;
+            case '%':
+                this.isDuplicate = true;
+                break;
+            default:
+                this.oriPitchLiteral = Number(pitch);
+                break;
+        }
+        this.oriPitch = Note_1.pitchDict[this.oriPitchLiteral];
+        this.suffixes = Tokenizer_1.Tokenizer.tokenize(note.slice(1));
     }
     alterDup(pitch, beatCount) {
         this.oriPitch = pitch;
         this.oriBeatCount = beatCount;
         this.isDuplicate = false;
-    }
-    appendSuffix(suffix) {
-        const lastSuffix = this.suffixes.last();
-        if (lastSuffix && lastSuffix.suffixType === TokenType_1.SuffixType.DotAfter && suffix.suffixType === TokenType_1.SuffixType.DotAfter) {
-            lastSuffix.increase();
-        }
-        else {
-            this.suffixes.push(suffix);
-        }
     }
     toString() {
         const suffixString = this.suffixes.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '');
@@ -81,7 +86,7 @@ let Staff = Staff_1 = class Staff extends BaseToken_js_1.BaseToken {
                     beatCount /= 2;
                     break;
                 case TokenType_1.SuffixType.DotAfter:
-                    beatCount *= 2 - Math.pow(2, -suffix.count);
+                    beatCount *= 2 - Math.pow(2, -suffix.dotCount);
                     break;
                 default:
                     break;
@@ -90,11 +95,11 @@ let Staff = Staff_1 = class Staff extends BaseToken_js_1.BaseToken {
         return beatCount;
     }
 };
-Staff.pattern = /^[0-7%]/;
-Staff.pitchDict = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 };
-Staff = Staff_1 = __decorate([
+Note.pattern = /^[0-7%][',b#\-_.]*/;
+Note.pitchDict = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 };
+Note = Note_1 = __decorate([
     TokenDecorator_1.Token
-], Staff);
-exports.Staff = Staff;
-var Staff_1;
-//# sourceMappingURL=Staff.js.map
+], Note);
+exports.Note = Note;
+var Note_1;
+//# sourceMappingURL=Note.js.map

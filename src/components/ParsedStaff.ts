@@ -1,4 +1,4 @@
-import { Staff } from '../tokens/Staff'
+import { Note } from '../tokens/Note'
 
 class ParsedStaff {
     public readonly beatCount: number
@@ -6,7 +6,7 @@ class ParsedStaff {
     public readonly isRest: boolean
     public setting: any
 
-    constructor({beatCount, pitch, isRest}: Staff, setting: any) {
+    constructor({beatCount, pitch, isRest}: Note, setting: any) {
         this.beatCount = beatCount
         this.pitch = pitch
         this.isRest = isRest

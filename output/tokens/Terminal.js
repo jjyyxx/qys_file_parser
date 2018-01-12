@@ -17,7 +17,7 @@ let Terminal = class Terminal extends BaseToken_1.BaseToken {
         return '||';
     }
 };
-Terminal.pattern = /./;
+Terminal.pattern = /^\|\|(?!\:)/;
 Terminal = __decorate([
     TokenDecorator_1.Token
 ], Terminal);

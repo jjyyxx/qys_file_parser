@@ -4,7 +4,7 @@ import { TokenType } from './TokenType'
 
 @Token
 class Tie extends BaseToken {
-    public static pattern = /./
+    public static pattern = /^\^/
     constructor() {
         super(TokenType.Tie)
     }

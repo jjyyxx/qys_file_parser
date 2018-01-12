@@ -10,15 +10,15 @@ const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let Comment = class Comment extends BaseToken_1.BaseToken {
-    constructor(comment) {
+    constructor(matched) {
         super(TokenType_1.TokenType.Comment);
-        this.comment = comment;
+        this.comment = matched[0].slice(2, -1);
     }
     toString() {
         return `//${this.comment}\n`;
     }
 };
-Comment.pattern = /./;
+Comment.pattern = /^\/\/.*\n/;
 Comment = __decorate([
     TokenDecorator_1.Token
 ], Comment);

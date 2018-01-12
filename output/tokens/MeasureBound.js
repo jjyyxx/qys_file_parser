@@ -17,7 +17,7 @@ let MeasureBound = class MeasureBound extends BaseToken_1.BaseToken {
         return '|';
     }
 };
-MeasureBound.pattern = /./;
+MeasureBound.pattern = /^\|(?!\|)/;
 MeasureBound = __decorate([
     TokenDecorator_1.Token
 ], MeasureBound);

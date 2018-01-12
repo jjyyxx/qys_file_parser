@@ -10,15 +10,22 @@ const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let RepeatBound = class RepeatBound extends BaseToken_1.BaseToken {
-    constructor(leftOrRight) {
+    constructor(matched) {
         super(TokenType_1.TokenType.RepeatBound);
-        this.leftOrRight = leftOrRight;
+        switch (matched[0]) {
+            case '||:':
+                this.leftOrRight = TokenType_1.PairType.Left;
+                break;
+            case ':||':
+                this.leftOrRight = TokenType_1.PairType.Right;
+                break;
+        }
     }
     toString() {
         return this.leftOrRight === TokenType_1.PairType.Left ? '||:' : ':||';
     }
 };
-RepeatBound.pattern = /./;
+RepeatBound.pattern = /^(\|\|:|:\|\|)/;
 RepeatBound = __decorate([
     TokenDecorator_1.Token
 ], RepeatBound);

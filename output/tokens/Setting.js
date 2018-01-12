@@ -11,9 +11,9 @@ const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let Setting = Setting_1 = class Setting extends BaseToken_1.BaseToken {
-    constructor(settings) {
+    constructor(matched) {
         super(TokenType_1.TokenType.Setting);
-        this.settings = Setting_1.parseSetting(settings);
+        this.settings = Setting_1.parseSetting(matched[0].slice(1, -1));
     }
     static parseSetting(setting) {
         const finalSetting = [];
@@ -89,7 +89,7 @@ let Setting = Setting_1 = class Setting extends BaseToken_1.BaseToken {
         }).reduce((pre, cur) => pre + cur);
     }
 };
-Setting.pattern = /./;
+Setting.pattern = /^<[^>]*>/; // TODO: 1. consider merge 2. more strict regex
 Setting = Setting_1 = __decorate([
     TokenDecorator_1.Token
 ], Setting);

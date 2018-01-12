@@ -26,8 +26,8 @@ class Parser {
         const parsed = [];
         while (pointer < length) {
             const element = cleaned[pointer];
-            if (element.type === TokenType_1.TokenType.AppoggiaturaBound && element.leftOrRight === index_1.PairType.Left) {
-                const index = cleaned.slice(pointer + 1).findIndex((value) => value.type === TokenType_1.TokenType.AppoggiaturaBound
+            if (element.type === TokenType_1.TokenType.Appoggiatura && element.leftOrRight === index_1.PairType.Left) {
+                const index = cleaned.slice(pointer + 1).findIndex((value) => value.type === TokenType_1.TokenType.Appoggiatura
                     && value.leftOrRight === index_1.PairType.Right);
                 parsed.push(new Appoggiatura_1.Appoggiatura(cleaned.slice(pointer + 1, index)));
                 pointer = index;
@@ -98,7 +98,7 @@ class Parser {
         let lastStaff;
         while (pointer < length) {
             const element = this.tokens[pointer];
-            if (element.type === TokenType_1.TokenType.Staff) {
+            if (element.type === TokenType_1.TokenType.Note) {
                 const curStaff = element;
                 if (curStaff.isDuplicate) {
                     curStaff.alterDup(lastStaff.pitch, lastStaff.beatCount);
@@ -117,7 +117,7 @@ class Parser {
         let settingContext = {};
         while (pointer < length) {
             const element = this.tokens[pointer];
-            if (element.type === TokenType_1.TokenType.Staff) {
+            if (element.type === TokenType_1.TokenType.Note) {
                 const curStaff = element;
                 cleaned.push(new ParsedStaff_1.ParsedStaff(curStaff, settingContext));
             }

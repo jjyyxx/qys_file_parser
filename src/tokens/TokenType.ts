@@ -1,10 +1,10 @@
 enum TokenType {
-    Staff, // 1 2 3 4 5 6 7 0 %
+    Note, // 1 2 3 4 5 6 7 0 %
     Suffix,
     Tie,
     Chord,
     Tuplet,
-    AppoggiaturaBound,
+    Appoggiatura,
     Setting,
     MeasureBound,
     Comment,

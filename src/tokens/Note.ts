@@ -1,12 +1,12 @@
+import { Tokenizer } from '../Tokenizer'
 import { BaseToken } from './BaseToken.js'
-import { DotAfter } from './DotAfter'
 import { Suffix } from './Suffix'
 import { Token } from './TokenDecorator'
 import { SuffixType, TokenType } from './TokenType'
 
 @Token
-class Staff extends BaseToken {
-    public static pattern = /./
+class Note extends BaseToken {
+    public static pattern = /^[0-7%][',b#\-_.]*/
     public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
     public isDuplicate: boolean
     public readonly isRest: boolean
@@ -15,33 +15,33 @@ class Staff extends BaseToken {
     public oriPitch: number
     public oriBeatCount: number
 
-    constructor({
-        pitch = 0,
-        isRest = false,
-        isDuplicate = false,
-    }) {
-        super(TokenType.Staff)
-        this.oriPitchLiteral = pitch
-        this.oriPitch = Staff.pitchDict[this.oriPitchLiteral]
+    constructor(matched: RegExpMatchArray) {
+        super(TokenType.Note)
+        this.oriPitchLiteral = 0
         this.oriBeatCount = 1
-        this.isRest = isRest
-        this.isDuplicate = isDuplicate
-        this.suffixes = []
+        this.isRest = false
+        this.isDuplicate = false
+        const note = matched[0]
+        const pitch = note.charAt(0)
+        switch (pitch) {
+            case '0':
+                this.isRest = true
+                break
+            case '%':
+                this.isDuplicate = true
+                break
+            default:
+                this.oriPitchLiteral = Number(pitch)
+                break
+        }
+        this.oriPitch = Note.pitchDict[this.oriPitchLiteral]
+        this.suffixes = Tokenizer.tokenize(note.slice(1))
     }
 
     public alterDup(pitch: number, beatCount: number) {
         this.oriPitch = pitch
         this.oriBeatCount = beatCount
         this.isDuplicate = false
-    }
-
-    public appendSuffix(suffix: Suffix) {
-        const lastSuffix = this.suffixes.last()
-        if (lastSuffix && lastSuffix.suffixType === SuffixType.DotAfter && suffix.suffixType === SuffixType.DotAfter) {
-            (lastSuffix as DotAfter).increase()
-        } else {
-            this.suffixes.push(suffix)
-        }
     }
 
     public toString(): string {
@@ -95,7 +95,7 @@ class Staff extends BaseToken {
                     beatCount /= 2
                     break
                 case SuffixType.DotAfter:
-                    beatCount *= 2 - Math.pow(2, - (suffix as DotAfter).count)
+                    beatCount *= 2 - Math.pow(2, - suffix.dotCount)
                     break
                 default:
                     break
@@ -105,4 +105,4 @@ class Staff extends BaseToken {
     }
 }
 
-export { Staff }
+export { Note }

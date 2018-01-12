@@ -6,18 +6,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Tokenizer_1 = require("../Tokenizer");
 const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let Chord = class Chord extends BaseToken_1.BaseToken {
-    constructor() {
+    constructor(matched) {
         super(TokenType_1.TokenType.Chord);
+        this.notes = matched[0].split('&').map((note) => Tokenizer_1.Tokenizer.tokenize(note))
+            .reduce((pre, cur) => (pre.push(...cur), pre));
     }
     toString() {
-        return '&';
+        let str = '';
+        const length = this.notes.length - 1;
+        for (let i = 0; i < length; i++) {
+            str += this.notes[i].toString() + '&';
+        }
+        return str + this.notes.last().toString();
     }
 };
-Chord.pattern = /./;
+Chord.pattern = /^([0-7%][',b#\-_.]*&)+[0-7%][',b#\-_.]*/;
 Chord = __decorate([
     TokenDecorator_1.Token
 ], Chord);

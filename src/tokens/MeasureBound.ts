@@ -4,7 +4,7 @@ import { TokenType } from './TokenType'
 
 @Token
 class MeasureBound extends BaseToken {
-    public static pattern = /./
+    public static pattern = /^\|(?!\|)/
     constructor() {
         super(TokenType.MeasureBound)
     }

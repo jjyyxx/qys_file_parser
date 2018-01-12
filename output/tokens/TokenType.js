@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var TokenType;
 (function (TokenType) {
-    TokenType[TokenType["Staff"] = 0] = "Staff";
+    TokenType[TokenType["Note"] = 0] = "Note";
     TokenType[TokenType["Suffix"] = 1] = "Suffix";
     TokenType[TokenType["Tie"] = 2] = "Tie";
     TokenType[TokenType["Chord"] = 3] = "Chord";
     TokenType[TokenType["Tuplet"] = 4] = "Tuplet";
-    TokenType[TokenType["AppoggiaturaBound"] = 5] = "AppoggiaturaBound";
+    TokenType[TokenType["Appoggiatura"] = 5] = "Appoggiatura";
     TokenType[TokenType["Setting"] = 6] = "Setting";
     TokenType[TokenType["MeasureBound"] = 7] = "MeasureBound";
     TokenType[TokenType["Comment"] = 8] = "Comment";

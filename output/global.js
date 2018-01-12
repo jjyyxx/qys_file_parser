@@ -1,12 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function RegisterPattern(constuctor, pattern) {
-    Patterns.push({
-        constuctor,
-        pattern,
-    });
+const UnrecognizedToken_1 = require("./tokens/UnrecognizedToken");
+class Global {
+    static RegisterPattern(constuctor, pattern) {
+        Global.Patterns.push({
+            constuctor,
+            pattern,
+        });
+    }
 }
-exports.RegisterPattern = RegisterPattern;
-const Patterns = [];
-exports.Patterns = Patterns;
-//# sourceMappingURL=global.js.map
+Global.Patterns = [];
+Global.FallbackToken = UnrecognizedToken_1.UnrecognizedToken;
+exports.Global = Global;
+//# sourceMappingURL=Global.js.map

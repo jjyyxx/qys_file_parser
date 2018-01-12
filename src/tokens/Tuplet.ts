@@ -4,12 +4,12 @@ import { TokenType } from './TokenType'
 
 @Token
 class Tuplet extends BaseToken {
-    public static pattern = /./
+    public static pattern = /^\(\d+\)/
     public readonly count: number
 
-    constructor(count: number) {
+    constructor(matched: RegExpMatchArray) {
         super(TokenType.Tuplet)
-        this.count = count
+        this.count = Number(matched[0].slice(1, -1))
     }
 
     public toString(): string {

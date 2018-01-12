@@ -10,15 +10,15 @@ const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let Tuplet = class Tuplet extends BaseToken_1.BaseToken {
-    constructor(count) {
+    constructor(matched) {
         super(TokenType_1.TokenType.Tuplet);
-        this.count = count;
+        this.count = Number(matched[0].slice(1, -1));
     }
     toString() {
         return `(${this.count})`;
     }
 };
-Tuplet.pattern = /./;
+Tuplet.pattern = /^\(\d+\)/;
 Tuplet = __decorate([
     TokenDecorator_1.Token
 ], Tuplet);

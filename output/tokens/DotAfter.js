@@ -21,7 +21,7 @@ let DotAfter = class DotAfter extends Suffix_1.Suffix {
         return '.'.repeat(this.count);
     }
 };
-DotAfter.pattern = /./;
+DotAfter.pattern = /^\.*/;
 DotAfter = __decorate([
     TokenDecorator_1.Token
 ], DotAfter);

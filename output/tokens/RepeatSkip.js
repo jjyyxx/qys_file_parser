@@ -10,15 +10,15 @@ const BaseToken_1 = require("./BaseToken");
 const TokenDecorator_1 = require("./TokenDecorator");
 const TokenType_1 = require("./TokenType");
 let RepeatSkip = class RepeatSkip extends BaseToken_1.BaseToken {
-    constructor(parts) {
+    constructor(matched) {
         super(TokenType_1.TokenType.RepeatSkip);
-        this.parts = parts;
+        this.parts = matched[0].slice(1, -2).split('.').map((x) => Number(x));
     }
     toString() {
         return `[${this.parts.map((value) => value.toString() + '.').reduce((pre, cur) => pre + cur)}]`;
     }
 };
-RepeatSkip.pattern = /./;
+RepeatSkip.pattern = /^\[(\d+.)+\]/;
 RepeatSkip = __decorate([
     TokenDecorator_1.Token
 ], RepeatSkip);
