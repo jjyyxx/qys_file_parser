@@ -3,6 +3,7 @@ misc
 ref
 .vscode
 node_modules
+output
 .idea
-__tests__/o.json
+__tests__/obsolete
 *.map
