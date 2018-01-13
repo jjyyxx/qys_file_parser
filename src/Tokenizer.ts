@@ -1,12 +1,15 @@
 import { Global } from './Global'
-import { BaseToken } from './tokens/BaseToken'
+import { BaseStructure, BaseToken } from './tokens/BaseToken'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
 
 class Tokenizer {
-    public static tokenize<T extends BaseToken>(content: string): T[] {
+    public static tokenize<T extends BaseToken | BaseStructure>(
+        content: string,
+        patterns: Array<{ constuctor: { new(...args: any[]): any }, pattern: RegExp }> = Global.TokenPatterns,
+    ): T[] {
         const result: T[] = []
         while (content.length > 0) {
-            const matchedPattern = Global.Patterns.find((patternObj) => patternObj.pattern.test(content))
+            const matchedPattern = patterns.find((patternObj) => patternObj.pattern.test(content))
             if (matchedPattern) {
                 const matchedText = content.match(matchedPattern.pattern)
                 try {
@@ -24,15 +27,15 @@ class Tokenizer {
     }
 
     private content: string
-    private result: BaseToken[]
+    private result: BaseStructure[]
 
     constructor(content: string) {
         this.content = content
         this.result = []
     }
 
-    public tokenize(): BaseToken[] {
-        this.result = Tokenizer.tokenize(this.content)
+    public tokenize(): BaseStructure[] {
+        this.result = Tokenizer.tokenize(this.content, Global.StructurePatterns)
         return this.result
     }
 }

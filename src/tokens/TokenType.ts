@@ -14,6 +14,11 @@ enum TokenType {
     Unrecognized, // Oops!
 }
 
+enum StructureType {
+    Header,
+    Section,
+}
+
 enum SuffixType {
     Flat,       // b
     Sharp,      // #
@@ -29,4 +34,4 @@ enum PairType {
     Right,
 }
 
-export {TokenType, SuffixType, PairType}
+export {TokenType, StructureType, SuffixType, PairType}

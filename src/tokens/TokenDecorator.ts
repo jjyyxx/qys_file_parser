@@ -1,8 +1,13 @@
 import { Global } from '../Global'
-import { BaseToken } from './BaseToken'
+import { BaseStructure, BaseToken } from './BaseToken'
 
+// TODO: consider refactoring
 function Token(constructor: { pattern: RegExp, new(...args: any[]): BaseToken }) {
-    Global.RegisterPattern(constructor, constructor.pattern)
+    Global.RegisterTokenPattern(constructor, constructor.pattern)
 }
 
-export { Token }
+function Structure(constructor: { pattern: RegExp, new(...args: any[]): BaseStructure }) {
+    Global.RegisterStructurePattern(constructor, constructor.pattern)
+}
+
+export { Token, Structure }

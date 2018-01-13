@@ -1,4 +1,4 @@
-import { GlobalSettings } from '../GlobalSettings'
+import { Global } from '../Global'
 import { BaseToken } from './BaseToken'
 import { Token } from './TokenDecorator'
 import { TokenType } from './TokenType'
@@ -25,12 +25,12 @@ class Setting extends BaseToken {
             } else if (setting.startsWith('1=')) {
                 const possibleKey = setting.slice(2)
                 let slice = -1
-                for (const legalKey of GlobalSettings.SortedTonality) {
+                for (const legalKey of Global.SortedTonality) {
                     if (possibleKey.startsWith(legalKey)) {
                         slice = legalKey.length
                         finalSetting.push({
                             key: 'Key',
-                            value: GlobalSettings.tonalityDict[possibleKey.slice(0, slice)],
+                            value: Global.tonalityDict[possibleKey.slice(0, slice)],
                         })
                         break
                     }
@@ -47,7 +47,7 @@ class Setting extends BaseToken {
                 }
             } else {
                 const possibleKVPair = setting.split(':').map((item) => item.trim())
-                if (possibleKVPair.length === 2 && GlobalSettings.isLegalSetting(possibleKVPair[0])) {
+                if (possibleKVPair.length === 2 && Global.isLegalSetting(possibleKVPair[0])) {
                     finalSetting.push({ key: possibleKVPair[0], value: possibleKVPair[1].toNumIfPossible() })
                 } else {
                     throw new Error('illegal variable')
@@ -75,7 +75,7 @@ class Setting extends BaseToken {
                 case 'Beat':
                     return '/' + value.value.toString()
                 case 'Key':
-                    return `1=${Object.getKeyByValue(GlobalSettings.tonalityDict, value.value)}`
+                    return `1=${Object.getKeyByValue(Global.tonalityDict, value.value)}`
                 case 'Oct':
                     return ''   // FIXME: currently fail to support it
                 default:

@@ -1,10 +1,16 @@
-import { TokenType } from './TokenType'
+import { StructureType, TokenType } from './TokenType'
 
-abstract class BaseToken {
-    public readonly type: TokenType
-    constructor(type: TokenType) {
+abstract class Base<T> {
+    public readonly type: T
+    constructor(type: T) {
         this.type = type
     }
 }
 
-export { BaseToken }
+// tslint:disable-next-line:max-classes-per-file
+class BaseToken extends Base<TokenType> {}
+
+// tslint:disable-next-line:max-classes-per-file
+class BaseStructure extends Base<StructureType> {}
+
+export { BaseToken, BaseStructure }
