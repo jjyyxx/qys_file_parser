@@ -5,7 +5,6 @@ enum TokenType {
     Chord,
     Tuplet,
     Appoggiatura,
-    Setting,
     MeasureBound,
     Comment,
     RepeatBound,

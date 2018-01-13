@@ -29,7 +29,7 @@ class Section extends BaseStructure {
         }
     }
 
-    public GlobalSettings: Array<FunctionToken|FunctionSimplified>
+    public GlobalSettings: Array<FunctionToken | FunctionSimplified>
     public Comments: Comment[]
     public Tracks: Track[]
     constructor(matched: RegExpMatchArray) {
@@ -47,6 +47,21 @@ class Section extends BaseStructure {
             this.GlobalSettings = []
             this.Tracks = splitted.map((track) => Tokenizer.tokenize(track))
         }
+    }
+
+    public toString() {
+        const commentString = this.Comments.map((comment) => comment.toString()).reduce((pre, cur) => pre + cur, '')
+        const settingString = this.GlobalSettings.length === 0
+            ? ''
+            : this.GlobalSettings
+                .map((functionToken) => functionToken.toString())
+                .reduce((pre, cur) => pre + cur, '') + '\n'
+        const trackString = this.Tracks
+            .map((track) => track
+                .map((token) => token.toString())
+                .reduce((pre, cur) => pre + cur) + '\n')
+            .reduce((pre, cur) => pre + cur)
+        return commentString + settingString + trackString + '\n'
     }
 }
 

@@ -1,14 +1,15 @@
+import { TokenizedData } from './TokenizedData'
 import { BaseToken } from './tokens/BaseToken'
 
 class Detokenizer {
-    public readonly tokens: BaseToken[]
+    public readonly tokenizedData: TokenizedData
 
-    constructor(tokens: BaseToken[]) {
-        this.tokens = tokens
+    constructor(tokenizedData: TokenizedData) {
+        this.tokenizedData = tokenizedData
     }
 
     public detokenize(): string {
-        return this.tokens.map((value) => value.toString()).reduce((pre, cur) => pre + cur)
+        return this.tokenizedData.toString()
     }
 }
 

@@ -67,6 +67,27 @@ class FunctionSimplified extends BaseToken {
             this.Argument = Object.reverseFrom(KVArray)
         }
     }
+
+    public toString(): string {
+        return `<${this.reverse()}>`
+    }
+
+    private reverse(): string {
+        switch (this.Name) {
+            case 'Volume':
+                return Number.isInteger(this.Argument as number)
+                    ? this.Argument.toString() + '.0'
+                    : this.Argument.toString()
+            case 'Speed':
+                return this.Argument.toString()
+            case 'Bar&Beat':
+                return (this.Argument as any).Bar.toString() + '/' + (this.Argument as any).Beat.toString()
+            case 'Key':
+                return `1=${Object.getKeyByValue(Global.tonalityDict, this.Argument)}`
+            case 'Key&Oct':
+                return ''   // FIXME: currently fail to support it
+        }
+    }
 }
 
 export { FunctionSimplified }

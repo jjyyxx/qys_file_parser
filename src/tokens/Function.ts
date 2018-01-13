@@ -23,6 +23,10 @@ class FunctionToken extends BaseToken {
         this.Name = key
         this.Argument = value
     }
+
+    public toString(): string {
+        return `<${this.Name}:${this.Argument}>`
+    }
 }
 
 export { FunctionToken }
