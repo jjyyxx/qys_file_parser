@@ -14,3 +14,6 @@ export { Token } from './TokenDecorator'
 export { TokenType, PairType, SuffixType } from './TokenType'
 export { Tuplet } from './Tuplet'
 export { UnrecognizedToken } from './UnrecognizedToken'
+
+export { Section } from './Section'
+export { Header } from './Header'

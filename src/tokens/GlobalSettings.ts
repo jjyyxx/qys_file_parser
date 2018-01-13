@@ -17,9 +17,15 @@ class GlobalSettings {
     public FadeOut: number
 
     constructor(matched: string = '') {
-        const result: Setting[] = Tokenizer.tokenize(matched)
-        const obj = Object.reverseFrom(result.reduce((pre, cur) => (pre.settings.push(...cur.settings), pre)).settings)
-        this.assign(obj)
+        if (matched) {
+            const result: Setting[] = Tokenizer.tokenize(matched)
+            const settingArray = result.reduce((pre, cur) => (pre.settings.push(...cur.settings), pre)).settings
+            const settingObj = Object.reverseFrom(settingArray)
+            this.assign(settingObj)
+        } else {
+            this.assign()
+        }
+
     }
 
     public assign({

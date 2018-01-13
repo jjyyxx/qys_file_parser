@@ -8,7 +8,7 @@ type Track = BaseToken[]
 
 @Structure
 class Section extends BaseStructure {
-    public static pattern = /./
+    public static pattern = /^[<0-7](.+\n)*(.*)(\n|\n\n|$)/
 
     public globalSettings: GlobalSettings
     public tracks: Track[]
@@ -17,7 +17,7 @@ class Section extends BaseStructure {
         const splitted = matched[0].split('\n')
         if (splitted[0].startsWith('<')) {
             this.globalSettings = new GlobalSettings(splitted[0])
-            this.tracks = splitted.slice(1).map((track) => Tokenizer.tokenize(track))
+            this.tracks = splitted.slice(1).filter((track) => track !== '').map((track) => Tokenizer.tokenize(track))
         } else {
             this.globalSettings = new GlobalSettings()
             this.tracks = splitted.map((track) => Tokenizer.tokenize(track))
