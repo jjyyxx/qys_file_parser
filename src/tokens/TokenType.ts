@@ -11,6 +11,8 @@ enum TokenType {
     RepeatBound,
     RepeatSkip,
     Terminal,
+    Function,
+    FunctionSimplified,
     Unrecognized, // Oops!
 }
 

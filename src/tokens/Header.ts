@@ -4,7 +4,6 @@ import { Comment } from './Comment'
 import { Structure } from './TokenDecorator'
 import { StructureType } from './TokenType'
 
-@Structure
 class Header extends BaseStructure {
     public static pattern = /^(\/\/.*\n| *\n)*/
 
