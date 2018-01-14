@@ -5,52 +5,81 @@ import { TokenType } from './TokenType'
 
 @Token
 class FunctionSimplified extends BaseToken {
-    public static pattern = /^<[^:>]+>/   // TODO: consider a more strict one
+    public static pattern = /^(<[^:>]+>|{[^}]+})/   // TODO: consider a more strict one
 
     public static parse(content: string) {
         const finalSetting: Array<{ key: string, value: any }> = []
-        const possibleNum = Number(content)
-        if (possibleNum) {
-            if (content.includes('.')) {
-                finalSetting.push({ key: 'Volume', value: possibleNum }) // volume
-            } else {
-                finalSetting.push({ key: 'Speed', value: possibleNum }) // parse speed
-            }
-        } else {
-            const possibleBeatTuple = content.toFraction()
-            if (possibleBeatTuple) {
-                finalSetting.push(
-                    { key: 'Bar', value: possibleBeatTuple.Numerator },
-                    { key: 'Beat', value: possibleBeatTuple.Denominator },
-                )
-            } else if (content.startsWith('1=')) {
-                const possibleKey = content.slice(2)
-                let slice = -1
-                for (const legalKey of Global.SortedTonality) {
-                    if (possibleKey.startsWith(legalKey)) {
-                        slice = legalKey.length
-                        finalSetting.push({
-                            key: 'Key',
-                            value: Global.tonalityDict[possibleKey.slice(0, slice)],
-                        })
-                        break
-                    }
-                }
-                if (slice === -1) {
-                    throw new Error('illegal tonality')
-                } else if (slice !== possibleKey.length) {
-                    const possibleOct = possibleKey.slice(slice).calcOct()
-                    if (Number.isNaN(possibleOct)) {
-                        throw new Error('illegal tonality')
-                    } else {
-                        finalSetting.push({ key: 'Oct', value: possibleOct })
-                    }
-                }
+        if (content.isNumeric()) {
+            return [{ key: 'Speed', value: Number(content) }]
+        }
+        if (content.endsWith('%') && content.slice(0, -1).isNumeric()) {
+            return [{ key: 'Speed', value: Number(content.slice(0, -1)) }]
+        }
+        const possibleBeatTuple = content.toFraction()
+        if (possibleBeatTuple) {
+            return [
+                { key: 'Bar', value: possibleBeatTuple.Numerator },
+                { key: 'Beat', value: possibleBeatTuple.Denominator },
+            ]
+        }
+        if (content.startsWith('1=')) {
+            const result = FunctionSimplified.parseTonality(content.slice(2))
+            if (result) {
+                return result
             } else {
                 throw new Error('illegal setting')
             }
         }
-        return finalSetting
+        if (content.startsWith('{') && content.endsWith('}')) {
+            return [
+                {key: 'Instr', value: content.slice(1, -1)},
+            ]
+        }
+        throw new Error('illegal setting')
+    }
+
+    private static parseTonality(possibleKey: string) {
+        if (possibleKey.endsWith('\'')) {
+            const result = FunctionSimplified.calcOctave(possibleKey, '\'')
+            if (result) {
+                return [
+                    { key: 'Key', value: result.key },
+                    { key: 'Oct', value: result.octave },
+                ]
+            } else {
+                return undefined
+            }
+        } else if (possibleKey.endsWith(',')) {
+            const result = FunctionSimplified.calcOctave(possibleKey, ',')
+            if (result) {
+                return [
+                    { key: 'Key', value: result.key },
+                    { key: 'Oct', value: -result.octave },
+                ]
+            } else {
+                return undefined
+            }
+        } else if (Global.isLegalTonality(possibleKey)) {
+            return [{
+                key: 'Key',
+                value: Global.tonalityDict[possibleKey],
+            }]
+        } else {
+            return undefined
+        }
+    }
+
+    private static calcOctave(content: string, char: string) {
+        const firstOccurance = content.indexOf(char)
+        const remain = content.slice(0, firstOccurance)
+        if (Global.isLegalTonality(remain)) {
+            return {
+                key: Global.tonalityDict[remain],
+                octave: content.length - firstOccurance,
+            }
+        } else {
+            return undefined
+        }
     }
 
     public Name: string
@@ -85,7 +114,9 @@ class FunctionSimplified extends BaseToken {
             case 'Key':
                 return `1=${Object.getKeyByValue(Global.tonalityDict, this.Argument)}`
             case 'Key&Oct':
-                return ''   // FIXME: currently fail to support it
+                const octave = (this.Argument as any).Oct
+                const suffix = octave > 0 ? '\''.repeat(octave) : ','.repeat(-octave)
+                return `1=${Object.getKeyByValue(Global.tonalityDict, (this.Argument as any).Key)}${suffix}`
         }
     }
 }

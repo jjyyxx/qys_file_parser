@@ -60,7 +60,7 @@ class Section extends BaseStructure {
             .map((track) => track
                 .map((token) => token.toString())
                 .reduce((pre, cur) => pre + cur) + '\n')
-            .reduce((pre, cur) => pre + cur)
+            .reduce((pre, cur) => pre + cur, '')
         return commentString + settingString + trackString + '\n'
     }
 }

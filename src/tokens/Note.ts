@@ -25,8 +25,9 @@ class Note extends BaseToken {
         const pitches = pitchPart.split('&')
         this.Pitches = pitches.map((pitch) => {
             const index = pitch.search(/[0-7%]/)
+            const scaleDegree = pitch.charAt(index)
             return {
-                ScaleDegree: Number(pitch.charAt(index)),   // TODO: support %
+                ScaleDegree: scaleDegree === '%' ? -1 : Number(scaleDegree),
                 Suffix: Tokenizer.tokenize<Suffix>(pitch.slice(0, index) + pitch.slice(index + 1)),
             }
         })
@@ -40,7 +41,7 @@ class Note extends BaseToken {
                 suffix.suffixType !== SuffixType.Flat && suffix.suffixType !== SuffixType.Sharp)
             return ''.concat(
                 ...pitch.Suffix.slice(1, index).map((suffix) => suffix.toString()),
-                pitch.ScaleDegree.toString(),
+                pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
                 ...pitch.Suffix.slice(index).map((suffix) => suffix.toString()),
             )
         }).reduce((pre, cur) => `${pre}&${cur}`)

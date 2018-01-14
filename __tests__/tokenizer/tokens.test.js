@@ -149,7 +149,7 @@ describe('Test all tokens', () => {
     })
 
     it('deals with UnrecognizedToken correctly', () => {
-        const str = 'a(<a>)(a^)()(<a><><8[][1.2][12315^34&2&3'
+        const str = '<1=C,,,>a(<a>)(a^)()(<a><><8[][1.2][12315^34&2&3'
         const tokenizer = new Tokenizer(str)
         const result = tokenizer.tokenize()
         const detokenizer = new Detokenizer(result)
