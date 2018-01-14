@@ -6,54 +6,38 @@ import { SuffixType, TokenType } from './TokenType'
 
 @Token
 class Note extends BaseToken {
-    public static pattern = /^[0-7%][',b#\-_.]*/
+    public static pattern = /^[0-7%][',b#]*(&[0-7%][',b#]*)*[.\-_]*/
     public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
-    public isDuplicate: boolean
-    public readonly isRest: boolean
-    public readonly suffixes: Suffix[]
-    public readonly oriPitchLiteral: number
-    public oriPitch: number
-    public oriBeatCount: number
+    public Pitches: Array<{
+        ScaleDegree: number,
+        Suffix: Suffix[],
+    }>
+    public readonly Suffix: Suffix[]
 
     constructor(matched: RegExpMatchArray) {
         super(TokenType.Note)
-        this.oriPitchLiteral = 0
-        this.oriBeatCount = 1
-        this.isRest = false
-        this.isDuplicate = false
-        const note = matched[0]
-        const pitch = note.charAt(0)
-        switch (pitch) {
-            case '0':
-                this.isRest = true
-                break
-            case '%':
-                this.isDuplicate = true
-                break
-            default:
-                this.oriPitchLiteral = Number(pitch)
-                break
-        }
-        this.oriPitch = Note.pitchDict[this.oriPitchLiteral]
-        this.suffixes = Tokenizer.tokenize(note.slice(1))
+        const pitchPart = matched[0].match(/^[0-7%][',b#]*(&[0-7%][',b#]*)*/)[0]
+        this.parsePitch(pitchPart)
+        this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length))
     }
 
-    public alterDup(pitch: number, beatCount: number) {
-        this.oriPitch = pitch
-        this.oriBeatCount = beatCount
-        this.isDuplicate = false
+    public parsePitch(pitchPart: string) {
+        const pitches = pitchPart.split('&')
+        this.Pitches = pitches.map((pitch) => ({
+            ScaleDegree: Number(pitch.charAt(0)),
+            Suffix: Tokenizer.tokenize<Suffix>(pitch.slice(1)),
+        }))
     }
 
     public toString(): string {
-        const suffixString = this.suffixes.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
-        if (this.isDuplicate) {
-            return '%' + suffixString
-        } else {
-            return this.oriPitchLiteral.toString() + suffixString
-        }
+        const suffixString = this.Suffix.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
+        const pitchString = this.Pitches.map((pitch) => {
+            return pitch.ScaleDegree.toString().concat(...pitch.Suffix.map((suffix) => suffix.toString()))
+        }).reduce((pre, cur) => `${pre}&${cur}`)
+        return pitchString + suffixString
     }
 
-    public get pitch(): number {
+    /*public get pitch(): number {
         return this.calcPitch()
     }
 
@@ -102,7 +86,7 @@ class Note extends BaseToken {
             }
         })
         return beatCount
-    }
+    }*/
 }
 
 export { Note }

@@ -7,15 +7,15 @@ import { PairType, TokenType } from './TokenType'
 @Token
 class Appoggiatura extends BaseToken {
     public static pattern = /^\([^)]+\^\)/
-    public notes: Note[]
+    public Notes: Note[]
 
     constructor(matched: RegExpMatchArray) {
         super(TokenType.Appoggiatura)
-        this.notes = Tokenizer.tokenize(matched[0].slice(1, -2))
+        this.Notes = Tokenizer.tokenize(matched[0].slice(1, -2))
     }
 
     public toString(): string {
-        return `(${this.notes.map((note) => note.toString()).reduce((pre, cur) => pre + cur)}^)`
+        return `(${this.Notes.map((note) => note.toString()).reduce((pre, cur) => pre + cur)}^)`
     }
 }
 

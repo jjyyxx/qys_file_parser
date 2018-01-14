@@ -4,7 +4,6 @@ import { Note } from './Note'
 import { Token } from './TokenDecorator'
 import { TokenType } from './TokenType'
 
-@Token
 class Chord extends BaseToken {
     public static pattern = /^([0-7%][',b#\-_.]*&)+[0-7%][',b#\-_.]*/
     public notes: Note[]
