@@ -32,7 +32,7 @@ class FunctionSimplified extends BaseToken {
         }
         if (content.startsWith('{') && content.endsWith('}')) {
             return [
-                {key: 'Instr', value: content.slice(1, -1)},
+                {key: 'Instr', value: content.slice(1, -1) as any},
             ]
         }
         throw new Error('illegal setting')
