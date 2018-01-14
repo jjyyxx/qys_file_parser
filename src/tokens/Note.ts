@@ -6,7 +6,7 @@ import { SuffixType, TokenType } from './TokenType'
 
 @Token
 class Note extends BaseToken {
-    public static pattern = /^[0-7%][',b#]*(&[0-7%][',b#]*)*[.\-_]*/
+    public static pattern = /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/
     public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
     public Pitches: Array<{
         ScaleDegree: number,
@@ -16,23 +16,33 @@ class Note extends BaseToken {
 
     constructor(matched: RegExpMatchArray) {
         super(TokenType.Note)
-        const pitchPart = matched[0].match(/^[0-7%][',b#]*(&[0-7%][',b#]*)*/)[0]
+        const pitchPart = matched[0].match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0]
         this.parsePitch(pitchPart)
         this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length))
     }
 
     public parsePitch(pitchPart: string) {
         const pitches = pitchPart.split('&')
-        this.Pitches = pitches.map((pitch) => ({
-            ScaleDegree: Number(pitch.charAt(0)),
-            Suffix: Tokenizer.tokenize<Suffix>(pitch.slice(1)),
-        }))
+        this.Pitches = pitches.map((pitch) => {
+            const index = pitch.search(/[0-7%]/)
+            return {
+                ScaleDegree: Number(pitch.charAt(index)),   // TODO: support %
+                Suffix: Tokenizer.tokenize<Suffix>(pitch.slice(0, index) + pitch.slice(index + 1)),
+            }
+        })
     }
 
     public toString(): string {
+        const prefixString = this
         const suffixString = this.Suffix.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
         const pitchString = this.Pitches.map((pitch) => {
-            return pitch.ScaleDegree.toString().concat(...pitch.Suffix.map((suffix) => suffix.toString()))
+            const index = pitch.Suffix.findIndex((suffix) =>
+                suffix.suffixType !== SuffixType.Flat && suffix.suffixType !== SuffixType.Sharp)
+            return ''.concat(
+                ...pitch.Suffix.slice(1, index).map((suffix) => suffix.toString()),
+                pitch.ScaleDegree.toString(),
+                ...pitch.Suffix.slice(index).map((suffix) => suffix.toString()),
+            )
         }).reduce((pre, cur) => `${pre}&${cur}`)
         return pitchString + suffixString
     }

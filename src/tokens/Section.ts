@@ -10,7 +10,7 @@ type Track = BaseToken[]
 
 @Structure
 class Section extends BaseStructure {
-    public static pattern = /^(.+\n)*.+(\n\n|$)/                  // /^[<0-7](.+\n)*(.*)(\n|\n\n|$)/
+    public static pattern = /^(.+\n)*.+(\n\n|\n$|$)/                  // /^[<0-7](.+\n)*(.*)(\n|\n\n|$)/
 
     public static separateComments(content: string) {
         const matchedGlobalComments = content.match(/^(\/\/.*\n)+/)
