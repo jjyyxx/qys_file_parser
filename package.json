@@ -2,7 +2,7 @@
   "name": "qys_file_parser",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "clean": "rm ./output/*"

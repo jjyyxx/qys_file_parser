@@ -6,7 +6,7 @@ import { FunctionSimplified } from './FunctionSimplified'
 import { Structure } from './TokenDecorator'
 import { StructureType } from './TokenType'
 
-type Track = BaseToken[]
+export type Track = BaseToken[]
 
 @Structure
 class Section extends BaseStructure {

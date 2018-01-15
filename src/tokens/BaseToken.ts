@@ -13,4 +13,4 @@ class BaseToken extends Base<TokenType> {}
 // tslint:disable-next-line:max-classes-per-file
 class BaseStructure extends Base<StructureType> {}
 
-export { BaseToken, BaseStructure }
+export { Base, BaseToken, BaseStructure }

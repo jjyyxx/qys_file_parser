@@ -5,6 +5,5 @@ require('./Util')
 require('./Global')
 
 export { Detokenizer } from './Detokenizer'
-export { qysFileParser } from './Old/qysFileParser'
 export { Tokenizer } from './Tokenizer'
-export * from './tokens'
+export * from './tokens/index'

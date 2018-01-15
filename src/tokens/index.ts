@@ -1,6 +1,5 @@
 export { Appoggiatura } from './Appoggiatura'
 export { BaseToken } from './BaseToken'
-export { Chord } from './Chord'
 export { Comment } from './Comment'
 export { FunctionToken } from './Function'
 export { FunctionSimplified } from './FunctionSimplified'

@@ -2,10 +2,10 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "es6",
-        "module": "commonjs",
+        "module": "amd",
         "sourceMap": true,
         "noImplicitAny": true,
-        "outDir": "./output",
+        "outFile": "./dist/index.js",
         "watch":true,
         "declaration": true,
         "experimentalDecorators": true
