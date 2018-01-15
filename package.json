@@ -35,5 +35,6 @@
     "jest": "^22.0.3",
     "typescript": "^2.6.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "typings": "dist/index.d.ts"
 }

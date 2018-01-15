@@ -1,6 +1,6 @@
 describe('Tokenizer', () => {
     it('works', () => {
-        const Tokenizer = require('../../output/index').Tokenizer
+        const Tokenizer = require('../../dist/index').Tokenizer
         const str =
 `//东方红
 //陕北民歌
