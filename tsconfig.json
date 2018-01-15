@@ -7,6 +7,7 @@
         "noImplicitAny": true,
         "outDir": "./output",
         "watch":true,
+        "declaration": true,
         "experimentalDecorators": true
     },
     "include": [
