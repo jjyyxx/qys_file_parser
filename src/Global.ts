@@ -6,6 +6,17 @@ class Global {
     public static TokenPatterns: Array<{ constuctor: { new(...args: any[]): BaseToken }, pattern: RegExp }> = []
     public static StructurePatterns: Array<{ constuctor: { new(...args: any[]): BaseStructure }, pattern: RegExp }> = []
     public static FallbackToken = UnrecognizedToken
+    public static supportedFormat = new Set(['qys', 'qym'])
+
+    public static get CurrentFormat() {
+        return Global.Format
+    }
+
+    public static set CurrentFormat(format: string) {
+        if (Global.supportedFormat.has(format)) {
+            Global.Format = format
+        }
+    }
 
     public static tonalityDict: { [key: string]: number } = {
         // tslint:disable-next-line:object-literal-sort-keys
@@ -24,14 +35,18 @@ class Global {
         return a.length > b.length ? -1 : 1
     })
 
-    public static RegisterTokenPattern(constuctor: { new(...args: any[]): BaseToken }, pattern: RegExp) {
+    public static RegisterTokenPattern(constuctor: { new(...args: any[]): BaseToken },
+                                       pattern: RegExp,
+                                       format = '') {
         Global.TokenPatterns.push({
             constuctor,
             pattern,
         })
     }
 
-    public static RegisterStructurePattern(constuctor: { new(...args: any[]): BaseStructure }, pattern: RegExp) {
+    public static RegisterStructurePattern(constuctor: { new(...args: any[]): BaseStructure },
+                                           pattern: RegExp,
+                                           format = '') {
         Global.StructurePatterns.push({
             constuctor,
             pattern,
@@ -45,6 +60,8 @@ class Global {
     public static isLegalTonality(key: string) {
         return Global.legalTonality.has(key)
     }
+
+    private static Format: string = 'qym'
 }
 
 export { Global }

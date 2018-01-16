@@ -2,7 +2,7 @@ import { Tokenizer } from '../Tokenizer'
 import { BaseToken } from './BaseToken'
 import { Note } from './Note'
 import { Token } from './TokenDecorator'
-import { PairType, TokenType } from './TokenType'
+import { TokenType } from './TokenType'
 
 @Token
 class Appoggiatura extends BaseToken {

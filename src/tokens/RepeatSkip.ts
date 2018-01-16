@@ -1,6 +1,6 @@
 import { BaseToken } from './BaseToken'
 import { Token } from './TokenDecorator'
-import { PairType, TokenType } from './TokenType'
+import { TokenType } from './TokenType'
 
 @Token
 class RepeatSkip extends BaseToken {

@@ -30,9 +30,12 @@ enum SuffixType {
     Dash,       // -
 }
 
-enum PairType {
-    Left,
-    Right,
+enum BoundType {
+    Normal,
+    Terminal,
+    RepeatLeft,
+    RepeatRight,
+    RepeatBoth,
 }
 
-export {TokenType, StructureType, SuffixType, PairType}
+export {TokenType, StructureType, SuffixType, BoundType}

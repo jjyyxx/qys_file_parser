@@ -42,12 +42,15 @@ define("tokens/TokenType", ["require", "exports"], function (require, exports) {
         SuffixType[SuffixType["Dash"] = 6] = "Dash";
     })(SuffixType || (SuffixType = {}));
     exports.SuffixType = SuffixType;
-    var PairType;
-    (function (PairType) {
-        PairType[PairType["Left"] = 0] = "Left";
-        PairType[PairType["Right"] = 1] = "Right";
-    })(PairType || (PairType = {}));
-    exports.PairType = PairType;
+    var BoundType;
+    (function (BoundType) {
+        BoundType[BoundType["Normal"] = 0] = "Normal";
+        BoundType[BoundType["Terminal"] = 1] = "Terminal";
+        BoundType[BoundType["RepeatLeft"] = 2] = "RepeatLeft";
+        BoundType[BoundType["RepeatRight"] = 3] = "RepeatRight";
+        BoundType[BoundType["RepeatBoth"] = 4] = "RepeatBoth";
+    })(BoundType || (BoundType = {}));
+    exports.BoundType = BoundType;
 });
 define("tokens/BaseToken", ["require", "exports"], function (require, exports) {
     "use strict";
@@ -85,13 +88,21 @@ define("Global", ["require", "exports", "tokens/UnrecognizedToken"], function (r
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     class Global {
-        static RegisterTokenPattern(constuctor, pattern) {
+        static get CurrentFormat() {
+            return Global.Format;
+        }
+        static set CurrentFormat(format) {
+            if (Global.supportedFormat.has(format)) {
+                Global.Format = format;
+            }
+        }
+        static RegisterTokenPattern(constuctor, pattern, format = '') {
             Global.TokenPatterns.push({
                 constuctor,
                 pattern,
             });
         }
-        static RegisterStructurePattern(constuctor, pattern) {
+        static RegisterStructurePattern(constuctor, pattern, format = '') {
             Global.StructurePatterns.push({
                 constuctor,
                 pattern,
@@ -107,6 +118,7 @@ define("Global", ["require", "exports", "tokens/UnrecognizedToken"], function (r
     Global.TokenPatterns = [];
     Global.StructurePatterns = [];
     Global.FallbackToken = UnrecognizedToken_1.UnrecognizedToken;
+    Global.supportedFormat = new Set(['qys', 'qym']);
     Global.tonalityDict = {
         // tslint:disable-next-line:object-literal-sort-keys
         'C': 0, 'G': 7, 'D': 2, 'A': -3, 'E': 4,
@@ -123,6 +135,7 @@ define("Global", ["require", "exports", "tokens/UnrecognizedToken"], function (r
     Global.SortedTonality = Object.keys(Global.tonalityDict).sort((a, b) => {
         return a.length > b.length ? -1 : 1;
     });
+    Global.Format = 'qym';
     exports.Global = Global;
 });
 define("tokens/TokenDecorator", ["require", "exports", "Global"], function (require, exports, Global_1) {
@@ -130,11 +143,27 @@ define("tokens/TokenDecorator", ["require", "exports", "Global"], function (requ
     Object.defineProperty(exports, "__esModule", { value: true });
     // TODO: consider refactoring
     function Token(constructor) {
-        Global_1.Global.RegisterTokenPattern(constructor, constructor.pattern);
+        if (constructor.pattern instanceof RegExp) {
+            Global_1.Global.RegisterTokenPattern(constructor, constructor.pattern);
+        }
+        else {
+            // tslint:disable-next-line:forin
+            for (const key in constructor.pattern) {
+                Global_1.Global.RegisterTokenPattern(constructor, constructor.pattern[key], key);
+            }
+        }
     }
     exports.Token = Token;
     function Structure(constructor) {
-        Global_1.Global.RegisterStructurePattern(constructor, constructor.pattern);
+        if (constructor.pattern instanceof RegExp) {
+            Global_1.Global.RegisterStructurePattern(constructor, constructor.pattern);
+        }
+        else {
+            // tslint:disable-next-line:forin
+            for (const key in constructor.pattern) {
+                Global_1.Global.RegisterStructurePattern(constructor, constructor.pattern[key], key);
+            }
+        }
     }
     exports.Structure = Structure;
 });
@@ -246,10 +275,13 @@ define("tokens/FunctionSimplified", ["require", "exports", "Global", "tokens/Bas
         static parse(content) {
             const finalSetting = [];
             if (content.isNumeric()) {
+                if (content.includes('.')) {
+                    return [{ key: 'Volume', value: Number(content) }];
+                }
                 return [{ key: 'Speed', value: Number(content) }];
             }
             if (content.endsWith('%') && content.slice(0, -1).isNumeric()) {
-                return [{ key: 'Speed', value: Number(content.slice(0, -1)) }];
+                return [{ key: 'Volume', value: Number(content.slice(0, -1)) / 100 }];
             }
             const possibleBeatTuple = content.toFraction();
             if (possibleBeatTuple) {
@@ -479,17 +511,34 @@ define("tokens/Suffix", ["require", "exports", "tokens/BaseToken", "tokens/Token
     exports.Suffix = Suffix;
     var Suffix_1;
 });
-define("tokens/Note", ["require", "exports", "Tokenizer", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, Tokenizer_2, BaseToken_js_2, TokenDecorator_6, TokenType_7) {
+define("tokens/Note", ["require", "exports", "Global", "Tokenizer", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, Global_5, Tokenizer_2, BaseToken_js_2, TokenDecorator_6, TokenType_7) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let Note = class Note extends BaseToken_js_2.BaseToken {
         constructor(matched) {
             super(TokenType_7.TokenType.Note);
-            const pitchPart = matched[0].match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0];
-            this.parsePitch(pitchPart);
-            this.Suffix = Tokenizer_2.Tokenizer.tokenize(matched[0].slice(pitchPart.length));
+            if (Global_5.Global.CurrentFormat === 'qym') {
+                const pitchPart = matched[0].match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0];
+                this.parseQymPitch(pitchPart);
+                this.Suffix = Tokenizer_2.Tokenizer.tokenize(matched[0].slice(pitchPart.length));
+            }
+            else {
+                if (matched[0].startsWith('[')) {
+                    const pitchPart = matched[0].match(/^\[([0-7%][',b#]*)*\]/)[0].slice(1, -1);
+                    this.parseQysPitch(pitchPart);
+                    this.Suffix = Tokenizer_2.Tokenizer.tokenize(matched[0].slice(pitchPart.length + 2));
+                }
+                else {
+                    const pitchPart = matched[0].charAt(0);
+                    this.Pitches.push({
+                        ScaleDegree: pitchPart === '%' ? -1 : Number(pitchPart),
+                        Suffix: [],
+                    });
+                    this.Suffix = Tokenizer_2.Tokenizer.tokenize(matched[0].slice(1));
+                }
+            }
         }
-        parsePitch(pitchPart) {
+        parseQymPitch(pitchPart) {
             const pitches = pitchPart.split('&');
             this.Pitches = pitches.map((pitch) => {
                 const index = pitch.search(/[0-7%]/);
@@ -499,6 +548,18 @@ define("tokens/Note", ["require", "exports", "Tokenizer", "tokens/BaseToken", "t
                     Suffix: Tokenizer_2.Tokenizer.tokenize(pitch.slice(0, index) + pitch.slice(index + 1)),
                 };
             });
+        }
+        parseQysPitch(pitchPart) {
+            const pitches = [];
+            while (pitchPart.length > 0) {
+                const matched = pitchPart.match(/^[0-7%][',b#]*/);
+                pitches.push({
+                    ScaleDegree: -1,
+                    Suffix: Tokenizer_2.Tokenizer.tokenize(matched[0].slice(1)),
+                });
+                pitchPart = pitchPart.slice(matched[0].length);
+            }
+            this.Pitches = pitches;
         }
         toString() {
             const prefixString = this;
@@ -510,7 +571,10 @@ define("tokens/Note", ["require", "exports", "Tokenizer", "tokens/BaseToken", "t
             return pitchString + suffixString;
         }
     };
-    Note.pattern = /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/;
+    Note.pattern = {
+        qym: /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/,
+        qys: /^([0-7%][',b#]*|\[([0-7%][',b#]*)*\][',b#]*)[.\-_]*/,
+    };
     Note.pitchDict = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 };
     Note = __decorate([
         TokenDecorator_6.Token
@@ -539,50 +603,53 @@ define("tokens/MeasureBound", ["require", "exports", "tokens/BaseToken", "tokens
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let MeasureBound = class MeasureBound extends BaseToken_7.BaseToken {
-        constructor() {
+        constructor(matched) {
             super(TokenType_9.TokenType.MeasureBound);
+            switch (matched[0]) {
+                case '|':
+                    this.boundType = TokenType_9.BoundType.Normal;
+                    break;
+                case ':||':
+                    this.boundType = TokenType_9.BoundType.RepeatRight;
+                    break;
+                case '||:':
+                    this.boundType = TokenType_9.BoundType.RepeatLeft;
+                    break;
+                case ':||:':
+                    this.boundType = TokenType_9.BoundType.RepeatBoth;
+                    break;
+                case '||':
+                    this.boundType = TokenType_9.BoundType.Terminal;
+                    break;
+            }
         }
         toString() {
-            return '|';
+            switch (this.boundType) {
+                case TokenType_9.BoundType.Normal:
+                    return '|';
+                case TokenType_9.BoundType.RepeatRight:
+                    return ':||';
+                case TokenType_9.BoundType.RepeatLeft:
+                    return '||:';
+                case TokenType_9.BoundType.RepeatBoth:
+                    return ':||:';
+                case TokenType_9.BoundType.Terminal:
+                    return '||';
+            }
         }
     };
-    MeasureBound.pattern = /^\|(?!\|)/;
+    MeasureBound.pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\|)/;
     MeasureBound = __decorate([
         TokenDecorator_8.Token
     ], MeasureBound);
     exports.MeasureBound = MeasureBound;
 });
-define("tokens/RepeatBound", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_8, TokenDecorator_9, TokenType_10) {
+define("tokens/RepeatSkip", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_8, TokenDecorator_9, TokenType_10) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    let RepeatBound = class RepeatBound extends BaseToken_8.BaseToken {
+    let RepeatSkip = class RepeatSkip extends BaseToken_8.BaseToken {
         constructor(matched) {
-            super(TokenType_10.TokenType.RepeatBound);
-            switch (matched[0]) {
-                case '||:':
-                    this.leftOrRight = TokenType_10.PairType.Left;
-                    break;
-                case ':||':
-                    this.leftOrRight = TokenType_10.PairType.Right;
-                    break;
-            }
-        }
-        toString() {
-            return this.leftOrRight === TokenType_10.PairType.Left ? '||:' : ':||';
-        }
-    };
-    RepeatBound.pattern = /^(\|\|:|:\|\|)/;
-    RepeatBound = __decorate([
-        TokenDecorator_9.Token
-    ], RepeatBound);
-    exports.RepeatBound = RepeatBound;
-});
-define("tokens/RepeatSkip", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_9, TokenDecorator_10, TokenType_11) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    let RepeatSkip = class RepeatSkip extends BaseToken_9.BaseToken {
-        constructor(matched) {
-            super(TokenType_11.TokenType.RepeatSkip);
+            super(TokenType_10.TokenType.RepeatSkip);
             this.parts = matched[0].slice(1, -2).split('.').map((x) => Number(x));
         }
         toString() {
@@ -591,33 +658,16 @@ define("tokens/RepeatSkip", ["require", "exports", "tokens/BaseToken", "tokens/T
     };
     RepeatSkip.pattern = /^\[(\d+.)+\]/;
     RepeatSkip = __decorate([
-        TokenDecorator_10.Token
+        TokenDecorator_9.Token
     ], RepeatSkip);
     exports.RepeatSkip = RepeatSkip;
 });
-define("tokens/Terminal", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_10, TokenDecorator_11, TokenType_12) {
+define("tokens/Tie", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_9, TokenDecorator_10, TokenType_11) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    let Terminal = class Terminal extends BaseToken_10.BaseToken {
+    let Tie = class Tie extends BaseToken_9.BaseToken {
         constructor() {
-            super(TokenType_12.TokenType.Terminal);
-        }
-        toString() {
-            return '||';
-        }
-    };
-    Terminal.pattern = /^\|\|(?!\:)/;
-    Terminal = __decorate([
-        TokenDecorator_11.Token
-    ], Terminal);
-    exports.Terminal = Terminal;
-});
-define("tokens/Tie", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_11, TokenDecorator_12, TokenType_13) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    let Tie = class Tie extends BaseToken_11.BaseToken {
-        constructor() {
-            super(TokenType_13.TokenType.Tie);
+            super(TokenType_11.TokenType.Tie);
         }
         toString() {
             return '^';
@@ -625,33 +675,43 @@ define("tokens/Tie", ["require", "exports", "tokens/BaseToken", "tokens/TokenDec
     };
     Tie.pattern = /^\^/;
     Tie = __decorate([
-        TokenDecorator_12.Token
+        TokenDecorator_10.Token
     ], Tie);
     exports.Tie = Tie;
 });
-define("tokens/Tuplet", ["require", "exports", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, BaseToken_12, TokenDecorator_13, TokenType_14) {
+define("tokens/Tuplet", ["require", "exports", "Global", "tokens/BaseToken", "tokens/TokenDecorator", "tokens/TokenType"], function (require, exports, Global_6, BaseToken_10, TokenDecorator_11, TokenType_12) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    let Tuplet = class Tuplet extends BaseToken_12.BaseToken {
+    let Tuplet = class Tuplet extends BaseToken_10.BaseToken {
         constructor(matched) {
-            super(TokenType_14.TokenType.Tuplet);
-            this.count = Number(matched[0].slice(1, -1));
+            super(TokenType_12.TokenType.Tuplet);
+            switch (Global_6.Global.CurrentFormat) {
+                case 'qym':
+                    this.count = Number(matched[0].slice(1, -1));
+                    break;
+                case 'qys':
+                    this.count = Number(matched[0].slice(1, -2));
+                    break;
+            }
         }
         toString() {
             return `(${this.count})`;
         }
     };
-    Tuplet.pattern = /^\(\d+\)/;
+    Tuplet.pattern = {
+        qym: /^\(\d+\)/,
+        qys: /^\(\d+~\)/,
+    };
     Tuplet = __decorate([
-        TokenDecorator_13.Token
+        TokenDecorator_11.Token
     ], Tuplet);
     exports.Tuplet = Tuplet;
 });
-define("tokens/index", ["require", "exports", "tokens/Appoggiatura", "tokens/BaseToken", "tokens/Comment", "tokens/Function", "tokens/FunctionSimplified", "tokens/MeasureBound", "tokens/Note", "tokens/RepeatBound", "tokens/RepeatSkip", "tokens/Suffix", "tokens/Terminal", "tokens/Tie", "tokens/TokenDecorator", "tokens/TokenType", "tokens/Tuplet", "tokens/UnrecognizedToken", "tokens/Section"], function (require, exports, Appoggiatura_1, BaseToken_13, Comment_1, Function_1, FunctionSimplified_2, MeasureBound_1, Note_1, RepeatBound_1, RepeatSkip_1, Suffix_2, Terminal_1, Tie_1, TokenDecorator_14, TokenType_15, Tuplet_1, UnrecognizedToken_2, Section_2) {
+define("tokens/index", ["require", "exports", "tokens/Appoggiatura", "tokens/BaseToken", "tokens/Comment", "tokens/Function", "tokens/FunctionSimplified", "tokens/MeasureBound", "tokens/Note", "./RepeatBound", "tokens/RepeatSkip", "tokens/Suffix", "./Terminal", "tokens/Tie", "tokens/TokenDecorator", "tokens/TokenType", "tokens/Tuplet", "tokens/UnrecognizedToken", "tokens/Section"], function (require, exports, Appoggiatura_1, BaseToken_11, Comment_1, Function_1, FunctionSimplified_2, MeasureBound_1, Note_1, RepeatBound_1, RepeatSkip_1, Suffix_2, Terminal_1, Tie_1, TokenDecorator_12, TokenType_13, Tuplet_1, UnrecognizedToken_2, Section_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.Appoggiatura = Appoggiatura_1.Appoggiatura;
-    exports.BaseToken = BaseToken_13.BaseToken;
+    exports.BaseToken = BaseToken_11.BaseToken;
     exports.Comment = Comment_1.Comment;
     exports.FunctionToken = Function_1.FunctionToken;
     exports.FunctionSimplified = FunctionSimplified_2.FunctionSimplified;
@@ -662,10 +722,9 @@ define("tokens/index", ["require", "exports", "tokens/Appoggiatura", "tokens/Bas
     exports.Suffix = Suffix_2.Suffix;
     exports.Terminal = Terminal_1.Terminal;
     exports.Tie = Tie_1.Tie;
-    exports.Token = TokenDecorator_14.Token;
-    exports.TokenType = TokenType_15.TokenType;
-    exports.PairType = TokenType_15.PairType;
-    exports.SuffixType = TokenType_15.SuffixType;
+    exports.Token = TokenDecorator_12.Token;
+    exports.TokenType = TokenType_13.TokenType;
+    exports.SuffixType = TokenType_13.SuffixType;
     exports.Tuplet = Tuplet_1.Tuplet;
     exports.UnrecognizedToken = UnrecognizedToken_2.UnrecognizedToken;
     exports.Section = Section_2.Section;

@@ -10,10 +10,13 @@ class FunctionSimplified extends BaseToken {
     public static parse(content: string) {
         const finalSetting: Array<{ key: string, value: any }> = []
         if (content.isNumeric()) {
+            if (content.includes('.')) {
+                return [{ key: 'Volume', value: Number(content) }]
+            }
             return [{ key: 'Speed', value: Number(content) }]
         }
         if (content.endsWith('%') && content.slice(0, -1).isNumeric()) {
-            return [{ key: 'Speed', value: Number(content.slice(0, -1)) }]
+            return [{ key: 'Volume', value: Number(content.slice(0, -1)) / 100 }]
         }
         const possibleBeatTuple = content.toFraction()
         if (possibleBeatTuple) {
@@ -32,7 +35,7 @@ class FunctionSimplified extends BaseToken {
         }
         if (content.startsWith('{') && content.endsWith('}')) {
             return [
-                {key: 'Instr', value: content.slice(1, -1) as any},
+                { key: 'Instr', value: content.slice(1, -1) as any },
             ]
         }
         throw new Error('illegal setting')
@@ -104,9 +107,14 @@ class FunctionSimplified extends BaseToken {
     private reverse(): string {
         switch (this.Name) {
             case 'Volume':
-                return Number.isInteger(this.Argument as number)
-                    ? this.Argument.toString() + '.0'
-                    : this.Argument.toString()
+                switch (Global.CurrentFormat) {
+                    case 'qym':
+                        return ((this.Argument as number) * 100).toString() + '%'
+                    case 'qys':
+                        return Number.isInteger(this.Argument as number)
+                            ? this.Argument.toString() + '.0'
+                            : this.Argument.toString()
+                }
             case 'Speed':
                 return this.Argument.toString()
             case 'Bar&Beat':

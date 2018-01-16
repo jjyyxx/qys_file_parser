@@ -1,3 +1,4 @@
+import { Global } from '../Global'
 import { Tokenizer } from '../Tokenizer'
 import { BaseToken } from './BaseToken.js'
 import { Suffix } from './Suffix'
@@ -6,7 +7,10 @@ import { SuffixType, TokenType } from './TokenType'
 
 @Token
 class Note extends BaseToken {
-    public static pattern = /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/
+    public static pattern = {
+        qym: /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/,
+        qys: /^([0-7%][',b#]*|\[([0-7%][',b#]*)*\][',b#]*)[.\-_]*/,
+    }
     public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
     public Pitches: Array<{
         ScaleDegree: number,
@@ -16,12 +20,27 @@ class Note extends BaseToken {
 
     constructor(matched: RegExpMatchArray) {
         super(TokenType.Note)
-        const pitchPart = matched[0].match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0]
-        this.parsePitch(pitchPart)
-        this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length))
+        if (Global.CurrentFormat === 'qym') {
+            const pitchPart = matched[0].match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0]
+            this.parseQymPitch(pitchPart)
+            this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length))
+        } else {
+            if (matched[0].startsWith('[')) {
+                const pitchPart = matched[0].match(/^\[([0-7%][',b#]*)*\]/)[0].slice(1, -1)
+                this.parseQysPitch(pitchPart)
+                this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length + 2))
+            } else {
+                const pitchPart = matched[0].charAt(0)
+                this.Pitches.push({
+                    ScaleDegree: pitchPart === '%' ? -1 : Number(pitchPart),
+                    Suffix: [],
+                })
+                this.Suffix = Tokenizer.tokenize(matched[0].slice(1))
+            }
+        }
     }
 
-    public parsePitch(pitchPart: string) {
+    public parseQymPitch(pitchPart: string) {
         const pitches = pitchPart.split('&')
         this.Pitches = pitches.map((pitch) => {
             const index = pitch.search(/[0-7%]/)
@@ -33,19 +52,53 @@ class Note extends BaseToken {
         })
     }
 
+    public parseQysPitch(pitchPart: string) {
+        const pitches: Array<{ ScaleDegree: number, Suffix: Suffix[] }> = []
+        while (pitchPart.length > 0) {
+            const matched = pitchPart.match(/^[0-7%][',b#]*/)
+            pitches.push({
+                ScaleDegree: -1,
+                Suffix: Tokenizer.tokenize<Suffix>(matched[0].slice(1)),
+            })
+            pitchPart = pitchPart.slice(matched[0].length)
+        }
+        this.Pitches = pitches
+    }
+
     public toString(): string {
-        const prefixString = this
-        const suffixString = this.Suffix.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
-        const pitchString = this.Pitches.map((pitch) => {
-            const index = pitch.Suffix.findIndex((suffix) =>
-                suffix.suffixType !== SuffixType.Flat && suffix.suffixType !== SuffixType.Sharp)
-            return ''.concat(
-                ...pitch.Suffix.slice(1, index).map((suffix) => suffix.toString()),
-                pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
-                ...pitch.Suffix.slice(index).map((suffix) => suffix.toString()),
-            )
-        }).reduce((pre, cur) => `${pre}&${cur}`)
-        return pitchString + suffixString
+        switch (Global.CurrentFormat) {
+            case 'qym':
+                const suffixString = this.Suffix.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
+                const pitchString = this.Pitches.map((pitch) => {
+                    const index = pitch.Suffix.findIndex((suffix) =>
+                        suffix.suffixType !== SuffixType.Flat && suffix.suffixType !== SuffixType.Sharp)
+                    return ''.concat(
+                        ...pitch.Suffix.slice(1, index).map((suffix) => suffix.toString()),
+                        pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
+                        ...pitch.Suffix.slice(index).map((suffix) => suffix.toString()),
+                    )
+                }).reduce((pre, cur) => `${pre}&${cur}`)
+                return pitchString + suffixString
+            case 'qys':
+                if (this.Pitches.length === 1) {
+                    const pitch = this.Pitches[0]
+                    return ''.concat(
+                        pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
+                        ...pitch.Suffix.map((suffix) => suffix.toString()),
+                        ...this.Suffix.map((suffix) => suffix.toString()),
+                    )
+                } else {
+                    return '['.concat(
+                        ...this.Pitches.map((pitch) => {
+                            return ''.concat(
+                                pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
+                                ...pitch.Suffix.map((suffix) => suffix.toString()),
+                            )
+                        }), ']',
+                        ...this.Suffix.map((suffix) => suffix.toString()),
+                    )
+                }
+        }
     }
 
     /*public get pitch(): number {
@@ -56,7 +109,7 @@ class Note extends BaseToken {
         return this.calcBeat()
     }
 
-    private calcPitch(): number { // TODO: improve pattern
+    private calcPitch(): number {   TODO: improve pattern
         let pitch = this.oriPitch
         this.suffixes.forEach((suffix) => {
             switch (suffix.suffixType) {
