@@ -26,6 +26,7 @@ class Global {
         'F#': 6, 'C#': 1, 'Bb': -2, 'Gb': 6,
         'Eb': 3, 'Ab': -4, 'Db': 1, 'Cb': -1,
     }
+    public static pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
     public static legalTonality = new Set(Object.keys(Global.tonalityDict))
     public static legalSettings = new Set([
         'Key', 'Bar', 'Beat', 'Speed', 'Volume', 'Instr', 'Stac',

@@ -9,9 +9,8 @@ import { SuffixType, TokenType } from './TokenType'
 class Note extends BaseToken {
     public static pattern = {
         qym: /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/,
-        qys: /^([0-7%][',b#]*|\[([0-7%][',b#]*)*\][',b#]*)[.\-_]*/,
+        qys: /^([0-7%xX][',b#]*|\[([0-7%xX][',b#]*)*\][',b#]*)[.\-_]*/,
     }
-    public static readonly pitchDict: { [key: number]: number } = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 }
     public Pitches: Array<{
         ScaleDegree: number,
         Suffix: Suffix[],
@@ -26,13 +25,14 @@ class Note extends BaseToken {
             this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length))
         } else {
             if (matched[0].startsWith('[')) {
-                const pitchPart = matched[0].match(/^\[([0-7%][',b#]*)*\]/)[0].slice(1, -1)
+                const pitchPart = matched[0].match(/^\[([0-7%xX][',b#]*)*\]/)[0].slice(1, -1)
                 this.parseQysPitch(pitchPart)
                 this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length + 2))
             } else {
                 const pitchPart = matched[0].charAt(0)
                 this.Pitches.push({
-                    ScaleDegree: pitchPart === '%' ? -1 : Number(pitchPart),
+                    ScaleDegree: pitchPart === '%' ? -1 :
+                        (pitchPart === 'x' || pitchPart === 'X') ? 8 : Number(pitchPart),
                     Suffix: [],
                 })
                 this.Suffix = Tokenizer.tokenize(matched[0].slice(1))
@@ -55,9 +55,10 @@ class Note extends BaseToken {
     public parseQysPitch(pitchPart: string) {
         const pitches: Array<{ ScaleDegree: number, Suffix: Suffix[] }> = []
         while (pitchPart.length > 0) {
-            const matched = pitchPart.match(/^[0-7%][',b#]*/)
+            const matched = pitchPart.match(/^[0-7%xX][',b#]*/)
             pitches.push({
-                ScaleDegree: -1,
+                ScaleDegree: pitchPart === '%' ? -1 :
+                    (pitchPart === 'x' || pitchPart === 'X') ? 8 : Number(pitchPart),
                 Suffix: Tokenizer.tokenize<Suffix>(matched[0].slice(1)),
             })
             pitchPart = pitchPart.slice(matched[0].length)
@@ -83,7 +84,7 @@ class Note extends BaseToken {
                 if (this.Pitches.length === 1) {
                     const pitch = this.Pitches[0]
                     return ''.concat(
-                        pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
+                        pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree === 8 ? 'x' : pitch.ScaleDegree.toString(),
                         ...pitch.Suffix.map((suffix) => suffix.toString()),
                         ...this.Suffix.map((suffix) => suffix.toString()),
                     )
@@ -91,7 +92,8 @@ class Note extends BaseToken {
                     return '['.concat(
                         ...this.Pitches.map((pitch) => {
                             return ''.concat(
-                                pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
+                                pitch.ScaleDegree === -1 ? '%' :
+                                    pitch.ScaleDegree === 8 ? 'x' : pitch.ScaleDegree.toString(),
                                 ...pitch.Suffix.map((suffix) => suffix.toString()),
                             )
                         }), ']',
