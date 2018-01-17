@@ -58,7 +58,7 @@ class Section extends BaseStructure {
             ? ''
             : this.GlobalSettings
                 .map((functionToken) => functionToken.toString())
-                .reduce((pre, cur) => pre + cur, '') + '\n'
+                .reduce((pre, cur) => pre + cur, '') + '\n\n'
         const trackString = this.Tracks
             .map((track) => track
                 .map((token) => token.toString())
