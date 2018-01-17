@@ -4,34 +4,38 @@ import { BoundType, TokenType } from './TokenType'
 
 @Token
 class MeasureBound extends BaseToken {
-    public static pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\|)/
+    public static pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\||\\\\)/
 
-    public readonly boundType: BoundType
+    public readonly BoundType: BoundType
+    public NewLine: boolean = false
     constructor(matched: RegExpMatchArray) {
         super(TokenType.MeasureBound)
         switch (matched[0]) {
             case '|':
-                this.boundType = BoundType.Normal
+                this.BoundType = BoundType.Normal
                 break
             case ':||':
-                this.boundType = BoundType.RepeatRight
+                this.BoundType = BoundType.RepeatRight
                 break
             case '||:':
-                this.boundType = BoundType.RepeatLeft
+                this.BoundType = BoundType.RepeatLeft
                 break
             case ':||:':
-                this.boundType = BoundType.RepeatBoth
+                this.BoundType = BoundType.RepeatBoth
                 break
             case '||':
-                this.boundType = BoundType.Terminal
+                this.BoundType = BoundType.Terminal
                 break
+            case '\\\\':
+                this.BoundType = BoundType.Normal
+                this.NewLine = true
         }
     }
 
     public toString(): string {
-        switch (this.boundType) {
+        switch (this.BoundType) {
             case BoundType.Normal:
-                return '|'
+                return this.NewLine ? '\\\n' : '|'
             case BoundType.RepeatRight:
                 return ':||'
             case BoundType.RepeatLeft:

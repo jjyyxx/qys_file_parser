@@ -3,15 +3,18 @@ import { TokenType } from './tokens/TokenType'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
 
 class Global {
-    public static TokenPatterns: Array<{ constuctor: { new(...args: any[]): BaseToken }, pattern: RegExp }> = []
-    public static StructurePatterns: Array<{ constuctor: { new(...args: any[]): BaseStructure }, pattern: RegExp }> = []
+    public static get TokenPatterns() {
+        return Global.tokenPatterns[Global.CurrentFormat]
+    }
+    public static get StructurePatterns() {
+        return Global.structurePatterns[Global.CurrentFormat]
+    }
     public static FallbackToken = UnrecognizedToken
-    public static supportedFormat = new Set(['qys', 'qym'])
 
+    public static supportedFormat = new Set(['qys', 'qym'])
     public static get CurrentFormat() {
         return Global.Format
     }
-
     public static set CurrentFormat(format: string) {
         if (Global.supportedFormat.has(format)) {
             Global.Format = format
@@ -36,24 +39,6 @@ class Global {
         return a.length > b.length ? -1 : 1
     })
 
-    public static RegisterTokenPattern(constuctor: { new(...args: any[]): BaseToken },
-                                       pattern: RegExp,
-                                       format = '') {
-        Global.TokenPatterns.push({
-            constuctor,
-            pattern,
-        })
-    }
-
-    public static RegisterStructurePattern(constuctor: { new(...args: any[]): BaseStructure },
-                                           pattern: RegExp,
-                                           format = '') {
-        Global.StructurePatterns.push({
-            constuctor,
-            pattern,
-        })
-    }
-
     public static isLegalSetting(key: string) {
         return Global.legalSettings.has(key)
     }
@@ -62,7 +47,57 @@ class Global {
         return Global.legalTonality.has(key)
     }
 
+    public static RegisterTokenPattern(constuctor: { new(...args: any[]): BaseToken },
+                                       pattern: RegExp,
+                                       format = '') {
+        if (format === '') {
+            for (const supportedFormat of Global.supportedFormat) {
+                Global.tokenPatterns[supportedFormat].push({
+                    constuctor,
+                    pattern,
+                })
+            }
+        } else {
+            Global.tokenPatterns[format].push({
+                constuctor,
+                pattern,
+            })
+        }
+    }
+
+    public static RegisterStructurePattern(constuctor: { new(...args: any[]): BaseStructure },
+                                           pattern: RegExp,
+                                           format = '') {
+        if (format === '') {
+            for (const supportedFormat of Global.supportedFormat) {
+                Global.structurePatterns[supportedFormat].push({
+                    constuctor,
+                    pattern,
+                })
+            }
+        } else {
+            Global.structurePatterns[format].push({
+                constuctor,
+                pattern,
+            })
+        }
+    }
+
     private static Format: string = 'qym'
+    private static tokenPatterns: {
+        [key: string]: Array<{ constuctor: { new(...args: any[]): BaseToken }, pattern: RegExp }>,
+    } = Global.initialize()
+    private static structurePatterns: {
+        [key: string]: Array<{ constuctor: { new(...args: any[]): BaseStructure }, pattern: RegExp }>,
+    } = Global.initialize()
+
+    private static initialize() {
+        const obj: any = {}
+        for (const format of Global.supportedFormat) {
+            obj[format] = []
+        }
+        return obj
+    }
 }
 
 export { Global }

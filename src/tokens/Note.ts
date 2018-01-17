@@ -1,6 +1,7 @@
 import { Global } from '../Global'
 import { Tokenizer } from '../Tokenizer'
 import { BaseToken } from './BaseToken.js'
+import { Pitch } from './Pitch'
 import { Suffix } from './Suffix'
 import { Token } from './TokenDecorator'
 import { SuffixType, TokenType } from './TokenType'
@@ -9,58 +10,46 @@ import { SuffixType, TokenType } from './TokenType'
 class Note extends BaseToken {
     public static pattern = {
         qym: /^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*[.\-_]*/,
-        qys: /^([0-7%xX][',b#]*|\[([0-7%xX][',b#]*)*\][',b#]*)[.\-_]*/,
+        qys: /^([0-7%xX][',b#]*|\[([0-7%xX][',b#]*)*(\^[0-7%xX][',b#]*)?\][',b#]*)[.\-_`]*/,
     }
-    public Pitches: Array<{
-        ScaleDegree: number,
-        Suffix: Suffix[],
-    }>
+    public Pitches: Pitch[]
     public readonly Suffix: Suffix[]
+    public Arpeggio: boolean = false
 
     constructor(matched: RegExpMatchArray) {
         super(TokenType.Note)
+        let note = matched[0]
         if (Global.CurrentFormat === 'qym') {
-            const pitchPart = matched[0].match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0]
+            const pitchPart = note.match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0]
             this.parseQymPitch(pitchPart)
-            this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length))
+            this.Suffix = Tokenizer.tokenize(note.slice(pitchPart.length))
         } else {
-            if (matched[0].startsWith('[')) {
-                const pitchPart = matched[0].match(/^\[([0-7%xX][',b#]*)*\]/)[0].slice(1, -1)
+            if (note.includes('^')) {
+                this.Arpeggio = true
+                note = note.replace('^', '')
+            }
+            if (note.startsWith('[')) {
+                const pitchPart = note.match(/^\[([0-7%xX][',b#]*)*\]/)[0].slice(1, -1)
                 this.parseQysPitch(pitchPart)
-                this.Suffix = Tokenizer.tokenize(matched[0].slice(pitchPart.length + 2))
+                this.Suffix = Tokenizer.tokenize(note.slice(pitchPart.length + 2))
             } else {
-                const pitchPart = matched[0].charAt(0)
-                this.Pitches.push({
-                    ScaleDegree: pitchPart === '%' ? -1 :
-                        (pitchPart === 'x' || pitchPart === 'X') ? 8 : Number(pitchPart),
-                    Suffix: [],
-                })
-                this.Suffix = Tokenizer.tokenize(matched[0].slice(1))
+                const pitchPart = note.charAt(0)
+                this.Pitches = [new Pitch(note.charAt(0))]
+                this.Suffix = Tokenizer.tokenize(note.slice(1))
             }
         }
     }
 
     public parseQymPitch(pitchPart: string) {
         const pitches = pitchPart.split('&')
-        this.Pitches = pitches.map((pitch) => {
-            const index = pitch.search(/[0-7%]/)
-            const scaleDegree = pitch.charAt(index)
-            return {
-                ScaleDegree: scaleDegree === '%' ? -1 : Number(scaleDegree),
-                Suffix: Tokenizer.tokenize<Suffix>(pitch.slice(0, index) + pitch.slice(index + 1)),
-            }
-        })
+        this.Pitches = pitches.map((pitch) => new Pitch(pitch))
     }
 
     public parseQysPitch(pitchPart: string) {
-        const pitches: Array<{ ScaleDegree: number, Suffix: Suffix[] }> = []
+        const pitches: Pitch[] = []
         while (pitchPart.length > 0) {
-            const matched = pitchPart.match(/^[0-7%xX][',b#]*/)
-            pitches.push({
-                ScaleDegree: pitchPart === '%' ? -1 :
-                    (pitchPart === 'x' || pitchPart === 'X') ? 8 : Number(pitchPart),
-                Suffix: Tokenizer.tokenize<Suffix>(matched[0].slice(1)),
-            })
+            const matched = pitchPart.match(Pitch.pattern.qys)
+            pitches.push(new Pitch(matched[0]))
             pitchPart = pitchPart.slice(matched[0].length)
         }
         this.Pitches = pitches
@@ -69,36 +58,37 @@ class Note extends BaseToken {
     public toString(): string {
         switch (Global.CurrentFormat) {
             case 'qym':
-                const suffixString = this.Suffix.map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
-                const pitchString = this.Pitches.map((pitch) => {
-                    const index = pitch.Suffix.findIndex((suffix) =>
-                        suffix.suffixType !== SuffixType.Flat && suffix.suffixType !== SuffixType.Sharp)
-                    return ''.concat(
-                        ...pitch.Suffix.slice(1, index).map((suffix) => suffix.toString()),
-                        pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree.toString(),
-                        ...pitch.Suffix.slice(index).map((suffix) => suffix.toString()),
-                    )
-                }).reduce((pre, cur) => `${pre}&${cur}`)
-                return pitchString + suffixString
+                const index = this.Suffix.findIndex((suffix) =>
+                    suffix.suffixType !== SuffixType.Flat && suffix.suffixType !== SuffixType.Sharp)
+                const prefixString = this.Suffix.slice(0, index)
+                    .map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
+                const suffixString = this.Suffix.slice(index)
+                    .map((value) => value.toString()).reduce((pre, cur) => pre + cur, '')
+                const pitchString = this.Pitches.map((pitch) => pitch.toString()).reduce((pre, cur) => `${pre}&${cur}`)
+                return prefixString + pitchString + suffixString
             case 'qys':
                 if (this.Pitches.length === 1) {
                     const pitch = this.Pitches[0]
                     return ''.concat(
-                        pitch.ScaleDegree === -1 ? '%' : pitch.ScaleDegree === 8 ? 'x' : pitch.ScaleDegree.toString(),
-                        ...pitch.Suffix.map((suffix) => suffix.toString()),
+                        pitch.toString(),
                         ...this.Suffix.map((suffix) => suffix.toString()),
                     )
                 } else {
-                    return '['.concat(
-                        ...this.Pitches.map((pitch) => {
-                            return ''.concat(
-                                pitch.ScaleDegree === -1 ? '%' :
-                                    pitch.ScaleDegree === 8 ? 'x' : pitch.ScaleDegree.toString(),
-                                ...pitch.Suffix.map((suffix) => suffix.toString()),
-                            )
-                        }), ']',
-                        ...this.Suffix.map((suffix) => suffix.toString()),
-                    )
+                    if (this.Arpeggio) {
+                        return '['.concat(
+                            ...this.Pitches.slice(0, -1).map((pitch) => pitch.toString()),
+                            '^',
+                            this.Pitches.last().toString(),
+                            ']',
+                            ...this.Suffix.map((suffix) => suffix.toString()),
+                        )
+                    } else {
+                        return '['.concat(
+                            ...this.Pitches.map((pitch) => pitch.toString()),
+                            ']',
+                            ...this.Suffix.map((suffix) => suffix.toString()),
+                        )
+                    }
                 }
         }
     }

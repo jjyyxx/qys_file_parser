@@ -7,8 +7,9 @@ import { TokenType } from './TokenType'
 class FunctionSimplified extends BaseToken {
     public static pattern = /^(<[^:>]+>|{[^}]+})/   // TODO: consider a more strict one
 
-    public static parse(content: string) {
+    public static parse(func: string) {
         const finalSetting: Array<{ key: string, value: any }> = []
+        const content = func.slice(1, -1)
         if (content.isNumeric()) {
             if (content.includes('.')) {
                 return [{ key: 'Volume', value: Number(content) }]
@@ -33,9 +34,10 @@ class FunctionSimplified extends BaseToken {
                 throw new Error('illegal setting')
             }
         }
-        if (content.startsWith('{') && content.endsWith('}')) {
+        if ((func.startsWith('{') && func.endsWith('}'))
+            || ((func.startsWith('<') && func.endsWith('>')))) {
             return [
-                { key: 'Instr', value: content.slice(1, -1) as any },
+                { key: 'Instr', value: content },
             ]
         }
         throw new Error('illegal setting')
@@ -90,7 +92,7 @@ class FunctionSimplified extends BaseToken {
 
     constructor(matched: RegExpMatchArray) {
         super(TokenType.FunctionSimplified)
-        const KVArray = FunctionSimplified.parse(matched[0].slice(1, -1))
+        const KVArray: Array<{key: string, value: any}> = FunctionSimplified.parse(matched[0])
         if (KVArray.length === 1) {
             this.Name = KVArray[0].key
             this.Argument = KVArray[0].value
@@ -101,30 +103,33 @@ class FunctionSimplified extends BaseToken {
     }
 
     public toString(): string {
-        return `<${this.reverse()}>`
-    }
-
-    private reverse(): string {
         switch (this.Name) {
             case 'Volume':
                 switch (Global.CurrentFormat) {
                     case 'qym':
-                        return ((this.Argument as number) * 100).toString() + '%'
+                        return '<' + ((this.Argument as number) * 100).toString() + '%>'
                     case 'qys':
-                        return Number.isInteger(this.Argument as number)
+                        return `<${Number.isInteger(this.Argument as number)
                             ? this.Argument.toString() + '.0'
-                            : this.Argument.toString()
+                            : this.Argument.toString()}>`
+                }
+            case 'Instr':
+                switch (Global.CurrentFormat) {
+                    case 'qym':
+                        return `{${this.Argument}}`
+                    case 'qys':
+                        return `<${this.Argument}>`
                 }
             case 'Speed':
-                return this.Argument.toString()
+                return `<${this.Argument.toString()}>`
             case 'Bar&Beat':
-                return (this.Argument as any).Bar.toString() + '/' + (this.Argument as any).Beat.toString()
+                return `<${(this.Argument as any).Bar.toString() + '/' + (this.Argument as any).Beat.toString()}>`
             case 'Key':
-                return `1=${Object.getKeyByValue(Global.tonalityDict, this.Argument)}`
+                return `<1=${Object.getKeyByValue(Global.tonalityDict, this.Argument)}>`
             case 'Key&Oct':
                 const octave = (this.Argument as any).Oct
                 const suffix = octave > 0 ? '\''.repeat(octave) : ','.repeat(-octave)
-                return `1=${Object.getKeyByValue(Global.tonalityDict, (this.Argument as any).Key)}${suffix}`
+                return `<1=${Object.getKeyByValue(Global.tonalityDict, (this.Argument as any).Key)}${suffix}>`
         }
     }
 }

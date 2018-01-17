@@ -2,16 +2,18 @@ enum TokenType {
     Note, // 1 2 3 4 5 6 7 0 %
     Suffix,
     Tie,
-    Chord,
+    Fermata,
+    Portamento,
+    Tremolo1,
+    Tremolo2,
     Tuplet,
     Appoggiatura,
     MeasureBound,
     Comment,
-    RepeatBound,
     RepeatSkip,
-    Terminal,
     Function,
     FunctionSimplified,
+    Pitch,
     Unrecognized, // Oops!
 }
 
@@ -28,6 +30,7 @@ enum SuffixType {
     DotAfter,   // .
     Underline,  // _
     Dash,       // -
+    Staccato,   // `
 }
 
 enum BoundType {

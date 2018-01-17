@@ -12,6 +12,7 @@ class Suffix extends BaseToken {
         '#': SuffixType.Sharp,
         '-': SuffixType.Dash,
         '_': SuffixType.Underline,
+        '`': SuffixType.Staccato,
         '.': SuffixType.DotAfter,
     }
     public readonly suffixType: SuffixType

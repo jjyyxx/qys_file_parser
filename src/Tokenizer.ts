@@ -1,4 +1,5 @@
 import { Global } from './Global'
+import { Preprocessor } from './Preprocessor'
 import { TokenizedData } from './TokenizedData'
 import { BaseStructure, BaseToken } from './tokens/BaseToken'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
@@ -36,17 +37,12 @@ class Tokenizer {
     }
 
     public tokenize(): TokenizedData {
-        this.separateGlobalComments()
+        const pre = new Preprocessor(this.content)
+        const {comments, content} = pre.preprocess()
+        this.tokenizedData.Comments = comments
+        this.content = content
         this.tokenizedData.Sections = Tokenizer.tokenize(this.content, Global.StructurePatterns)
         return this.tokenizedData
-    }
-
-    public separateGlobalComments() {
-        const matchedGlobalComments = this.content.match(/^(\/\/.*\n)+\n/)
-        if (matchedGlobalComments) {
-            this.tokenizedData.Comments = Tokenizer.tokenize(matchedGlobalComments[0])
-            this.content = this.content.slice(matchedGlobalComments[0].length)
-        }
     }
 }
 

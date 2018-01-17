@@ -10,7 +10,10 @@ export type Track = BaseToken[]
 
 @Structure
 class Section extends BaseStructure {
-    public static pattern = /^(.+\n)*.+(\n\n|\n$|$)/                  // /^[<0-7](.+\n)*(.*)(\n|\n\n|$)/
+    public static pattern = {
+        qym: /^(.+\n)*.+(\n\n|\n$|$)/,
+        qys: /^(\/\/.+\n)*(<[^>]*>)*\n((<[^>]*>)*(\\\\)?[0-7%xX\(\[^~].*\n)*($|(?=(\/\/.+\n)*(<[^>]*>)*\n))/,
+    }
 
     public static separateComments(content: string) {
         const matchedGlobalComments = content.match(/^(\/\/.*\n)+/)
@@ -40,7 +43,7 @@ class Section extends BaseStructure {
         this.Comments = Comments
 
         const splitted = content.split('\n')
-        if (splitted[0].startsWith('<')) {
+        if (splitted[0].search(/^(<[^>]*>)*\n/)) {
             this.GlobalSettings = Tokenizer.tokenize(splitted[0])
             this.Tracks = splitted.slice(1).filter((track) => track !== '').map((track) => Tokenizer.tokenize(track))
         } else {
