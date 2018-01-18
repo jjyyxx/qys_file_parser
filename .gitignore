@@ -7,4 +7,3 @@ output
 .idea
 __tests__/obsolete
 *.map
-dist

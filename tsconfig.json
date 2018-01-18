@@ -2,10 +2,10 @@
     "compileOnSave": true,
     "compilerOptions": {
         "target": "es6",
-        "module": "commonjs",
+        "module": "es6",
         "sourceMap": true,
         "noImplicitAny": true,
-        "outDir": "./output",
+        "outDir": "./dist",
         "watch":true,
         "declaration": true,
         "experimentalDecorators": true
