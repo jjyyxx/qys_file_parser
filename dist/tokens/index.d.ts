@@ -1,6 +1,7 @@
 export { Appoggiatura } from './Appoggiatura';
 export { BaseToken } from './BaseToken';
 export { Comment } from './Comment';
+export { Fermata } from './Fermata';
 export { FunctionToken } from './Function';
 export { FunctionSimplified } from './FunctionSimplified';
 export { MeasureBound } from './MeasureBound';
@@ -13,3 +14,5 @@ export { TokenType, SuffixType } from './TokenType';
 export { Tuplet } from './Tuplet';
 export { UnrecognizedToken } from './UnrecognizedToken';
 export { Section } from './Section';
+export { Tremolo1 } from './Tremolo1';
+export { Tremolo2 } from './Tremolo2';
