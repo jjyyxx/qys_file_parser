@@ -2,7 +2,6 @@ import { Tokenizer } from '../Tokenizer'
 import { BaseStructure, BaseToken } from './BaseToken'
 import { Comment } from './Comment'
 import { FunctionToken } from './Function'
-import { FunctionSimplified } from './FunctionSimplified'
 import { Structure } from './TokenDecorator'
 import { StructureType } from './TokenType'
 
@@ -32,7 +31,7 @@ class Section extends BaseStructure {
         }
     }
 
-    public GlobalSettings: Array<FunctionToken | FunctionSimplified>
+    public GlobalSettings: FunctionToken[]
     public Comments: Comment[]
     public Tracks: Track[]
     constructor(matched: RegExpMatchArray) {
