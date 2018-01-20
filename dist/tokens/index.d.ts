@@ -16,3 +16,4 @@ export { UnrecognizedToken } from './UnrecognizedToken';
 export { Section } from './Section';
 export { Tremolo1 } from './Tremolo1';
 export { Tremolo2 } from './Tremolo2';
+export { Portamento } from './Portamento';
