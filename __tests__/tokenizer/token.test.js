@@ -11,12 +11,10 @@ describe('Tokenizer', () => {
         const t = new Tokenizer(str)
         const result = t.tokenize()
         // console.log(result.Sections[0])
-        console.log(result.Sections[0].Tracks)
+        console.log(result.Sections[0])
 
         const Detok = require('../../output/Detokenizer').Detokenizer
         const d = new Detok(result)
         console.log(d.detokenize())
-        throw ''
-        
     })
 })
