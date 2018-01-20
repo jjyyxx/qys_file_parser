@@ -3,7 +3,6 @@ export { BaseToken } from './BaseToken';
 export { Comment } from './Comment';
 export { Fermata } from './Fermata';
 export { FunctionToken } from './Function';
-export { FunctionSimplified } from './FunctionSimplified';
 export { MeasureBound } from './MeasureBound';
 export { Note } from './Note';
 export { VoltaBracket } from './VoltaBracket';

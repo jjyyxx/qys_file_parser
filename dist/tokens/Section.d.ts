@@ -1,7 +1,6 @@
 import { BaseStructure, BaseToken } from './BaseToken';
 import { Comment } from './Comment';
 import { FunctionToken } from './Function';
-import { FunctionSimplified } from './FunctionSimplified';
 export declare type Track = BaseToken[];
 declare class Section extends BaseStructure {
     static pattern: {
@@ -12,7 +11,7 @@ declare class Section extends BaseStructure {
         Comments: Comment[];
         remainedContent: string;
     };
-    GlobalSettings: Array<FunctionToken | FunctionSimplified>;
+    GlobalSettings: FunctionToken[];
     Comments: Comment[];
     Tracks: Track[];
     constructor(matched: RegExpMatchArray);

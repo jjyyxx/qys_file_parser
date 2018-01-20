@@ -1,12 +1,16 @@
 import { BaseToken } from './BaseToken';
 declare class FunctionToken extends BaseToken {
     static pattern: RegExp;
-    static parse(content: string): {
+    static parseNormal(content: string): {
         key: string;
         value: string | number;
     };
+    static parseSimplified(func: string): any[];
+    private static parseTonality(possibleKey);
+    private static calcOctave(content, char);
     Name: string;
-    Argument: string | number;
+    Argument: any;
+    Simplfied: boolean;
     constructor(matched: RegExpMatchArray);
     toString(): string;
 }
