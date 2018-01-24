@@ -22,7 +22,7 @@ let Section = Section_1 = class Section extends BaseStructure {
         }
         else {
             this.GlobalSettings = [];
-            this.Tracks = splitted.map((track) => Tokenizer.tokenize(track));
+            this.Tracks = splitted.filter((track) => track !== '').map((track) => Tokenizer.tokenize(track));
         }
     }
     static separateComments(content) {
