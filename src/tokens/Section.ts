@@ -47,7 +47,7 @@ class Section extends BaseStructure {
             this.Tracks = splitted.slice(1).filter((track) => track !== '').map((track) => Tokenizer.tokenize(track))
         } else {
             this.GlobalSettings = []
-            this.Tracks = splitted.map((track) => Tokenizer.tokenize(track))
+            this.Tracks = splitted.filter((track) => track !== '').map((track) => Tokenizer.tokenize(track))
         }
     }
 
