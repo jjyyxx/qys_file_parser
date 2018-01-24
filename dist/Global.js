@@ -64,11 +64,11 @@ Global.FallbackToken = UnrecognizedToken;
 Global.supportedFormat = new Set(['qys', 'qym']);
 Global.tonalityDict = {
     // tslint:disable-next-line:object-literal-sort-keys
-    'C': 0, 'G': 7, 'D': 2, 'A': -3, 'E': 4,
+    'C': 0, 'G': 7, 'D': 2, 'A': 9, 'E': 4,
     'B': -1, '#F': 6, '#C': 1, 'F': 5, 'bB': -2,
-    'bE': 3, 'bA': -4, 'bD': 1, 'bG': 6, 'bC': -1,
+    'bE': 3, 'bA': 8, 'bD': 1, 'bG': 6, 'bC': -1,
     'F#': 6, 'C#': 1, 'Bb': -2, 'Gb': 6,
-    'Eb': 3, 'Ab': -4, 'Db': 1, 'Cb': -1,
+    'Eb': 3, 'Ab': 8, 'Db': 1, 'Cb': -1,
 };
 Global.pitchDict = { 1: 0, 2: 2, 3: 4, 4: 5, 5: 7, 6: 9, 7: 11 };
 Global.legalTonality = new Set(Object.keys(Global.tonalityDict));

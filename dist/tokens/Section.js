@@ -16,7 +16,7 @@ let Section = Section_1 = class Section extends BaseStructure {
         content = remainedContent;
         this.Comments = Comments;
         const splitted = content.split('\n');
-        if (splitted[0].search(/^(<[^>]*>)*\n/)) {
+        if (splitted[0].search(/^([<{][^}>]*[>}])*$/) !== -1) {
             this.GlobalSettings = Tokenizer.tokenize(splitted[0]);
             this.Tracks = splitted.slice(1).filter((track) => track !== '').map((track) => Tokenizer.tokenize(track));
         }
