@@ -26,6 +26,5 @@ describe('Tokenizer', () => {
         const Detok = require('../../output/Detokenizer').Detokenizer
         const d = new Detok(result)
         console.log(d.detokenize())
-        throw ''
     })
 })
