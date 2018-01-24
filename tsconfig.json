@@ -6,9 +6,14 @@
         "sourceMap": true,
         "noImplicitAny": true,
         "outDir": "./output",
-        "watch":true
+        "watch":true,
+        "declaration": true,
+        "experimentalDecorators": true
     },
     "include": [
-        "**/*.ts"
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "src/Old/*.ts"
     ]
 }
