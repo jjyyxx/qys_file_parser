@@ -9,8 +9,8 @@ class Appoggiatura extends BaseToken {
     public static pattern = /^\([^)]+\^\)/
     public Notes: Note[]
 
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Appoggiatura)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Appoggiatura, startIndex)
         this.Notes = Tokenizer.tokenize(matched[0].slice(1, -2))
     }
 

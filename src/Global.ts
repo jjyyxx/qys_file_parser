@@ -1,13 +1,10 @@
-import { BaseStructure, BaseToken } from './tokens/BaseToken'
+import { BaseToken } from './tokens/BaseToken'
 import { TokenType } from './tokens/TokenType'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
 
 class Global {
     public static get TokenPatterns() {
         return Global.tokenPatterns[Global.CurrentFormat]
-    }
-    public static get StructurePatterns() {
-        return Global.structurePatterns[Global.CurrentFormat]
     }
     public static FallbackToken = UnrecognizedToken
 
@@ -65,32 +62,10 @@ class Global {
         }
     }
 
-    public static RegisterStructurePattern(constuctor: { new(...args: any[]): BaseStructure },
-                                           pattern: RegExp,
-                                           format = '') {
-        if (format === '') {
-            for (const supportedFormat of Global.supportedFormat) {
-                Global.structurePatterns[supportedFormat].push({
-                    constuctor,
-                    pattern,
-                })
-            }
-        } else {
-            Global.structurePatterns[format].push({
-                constuctor,
-                pattern,
-            })
-        }
-    }
-
     private static Format: string = 'qym'
     private static tokenPatterns: {
         [key: string]: Array<{ constuctor: { new(...args: any[]): BaseToken }, pattern: RegExp }>,
     } = Global.initialize()
-    private static structurePatterns: {
-        [key: string]: Array<{ constuctor: { new(...args: any[]): BaseStructure }, pattern: RegExp }>,
-    } = Global.initialize()
-
     private static initialize() {
         const obj: any = {}
         for (const format of Global.supportedFormat) {

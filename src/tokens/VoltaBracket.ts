@@ -9,8 +9,8 @@ class VoltaBracket extends BaseToken {
     }
     public readonly NumbersOfTimes: number[]
 
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.RepeatSkip)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.RepeatSkip, startIndex)
         this.NumbersOfTimes = matched[0].slice(1, -2).split('.').map((x) => Number(x))
     }
 

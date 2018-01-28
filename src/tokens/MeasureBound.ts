@@ -8,8 +8,8 @@ class MeasureBound extends BaseToken {
 
     public readonly BoundType: BoundType
     public NewLine: boolean = false
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.MeasureBound)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.MeasureBound, startIndex)
         switch (matched[0]) {
             case '|':
                 this.BoundType = BoundType.Normal

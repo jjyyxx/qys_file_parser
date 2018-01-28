@@ -5,6 +5,7 @@ describe('Tokenizer', () => {
         const str =
 `//潜海姑娘
 //王立平 曲
+
 <1=C><4/4><90>
 {ElectricGuitar}5,|3--5_^6_|33_^2_1.3_|2_.^3__2_1_6,^6,__^1__^2__^1__|2--5,|
 
@@ -26,5 +27,6 @@ describe('Tokenizer', () => {
         const Detok = require('../../output/Detokenizer').Detokenizer
         const d = new Detok(result)
         console.log(d.detokenize())
+        throw ''
     })
 })

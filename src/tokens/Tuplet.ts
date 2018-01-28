@@ -11,8 +11,8 @@ class Tuplet extends BaseToken {
     }
     public readonly count: number
 
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Tuplet)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Tuplet, startIndex)
         switch (Global.CurrentFormat) {
             case 'qym':
                 this.count = Number(matched[0].slice(1, -1))

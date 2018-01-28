@@ -17,8 +17,8 @@ class Suffix extends BaseToken {
     }
     public readonly suffixType: SuffixType
     public readonly dotCount: number
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Suffix)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Suffix, startIndex)
         const suffix = matched[0]
         if (suffix.charAt(0) === '.') {
             this.dotCount = suffix.length
