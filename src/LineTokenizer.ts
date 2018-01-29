@@ -1,5 +1,6 @@
 import { Global } from './Global'
 import { BaseToken } from './index'
+import { State } from './State'
 import { Tokenizer } from './Tokenizer'
 
 export interface TokensProvider {
@@ -48,10 +49,11 @@ class LineTokenizer implements TokensProvider {
         return result
     }
 
-    public tokenize(line: string, state: IState): ILineTokens {
+    public tokenize(line: string, state: State): ILineTokens {
+        const endState = new State({ wrap: line.endsWith('\\') && !line.startsWith('//')})
         return {
             tokens: Tokenizer.tokenize(line),
-            endState: undefined,
+            endState,
         }
     }
 
@@ -64,8 +66,8 @@ class LineTokenizer implements TokensProvider {
         return this.tokenizedData
     }*/
 
-    public getInitialState(): IState {
-        return undefined
+    public getInitialState(): State {
+        return new State()
     }
 }
 

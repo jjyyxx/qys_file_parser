@@ -4,7 +4,7 @@ import { BoundType, TokenType } from './TokenType'
 
 @Token
 class MeasureBound extends BaseToken {
-    public static pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\||\\\\)/
+    public static pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\||\\)/
 
     public readonly BoundType: BoundType
     public NewLine: boolean = false
@@ -26,7 +26,7 @@ class MeasureBound extends BaseToken {
             case '||':
                 this.BoundType = BoundType.Terminal
                 break
-            case '\\\\':
+            case '\\':
                 this.BoundType = BoundType.Normal
                 this.NewLine = true
         }

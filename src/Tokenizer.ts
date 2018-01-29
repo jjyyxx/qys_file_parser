@@ -7,6 +7,8 @@ import { Comment } from './tokens/Comment'
 import { FunctionToken } from './tokens/Function'
 import { Section } from './tokens/Section'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
+import { State } from './State';
+import { MeasureBound } from './tokens/MeasureBound';
 
 class Tokenizer {
     public static tokenize<T extends BaseToken>(
@@ -29,7 +31,7 @@ class Tokenizer {
     private tokenizedLines: ILineTokens[] = []
     private tokenizedData: TokenizedData
     private lineTok: LineTokenizer
-    private state: IState
+    private state: State
 
     constructor(content: string) {
         this.content = content
@@ -58,7 +60,7 @@ class Tokenizer {
         this.lines.forEach((line) => {
             const tokens = this.lineTok.tokenize(line, this.state/*.clone()*/)
             this.tokenizedLines.push(tokens)
-            this.state = tokens.endState
+            this.state = tokens.endState as State
         })
     }
 
@@ -73,7 +75,62 @@ class Tokenizer {
     }
 
     public processQys() {
+        const concatedLines = this.concatLines()
+        const index = concatedLines.findIndex((line) => line.tokens.length === 0)
+        if (index !== -1) {
+            const possibleComments = concatedLines.slice(0, index)
+            if (possibleComments.every((line) => Tokenizer.isCommentLine(line))) {
+                this.tokenizedData.Comments = [].concat(...possibleComments.map((line) => line.tokens[0]))
+                concatedLines.splice(0, index)
+            }
+        }
+        let secParam: ILineTokens[] = []
+        let secFlag = false
+        while (concatedLines.length > 0) {
+            const line = concatedLines.shift()
+            if (line.tokens.length === 0) {
+                continue
+            }
+            if (!Tokenizer.isCommentLine(line) && !Tokenizer.isInitLine(line)) {
+                secFlag = true
+            } else if (secFlag) {
+                this.tokenizedData.Sections.push(new Section(secParam))
+                secParam = []
+                secFlag = false
+            }
+            secParam.push(line)
+        }
+        if (secParam.length > 0) {
+            this.tokenizedData.Sections.push(new Section(secParam))
+        }
+    }
 
+    private concatLines() {
+        const result: ILineTokens[] = []
+        let wrap = false
+        this.tokenizedLines.forEach((line) => {
+            const state = line.endState as State
+            if (state.wrap) {
+                if (line.tokens.slice(0, -1).every((token) => token instanceof FunctionToken)) {
+                    line.tokens.splice(-1)
+                } else {
+                    const last2 = line.tokens.last(2)
+                    if (last2 instanceof MeasureBound) {
+                        last2.NewLine = true
+                        line.tokens.splice(-1)
+                    }
+                }
+            }
+            if (wrap) {
+                const last = result.last()
+                last.tokens.push(...line.tokens)
+                last.endState = line.endState
+            } else {
+                result.push(line)
+            }
+            wrap = state.wrap
+        })
+        return result
     }
 }
 

@@ -1,22 +1,22 @@
 interface Array<T> {
     last(index?: number): T
-    split(func: (bound: T) => boolean): T[][]
+    split(func: (bound: T) => boolean, keep?: boolean): T[][]
 }
 
 Array.prototype.last = function (index = 1) {
     return this[this.length - index]
 }
 
-Array.prototype.split = function (this: any[], func: (bound: any) => boolean) {
+Array.prototype.split = function (this: any[], func: (bound: any) => boolean, keep = false) {
     const splitted: any[][] = []
     let prev = -1
     this.forEach((x, index) => {
         if (func(x)) {
-            splitted.push(this.slice(prev + 1, index))
+            splitted.push(this.slice(keep ? prev : prev + 1, index))
             prev = index
         }
     })
-    splitted.push(this.slice(prev + 1))
+    splitted.push(this.slice(keep ? prev : prev + 1))
     return splitted
 }
 
