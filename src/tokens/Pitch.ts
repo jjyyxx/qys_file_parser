@@ -1,11 +1,10 @@
 import { Global } from '../Global'
 import { Tokenizer } from '../Tokenizer'
-import { BaseToken } from './BaseToken'
 import { Suffix } from './Suffix'
 import { Token } from './TokenDecorator'
 import { SuffixType, TokenType } from './TokenType'
 
-class Pitch extends BaseToken {
+class Pitch {
     public static pattern = {
         qym: /^[b#]*[0-7%][',]/,
         qys: /^[0-7%xX][',b#]*/,
@@ -31,7 +30,6 @@ class Pitch extends BaseToken {
     public ScaleDegree: number
     public Suffix: Suffix[]
     constructor(pitch: string) {
-        super(TokenType.Pitch)
         const { scaleDegree, suffix } =
             Global.CurrentFormat === 'qym' ? Pitch.parseQymPitch(pitch) : Pitch.parseQysPitch(pitch)
         this.ScaleDegree = scaleDegree

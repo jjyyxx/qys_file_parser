@@ -7,8 +7,8 @@ class Tremolo1 extends BaseToken {
     public static pattern = /^\(\d+\-\)/
 
     public StrokesCount: number
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Tremolo1)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Tremolo1, startIndex)
         this.StrokesCount = Number(matched[0].slice(1, -2))
     }
 

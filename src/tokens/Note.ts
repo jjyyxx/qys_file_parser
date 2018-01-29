@@ -16,8 +16,8 @@ class Note extends BaseToken {
     public readonly Suffix: Suffix[]
     public Arpeggio: boolean = false
 
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Note)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Note, startIndex)
         let note = matched[0]
         if (Global.CurrentFormat === 'qym') {
             const pitchPart = note.match(/^[b#]*[0-7%][',]*(&[b#]*[0-7%][',]*)*/)[0]

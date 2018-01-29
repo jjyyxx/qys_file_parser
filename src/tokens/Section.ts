@@ -1,30 +1,31 @@
+import { ILineTokens } from '../LineTokenizer'
 import { Tokenizer } from '../Tokenizer'
-import { BaseStructure, BaseToken } from './BaseToken'
+import { BaseToken } from './BaseToken'
 import { Comment } from './Comment'
 import { FunctionToken } from './Function'
-import { Structure } from './TokenDecorator'
-import { StructureType } from './TokenType'
 
 export type Track = BaseToken[]
 
-@Structure
-class Section extends BaseStructure {
+class Section {
     public static pattern = {
         qym: /^(.+\n)*.+(\n\n|\n$|$)/,
         qys: /^(\/\/.+\n)*(<[^>]*>)*\n((<[^>]*>)*(\\\\)?[0-7%xX\(\[^~].*\n)*($|(?=(\/\/.+\n)*(<[^>]*>)*\n))/,
     }
 
-    public static separateComments(content: string) {
-        const matchedGlobalComments = content.match(/^(\/\/.*\n)+/)
-        let Comments: Comment[]
-        let remainedContent
-        if (matchedGlobalComments) {
-            Comments = Tokenizer.tokenize(matchedGlobalComments[0])
-            remainedContent = content.slice(matchedGlobalComments[0].length)
-        } else {
-            Comments = []
-            remainedContent = content
+    public static separateComments(content: ILineTokens[]) {
+        const Comments: Comment[] = []
+        let commentFlag = true
+        let index = 0
+        while (commentFlag) {
+            const line = content[index]
+            if (Tokenizer.isCommentLine(line)) {
+                Comments.push(...(line.tokens) as any)
+                index += 1
+            } else {
+                commentFlag = false
+            }
         }
+        const remainedContent = content.slice(index)
         return {
             Comments,
             remainedContent,
@@ -34,20 +35,16 @@ class Section extends BaseStructure {
     public GlobalSettings: FunctionToken[]
     public Comments: Comment[]
     public Tracks: Track[]
-    constructor(matched: RegExpMatchArray) {
-        super(StructureType.Section)
-        let content = matched[0]
+    constructor(content: ILineTokens[]) {
         const { remainedContent, Comments } = Section.separateComments(content)
         content = remainedContent
         this.Comments = Comments
-
-        const splitted = content.split('\n')
-        if (splitted[0].search(/^([<{][^}>]*[>}])*$/) !== -1) {
-            this.GlobalSettings = Tokenizer.tokenize(splitted[0])
-            this.Tracks = splitted.slice(1).filter((track) => track !== '').map((track) => Tokenizer.tokenize(track))
+        if (Tokenizer.isInitLine(content[0])) {
+            this.GlobalSettings = content[0].tokens as any[]
+            this.Tracks = content.slice(1).map((line) => line.tokens) as any[][]
         } else {
             this.GlobalSettings = []
-            this.Tracks = splitted.filter((track) => track !== '').map((track) => Tokenizer.tokenize(track))
+            this.Tracks = content.map((line) => line.tokens) as any[][]
         }
     }
 
