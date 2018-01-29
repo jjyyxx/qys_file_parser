@@ -1,20 +1,17 @@
-import { BaseStructure, BaseToken } from './BaseToken';
+import { ILineTokens } from '../LineTokenizer';
+import { BaseToken } from './BaseToken';
 import { Comment } from './Comment';
 import { FunctionToken } from './Function';
 export declare type Track = BaseToken[];
-declare class Section extends BaseStructure {
-    static pattern: {
-        qym: RegExp;
-        qys: RegExp;
-    };
-    static separateComments(content: string): {
+declare class Section {
+    static separateComments(content: ILineTokens[]): {
         Comments: Comment[];
-        remainedContent: string;
+        remainedContent: ILineTokens[];
     };
     GlobalSettings: FunctionToken[];
     Comments: Comment[];
     Tracks: Track[];
-    constructor(matched: RegExpMatchArray);
+    constructor(content: ILineTokens[]);
     toString(): string;
 }
 export { Section };

@@ -11,16 +11,5 @@ function Token(constructor) {
         }
     }
 }
-function Structure(constructor) {
-    if (constructor.pattern instanceof RegExp) {
-        Global.RegisterStructurePattern(constructor, constructor.pattern);
-    }
-    else {
-        // tslint:disable-next-line:forin
-        for (const key in constructor.pattern) {
-            Global.RegisterStructurePattern(constructor, constructor.pattern[key], key);
-        }
-    }
-}
-export { Token, Structure };
+export { Token };
 //# sourceMappingURL=TokenDecorator.js.map

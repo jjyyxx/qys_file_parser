@@ -11,7 +11,7 @@ declare class FunctionToken extends BaseToken {
     Name: string;
     Argument: any;
     Simplfied: boolean;
-    constructor(matched: RegExpMatchArray);
+    constructor(startIndex: number, matched: RegExpMatchArray);
     toString(): string;
 }
 export { FunctionToken };

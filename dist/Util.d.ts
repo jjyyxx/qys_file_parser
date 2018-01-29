@@ -1,5 +1,6 @@
 interface Array<T> {
     last(index?: number): T;
+    split(func: (bound: T) => boolean, keep?: boolean): T[][];
 }
 interface Fraction {
     Numerator: number;

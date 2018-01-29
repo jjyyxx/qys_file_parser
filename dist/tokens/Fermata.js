@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Fermata = class Fermata extends BaseToken {
-    constructor() {
-        super(TokenType.Fermata);
+    constructor(startIndex) {
+        super(TokenType.Fermata, startIndex);
         this.Ratio = 2;
     }
     toString() {

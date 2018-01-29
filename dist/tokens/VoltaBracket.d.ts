@@ -4,7 +4,7 @@ declare class VoltaBracket extends BaseToken {
         qym: RegExp;
     };
     readonly NumbersOfTimes: number[];
-    constructor(matched: RegExpMatchArray);
+    constructor(startIndex: number, matched: RegExpMatchArray);
     toString(): string;
 }
 export { VoltaBracket };

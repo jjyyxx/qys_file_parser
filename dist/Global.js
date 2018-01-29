@@ -3,9 +3,6 @@ class Global {
     static get TokenPatterns() {
         return Global.tokenPatterns[Global.CurrentFormat];
     }
-    static get StructurePatterns() {
-        return Global.structurePatterns[Global.CurrentFormat];
-    }
     static get CurrentFormat() {
         return Global.Format;
     }
@@ -31,22 +28,6 @@ class Global {
         }
         else {
             Global.tokenPatterns[format].push({
-                constuctor,
-                pattern,
-            });
-        }
-    }
-    static RegisterStructurePattern(constuctor, pattern, format = '') {
-        if (format === '') {
-            for (const supportedFormat of Global.supportedFormat) {
-                Global.structurePatterns[supportedFormat].push({
-                    constuctor,
-                    pattern,
-                });
-            }
-        }
-        else {
-            Global.structurePatterns[format].push({
                 constuctor,
                 pattern,
             });
@@ -81,6 +62,5 @@ Global.SortedTonality = Object.keys(Global.tonalityDict).sort((a, b) => {
 });
 Global.Format = 'qym';
 Global.tokenPatterns = Global.initialize();
-Global.structurePatterns = Global.initialize();
 export { Global };
 //# sourceMappingURL=Global.js.map

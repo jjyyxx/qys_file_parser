@@ -8,15 +8,15 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Comment = class Comment extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Comment);
-        this.comment = matched[0].slice(2, -1);
+    constructor(startIndex, matched) {
+        super(TokenType.Comment, startIndex);
+        this.comment = matched[0].slice(2);
     }
     toString() {
         return `//${this.comment}\n`;
     }
 };
-Comment.pattern = /^\/\/.*\n/;
+Comment.pattern = /^\/\/.*$/;
 Comment = __decorate([
     Token
 ], Comment);

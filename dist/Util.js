@@ -1,6 +1,18 @@
 Array.prototype.last = function (index = 1) {
     return this[this.length - index];
 };
+Array.prototype.split = function (func, keep = false) {
+    const splitted = [];
+    let prev = -1;
+    this.forEach((x, index) => {
+        if (func(x)) {
+            splitted.push(this.slice(keep ? prev : prev + 1, index));
+            prev = index;
+        }
+    });
+    splitted.push(this.slice(keep ? prev : prev + 1));
+    return splitted;
+};
 String.prototype.calcOct = function () {
     let legal = true;
     let result = 0;

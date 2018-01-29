@@ -9,7 +9,7 @@ declare class Note extends BaseToken {
     Pitches: Pitch[];
     readonly Suffix: Suffix[];
     Arpeggio: boolean;
-    constructor(matched: RegExpMatchArray);
+    constructor(startIndex: number, matched: RegExpMatchArray);
     parseQymPitch(pitchPart: string): void;
     parseQysPitch(pitchPart: string): void;
     toString(): string;

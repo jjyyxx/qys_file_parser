@@ -9,8 +9,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let FunctionToken = FunctionToken_1 = class FunctionToken extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Function);
+    constructor(startIndex, matched) {
+        super(TokenType.Function, startIndex);
         this.Argument = {};
         if (matched[0].includes(':')) {
             this.Simplfied = false;

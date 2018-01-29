@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken.js';
 import { Token } from './TokenDecorator';
 import { SuffixType, TokenType } from './TokenType';
 let Suffix = Suffix_1 = class Suffix extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Suffix);
+    constructor(startIndex, matched) {
+        super(TokenType.Suffix, startIndex);
         const suffix = matched[0];
         if (suffix.charAt(0) === '.') {
             this.dotCount = suffix.length;

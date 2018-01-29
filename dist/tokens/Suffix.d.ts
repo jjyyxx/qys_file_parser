@@ -7,7 +7,7 @@ declare class Suffix extends BaseToken {
     };
     readonly suffixType: SuffixType;
     readonly dotCount: number;
-    constructor(matched: RegExpMatchArray);
+    constructor(startIndex: number, matched: RegExpMatchArray);
     toString(): string;
 }
 export { Suffix };

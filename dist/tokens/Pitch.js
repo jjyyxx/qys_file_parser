@@ -1,10 +1,8 @@
 import { Global } from '../Global';
 import { Tokenizer } from '../Tokenizer';
-import { BaseToken } from './BaseToken';
-import { SuffixType, TokenType } from './TokenType';
-class Pitch extends BaseToken {
+import { SuffixType } from './TokenType';
+class Pitch {
     constructor(pitch) {
-        super(TokenType.Pitch);
         const { scaleDegree, suffix } = Global.CurrentFormat === 'qym' ? Pitch.parseQymPitch(pitch) : Pitch.parseQysPitch(pitch);
         this.ScaleDegree = scaleDegree;
         this.Suffix = suffix;

@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Tie = class Tie extends BaseToken {
-    constructor() {
-        super(TokenType.Tie);
+    constructor(startIndex) {
+        super(TokenType.Tie, startIndex);
     }
     toString() {
         return '^';

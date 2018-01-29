@@ -1,8 +1,8 @@
 import { BaseToken } from './BaseToken';
 import { TokenType } from './TokenType';
 class UnrecognizedToken extends BaseToken {
-    constructor(token) {
-        super(TokenType.Unrecognized);
+    constructor(startIndex, token) {
+        super(TokenType.Unrecognized, startIndex);
         this.token = token;
     }
     toString() {

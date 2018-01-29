@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let VoltaBracket = class VoltaBracket extends BaseToken {
-    constructor(matched) {
-        super(TokenType.RepeatSkip);
+    constructor(startIndex, matched) {
+        super(TokenType.RepeatSkip, startIndex);
         this.NumbersOfTimes = matched[0].slice(1, -2).split('.').map((x) => Number(x));
     }
     toString() {

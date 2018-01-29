@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Tremolo2 = class Tremolo2 extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Tremolo2);
+    constructor(startIndex, matched) {
+        super(TokenType.Tremolo2, startIndex);
         this.StrokesCount = Number(matched[0].slice(1, -2));
     }
     toString() {

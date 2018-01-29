@@ -9,8 +9,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Tuplet = class Tuplet extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Tuplet);
+    constructor(startIndex, matched) {
+        super(TokenType.Tuplet, startIndex);
         switch (Global.CurrentFormat) {
             case 'qym':
                 this.count = Number(matched[0].slice(1, -1));

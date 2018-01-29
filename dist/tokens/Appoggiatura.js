@@ -9,8 +9,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Appoggiatura = class Appoggiatura extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Appoggiatura);
+    constructor(startIndex, matched) {
+        super(TokenType.Appoggiatura, startIndex);
         this.Notes = Tokenizer.tokenize(matched[0].slice(1, -2));
     }
     toString() {

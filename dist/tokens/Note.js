@@ -11,8 +11,8 @@ import { Pitch } from './Pitch';
 import { Token } from './TokenDecorator';
 import { SuffixType, TokenType } from './TokenType';
 let Note = class Note extends BaseToken {
-    constructor(matched) {
-        super(TokenType.Note);
+    constructor(startIndex, matched) {
+        super(TokenType.Note, startIndex);
         this.Arpeggio = false;
         let note = matched[0];
         if (Global.CurrentFormat === 'qym') {

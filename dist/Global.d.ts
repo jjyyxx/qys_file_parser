@@ -1,12 +1,8 @@
-import { BaseStructure, BaseToken } from './tokens/BaseToken';
+import { BaseToken } from './tokens/BaseToken';
 import { UnrecognizedToken } from './tokens/UnrecognizedToken';
 declare class Global {
     static readonly TokenPatterns: {
         constuctor: new (...args: any[]) => BaseToken;
-        pattern: RegExp;
-    }[];
-    static readonly StructurePatterns: {
-        constuctor: new (...args: any[]) => BaseStructure;
         pattern: RegExp;
     }[];
     static FallbackToken: typeof UnrecognizedToken;
@@ -26,12 +22,8 @@ declare class Global {
     static RegisterTokenPattern(constuctor: {
         new (...args: any[]): BaseToken;
     }, pattern: RegExp, format?: string): void;
-    static RegisterStructurePattern(constuctor: {
-        new (...args: any[]): BaseStructure;
-    }, pattern: RegExp, format?: string): void;
     private static Format;
     private static tokenPatterns;
-    private static structurePatterns;
     private static initialize();
 }
 export { Global };

@@ -1,10 +1,11 @@
-import { StructureType, TokenType } from './TokenType';
-declare abstract class Base<T> {
-    readonly type: T;
-    constructor(type: T);
+import { IToken } from '../LineTokenizer';
+import { TokenType } from './TokenType';
+declare abstract class BaseToken implements IToken {
+    static typeToScopes: Map<TokenType, string>;
+    private static initMap();
+    startIndex: number;
+    readonly type: TokenType;
+    constructor(type: TokenType, startIndex: number);
+    readonly scopes: string;
 }
-declare class BaseToken extends Base<TokenType> {
-}
-declare class BaseStructure extends Base<StructureType> {
-}
-export { Base, BaseToken, BaseStructure };
+export { BaseToken };

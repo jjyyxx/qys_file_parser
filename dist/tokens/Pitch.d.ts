@@ -1,6 +1,5 @@
-import { BaseToken } from './BaseToken';
 import { Suffix } from './Suffix';
-declare class Pitch extends BaseToken {
+declare class Pitch {
     static pattern: {
         qym: RegExp;
         qys: RegExp;

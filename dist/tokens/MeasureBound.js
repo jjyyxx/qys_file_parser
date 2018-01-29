@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { BoundType, TokenType } from './TokenType';
 let MeasureBound = class MeasureBound extends BaseToken {
-    constructor(matched) {
-        super(TokenType.MeasureBound);
+    constructor(startIndex, matched) {
+        super(TokenType.MeasureBound, startIndex);
         this.NewLine = false;
         switch (matched[0]) {
             case '|':
@@ -27,7 +27,7 @@ let MeasureBound = class MeasureBound extends BaseToken {
             case '||':
                 this.BoundType = BoundType.Terminal;
                 break;
-            case '\\\\':
+            case '\\':
                 this.BoundType = BoundType.Normal;
                 this.NewLine = true;
         }
@@ -47,7 +47,7 @@ let MeasureBound = class MeasureBound extends BaseToken {
         }
     }
 };
-MeasureBound.pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\||\\\\)/;
+MeasureBound.pattern = /^(:\|\|:|\|\|:|:\|\||\|\||\||\\)/;
 MeasureBound = __decorate([
     Token
 ], MeasureBound);

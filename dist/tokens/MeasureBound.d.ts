@@ -4,7 +4,7 @@ declare class MeasureBound extends BaseToken {
     static pattern: RegExp;
     readonly BoundType: BoundType;
     NewLine: boolean;
-    constructor(matched: RegExpMatchArray);
+    constructor(startIndex: number, matched: RegExpMatchArray);
     toString(): string;
 }
 export { MeasureBound };

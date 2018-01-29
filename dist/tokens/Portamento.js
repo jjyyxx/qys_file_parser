@@ -8,8 +8,8 @@ import { BaseToken } from './BaseToken';
 import { Token } from './TokenDecorator';
 import { TokenType } from './TokenType';
 let Portamento = class Portamento extends BaseToken {
-    constructor() {
-        super(TokenType.Portamento);
+    constructor(startIndex) {
+        super(TokenType.Portamento, startIndex);
     }
     toString() {
         return '~';

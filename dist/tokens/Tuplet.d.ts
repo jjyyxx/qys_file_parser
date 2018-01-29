@@ -5,7 +5,7 @@ declare class Tuplet extends BaseToken {
         qys: RegExp;
     };
     readonly count: number;
-    constructor(matched: RegExpMatchArray);
+    constructor(startIndex: number, matched: RegExpMatchArray);
     toString(): string;
 }
 export { Tuplet };
