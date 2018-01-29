@@ -7,10 +7,10 @@ import { FunctionToken } from './Function'
 export type Track = BaseToken[]
 
 class Section {
-    public static pattern = {
+    /*public static pattern = {
         qym: /^(.+\n)*.+(\n\n|\n$|$)/,
         qys: /^(\/\/.+\n)*(<[^>]*>)*\n((<[^>]*>)*(\\\\)?[0-7%xX\(\[^~].*\n)*($|(?=(\/\/.+\n)*(<[^>]*>)*\n))/,
-    }
+    }*/
 
     public static separateComments(content: ILineTokens[]) {
         const Comments: Comment[] = []

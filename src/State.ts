@@ -1,6 +1,6 @@
 import { IState } from './LineTokenizer'
 
-class State implements IState{
+class State implements IState {
     public wrap: boolean
 
     constructor({
