@@ -1,14 +1,13 @@
 import { Global } from './Global'
 import { ILineTokens, IState, LineTokenizer } from './LineTokenizer'
-import { Preprocessor } from './Preprocessor'
+import { State } from './State'
 import { TokenizedData } from './TokenizedData'
 import { BaseToken } from './tokens/BaseToken'
 import { Comment } from './tokens/Comment'
 import { FunctionToken } from './tokens/Function'
+import { MeasureBound } from './tokens/MeasureBound'
 import { Section } from './tokens/Section'
 import { UnrecognizedToken } from './tokens/UnrecognizedToken'
-import { State } from './State';
-import { MeasureBound } from './tokens/MeasureBound';
 
 class Tokenizer {
     public static tokenize<T extends BaseToken>(
