@@ -6,8 +6,8 @@ import { TokenType } from './TokenType'
 class Portamento extends BaseToken {
     public static pattern = /^~/
 
-    constructor() {
-        super(TokenType.Portamento)
+    constructor(startIndex: number) {
+        super(TokenType.Portamento, startIndex)
     }
 
     public toString() {

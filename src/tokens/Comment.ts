@@ -4,12 +4,12 @@ import { TokenType } from './TokenType'
 
 @Token
 class Comment extends BaseToken {
-    public static pattern = /^\/\/.*\n/
+    public static pattern = /^\/\/.*$/
     public readonly comment: string
 
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Comment)
-        this.comment = matched[0].slice(2, -1)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Comment, startIndex)
+        this.comment = matched[0].slice(2)
     }
 
     public toString(): string {

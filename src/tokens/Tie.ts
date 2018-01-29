@@ -5,8 +5,8 @@ import { TokenType } from './TokenType'
 @Token
 class Tie extends BaseToken {
     public static pattern = /^\^/
-    constructor() {
-        super(TokenType.Tie)
+    constructor(startIndex: number) {
+        super(TokenType.Tie, startIndex)
     }
 
     public toString(): string {

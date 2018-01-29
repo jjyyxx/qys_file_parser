@@ -7,8 +7,8 @@ class Fermata extends BaseToken {
     public static pattern = /^\(\.\)/
 
     public Ratio: number
-    constructor() {
-        super(TokenType.Fermata)
+    constructor(startIndex: number) {
+        super(TokenType.Fermata, startIndex)
         this.Ratio = 2
     }
 

@@ -1,9 +1,23 @@
 interface Array<T> {
     last(index?: number): T
+    split(func: (bound: T) => boolean, keep?: boolean): T[][]
 }
 
-Array.prototype.last = function(index = 1) {
+Array.prototype.last = function (index = 1) {
     return this[this.length - index]
+}
+
+Array.prototype.split = function (this: any[], func: (bound: any) => boolean, keep = false) {
+    const splitted: any[][] = []
+    let prev = -1
+    this.forEach((x, index) => {
+        if (func(x)) {
+            splitted.push(this.slice(keep ? prev : prev + 1, index))
+            prev = index
+        }
+    })
+    splitted.push(this.slice(keep ? prev : prev + 1))
+    return splitted
 }
 
 interface Fraction {
@@ -18,7 +32,7 @@ interface String {
     isNumeric(): boolean
 }
 
-String.prototype.calcOct = function() {
+String.prototype.calcOct = function () {
     let legal = true
     let result = 0
     for (let i = 0, len = this.length; i < len && legal; i++) {
@@ -40,7 +54,7 @@ String.prototype.calcOct = function() {
     }
 }
 
-String.prototype.toFraction = function() {
+String.prototype.toFraction = function () {
     const possibleFraction: string[] = this.split('/')
     if (possibleFraction.length === 2) {
         const processedNum = possibleFraction
@@ -53,7 +67,7 @@ String.prototype.toFraction = function() {
     return undefined
 }
 
-String.prototype.toNumIfPossible = function() {
+String.prototype.toNumIfPossible = function () {
     const possibleNum = Number(this)
     if (Number.isNaN(possibleNum)) {
         const possibleFraction: Fraction = this.toFraction()
@@ -66,7 +80,7 @@ String.prototype.toNumIfPossible = function() {
     }
 }
 
-String.prototype.isNumeric = function() {
+String.prototype.isNumeric = function () {
     return !isNaN(this - parseFloat(this))
 }
 

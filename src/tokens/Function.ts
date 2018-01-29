@@ -98,8 +98,8 @@ class FunctionToken extends BaseToken {
     public Argument: any = {}
     public Simplfied: boolean
 
-    constructor(matched: RegExpMatchArray) {
-        super(TokenType.Function)
+    constructor(startIndex: number, matched: RegExpMatchArray) {
+        super(TokenType.Function, startIndex)
         if (matched[0].includes(':')) {
             this.Simplfied = false
             const { key, value } = FunctionToken.parseNormal(matched[0].slice(1, -1))
